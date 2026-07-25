@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #16255C;
+  --color-navy-deep: #0D1738;
+  --color-navy-ink: #101736;
+  --color-azure: #2E8FD4;
+  --color-azure-deep: #1C7BB8;
+  --color-azure-mist: #F2F8FC;
+  --color-azure-soft: #BFDDF2;
+  --color-gold: #C7A45F;
+  --color-gold-deep: #A98843;
+  --color-gold-mist: #FBF6EA;
+  --color-gold-soft: #EBD9AF;
+  --color-line: #E3ECF5;
+  --color-paper: #FAF7F0;
+  --color-paper-warm: #F3EDDF;
+  --color-ink: #1A1F36;
+  --color-mist: #E9E6DE;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-sans: "Inter", sans-serif;
+
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+
+  --container-prose: 68ch;
+  --radius-card: 1.25rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-ink font-sans antialiased;
+  }
+
+  ::selection {
+    @apply bg-gold/40;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@keyframes float-y {
+  from {
+    transform: translateY(-6px);
+  }
+  to {
+    transform: translateY(6px);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-float-y {
+  animation: float-y 6s ease-in-out infinite alternate;
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-y,
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+@utility container-site {
+  @apply mx-auto max-w-7xl px-5 sm:px-8 lg:px-12;
+}
+
+@utility card {
+  @apply rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(16,23,54,0.04)];
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
