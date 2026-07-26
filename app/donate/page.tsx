@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { DonatePage } from "@/app/components/pages/DonatePage";
 
 export const metadata: Metadata = {
-  title: "Donate",
+  title: "Bağış",
   description:
-    "Support IHBA's humanitarian assistance, education, scholarship and sustainable development programmes.",
+    "Desteğiniz IHBA'nın insani yardım, eğitim, burs ve sürdürülebilir kalkınma programlarını finanse eder.",
 };
 
 export default function Page() {

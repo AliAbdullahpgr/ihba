@@ -17,7 +17,8 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const project = content.en.projectsPage.details.find(
+  /* Turkish is the default language, so the prerendered metadata is Turkish. */
+  const project = content.tr.projectsPage.details.find(
     (item) => item.slug === slug
   );
   if (!project) return {};

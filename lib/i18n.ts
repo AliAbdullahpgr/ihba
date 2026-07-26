@@ -144,7 +144,6 @@ export interface Dictionary {
     reportCopy: string;
     copyright: string;
     transparency: string;
-    legal: string[];
   };
 }
 
@@ -395,7 +394,6 @@ export const dict: Record<Lang, Dictionary> = {
         "Every donation and project is auditable. Write to us and we will respond within five working days.",
       copyright: "© 2026 IHBA — International Humanity Bridge. All rights reserved.",
       transparency: "Registry No: 34-291-110 · Tax No: 8900485331 · MERSIS: 0890048533100001",
-      legal: ["Terms of Use", "Privacy Policy", "Transparency", "Media Inquiries"],
     },
   },
   tr: {
@@ -644,7 +642,6 @@ export const dict: Record<Lang, Dictionary> = {
         "Her bağış ve proje denetlenebilir. Bize yazın, beş iş günü içinde yanıt veririz.",
       copyright: "© 2026 IHBA — Uluslararası İnsanlık Köprüsü Derneği. Tüm hakları saklıdır.",
       transparency: "Kütük No: 34-291-110 · Vergi No: 8900485331 · MERSİS: 0890048533100001",
-      legal: ["Kullanım Şartları", "Gizlilik Politikası", "Şeffaflık", "Basın İletişim"],
     },
   },
 };

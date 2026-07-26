@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { VolunteerPage } from "@/app/components/pages/VolunteerPage";
 
 export const metadata: Metadata = {
-  title: "Volunteer",
+  title: "Gönüllülük",
   description:
-    "Contribute to IHBA's field activities, student and education programmes, events, communications, content production and seasonal humanitarian programmes.",
+    "IHBA'nın saha faaliyetleri, öğrenci ve eğitim çalışmaları, organizasyon, iletişim, içerik üretimi ve dönemsel yardım çalışmalarına katkı sunun.",
 };
 
 export default function Page() {

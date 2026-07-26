@@ -9,7 +9,12 @@ export function VolunteerCta() {
 
   return (
     <section id="donate" className="bg-paper-warm/50">
-      <div className="container-site grid gap-12 py-20 lg:grid-cols-12 lg:items-end lg:gap-8 lg:py-28">
+      {/*
+        `items-stretch`, not `items-end`: bottom-aligning a ~320px text block
+        against a 4:5 image left the heading floating well below the section's
+        top edge. The text now sets the row height and the image fills it.
+      */}
+      <div className="container-site grid gap-12 py-20 lg:grid-cols-12 lg:gap-8 lg:py-28">
         <div className="lg:col-span-7">
           <h2 className="display-xl text-4xl text-navy-ink sm:text-5xl">
             {title.pre}
@@ -31,11 +36,11 @@ export function VolunteerCta() {
         </div>
 
         {/* Arch-masked, matching the hero — the device bookends the page. */}
-        <div className="lg:col-span-4 lg:col-start-9">
+        <div className="lg:col-span-4 lg:col-start-9 lg:h-full">
           <img
             src="/images/generated/volunteer-team.webp"
             alt="A diverse volunteer team assembling school and essential-supply kits"
-            className="arch aspect-[4/5] w-full object-cover"
+            className="arch aspect-[4/5] w-full object-cover lg:aspect-auto lg:h-full lg:min-h-[22rem]"
           />
         </div>
       </div>

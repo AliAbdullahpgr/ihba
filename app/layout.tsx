@@ -16,13 +16,18 @@ const inter = Inter({
   subsets: ["latin", "latin-ext"],
 });
 
+/*
+  Turkish is the site's default language — `lang="tr"` below, and the provider
+  renders TR until a visitor chooses otherwise — so the titles and descriptions
+  search engines and browser tabs see are Turkish too.
+*/
 export const metadata: Metadata = {
   title: {
-    default: "IHBA — International Humanity Bridge",
+    default: "IHBA — Uluslararası İnsanlık Köprüsü Derneği",
     template: "%s — IHBA",
   },
   description:
-    "IHBA connects humanitarian assistance with education, sustainable development and strong institutional partnerships to build lasting bridges of compassion across regions.",
+    "IHBA; insani yardımı eğitim, sürdürülebilir kalkınma ve güçlü kurumsal iş birlikleriyle birleştirerek bölgeler arasında kalıcı iyilik köprüleri kurar.",
 };
 
 export default function RootLayout({

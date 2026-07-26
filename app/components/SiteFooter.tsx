@@ -168,21 +168,15 @@ export function SiteFooter() {
           </p>
         </div>
 
-        {/* Legal row. */}
-        <div className="mt-10 flex flex-col gap-4 border-t border-navy-ink/15 py-6 text-xs text-navy-ink/55 md:flex-row md:items-center md:justify-between">
+        {/*
+          Legal row. The Terms / Privacy / Transparency / Media links that used
+          to sit here all pointed at /contact because no such pages exist — a
+          link that lands somewhere unrelated is worse than no link, so the row
+          carries the copyright and the registry line only.
+        */}
+        <div className="mt-10 flex flex-col gap-2 border-t border-navy-ink/15 py-6 text-xs text-navy-ink/55 md:flex-row md:items-center md:justify-between">
           <p>{t.footer.copyright}</p>
-          <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            {t.footer.legal.map((item) => (
-              <li key={item}>
-                <Link
-                  href="/contact"
-                  className="transition-colors hover:text-azure-deep"
-                >
-                  {item}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <p>{t.utility.tagline}</p>
         </div>
       </div>
     </footer>

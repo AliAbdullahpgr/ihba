@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { AboutPage } from "@/app/components/pages/AboutPage";
 
 export const metadata: Metadata = {
-  title: "About Us",
+  title: "Hakkımızda",
   description:
-    "International Humanity Bridge (IHBA) is a civil society organisation that places human dignity at the centre of its work, established in Istanbul on 19 February 2025.",
+    "Uluslararası İnsanlık Köprüsü Derneği (IHBA), 19 Şubat 2025'te İstanbul'da kurulan, insan onurunu merkeze alan bir sivil toplum kuruluşudur.",
 };
 
 export default function Page() {

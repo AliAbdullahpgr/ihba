@@ -10,8 +10,13 @@ export function Hero() {
   return (
     <section id="top" className="bg-white">
       <div className="container-site pt-14 lg:pt-20">
-        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-7">
+        <div className="lg:grid lg:grid-cols-12 lg:items-stretch lg:gap-8">
+          {/*
+            A flex column, not a plain block: the feature note at the bottom is
+            pushed down by `mt-auto` so this column ends level with the arch
+            instead of stopping ~250px short of it.
+          */}
+          <div className="lg:col-span-7 lg:flex lg:flex-col">
             {/*
               A standfirst, not an eyebrow. The sentence that used to open the
               headline still gets said, at reading size and in normal case — an
@@ -51,6 +56,21 @@ export function Hero() {
                 {t.hero.ctaSecondary}
               </Button>
             </div>
+
+            {/*
+              The feature note lives with the text, bottom-aligned against the
+              arch's baseline. It reads as the last item in the column rather
+              than as a caption competing with the headline.
+            */}
+            <div className="mt-14 max-w-md border-t border-navy-ink/15 pt-4 lg:mt-auto lg:pt-8">
+              <p className="eyebrow text-gold-deep">{feature.tag}</p>
+              <p className="mt-2 font-display text-base font-medium leading-snug text-navy-ink">
+                {feature.title}
+              </p>
+              <ArrowLink href="/about" className="mt-3">
+                {feature.cta}
+              </ArrowLink>
+            </div>
           </div>
 
           {/*
@@ -74,16 +94,6 @@ export function Hero() {
                 aria-hidden="true"
               />
             </div>
-
-            <figcaption className="mt-5 border-t border-navy-ink/15 pt-4">
-              <p className="eyebrow text-gold-deep">{feature.tag}</p>
-              <p className="mt-2 font-display text-base font-medium leading-snug text-navy-ink">
-                {feature.title}
-              </p>
-              <ArrowLink href="/about" className="mt-4">
-                {feature.cta}
-              </ArrowLink>
-            </figcaption>
           </div>
         </div>
       </div>

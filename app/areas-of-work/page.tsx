@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { AreasPage } from "@/app/components/pages/AreasPage";
 
 export const metadata: Metadata = {
-  title: "Our Areas of Work",
+  title: "Faaliyet Alanlarımız",
   description:
-    "Humanitarian assistance, education, sustainable development, children, youth and women, health and social support, culture and volunteering, and institutional cooperation.",
+    "İnsani yardım, eğitim, sürdürülebilir kalkınma, çocuk, gençlik ve kadın çalışmaları, sağlık ve sosyal destek, kültür ve gönüllülük ile kurumsal iş birliği.",
 };
 
 export default function Page() {

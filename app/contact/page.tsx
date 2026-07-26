@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { ContactPage } from "@/app/components/pages/ContactPage";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "İletişim",
   description:
-    "Contact IHBA about donations, volunteering, partnerships or media enquiries. Head office in Sultanbeyli, Istanbul, Türkiye.",
+    "Bağış, gönüllülük, iş birliği veya basın talepleriniz için IHBA ile iletişime geçin. Merkez ofis: Sultanbeyli, İstanbul, Türkiye.",
 };
 
 export default function Page() {

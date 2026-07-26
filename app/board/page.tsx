@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { BoardPage } from "@/app/components/pages/BoardPage";
 
 export const metadata: Metadata = {
-  title: "Board of Directors",
+  title: "Yönetim Kurulu",
   description:
-    "The board elected at the founding of Uluslararası İnsanlık Köprüsü Derneği (IHBA), serving as its governing body.",
+    "Uluslararası İnsanlık Köprüsü Derneği'nin (IHBA) kuruluşunda seçilen ve karar organı olarak görev yapan yönetim kurulu.",
 };
 
 export default function Page() {

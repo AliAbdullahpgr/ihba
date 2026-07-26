@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { ProjectsIndexPage } from "@/app/components/pages/ProjectsIndexPage";
 
 export const metadata: Metadata = {
-  title: "Projects",
+  title: "Projeler",
   description:
-    "The Mazar-i-Sharif Education Centre, the Pakistan International Student Education and Support Programme, and IHBA's Ramadan and Qurban humanitarian programmes.",
+    "Mezar-ı Şerif Eğitim Merkezi, Pakistan Uluslararası Öğrenci Eğitim ve Destek Programı ile IHBA'nın Ramazan ve Kurban dönemi insani yardım faaliyetleri.",
 };
 
 export default function Page() {
