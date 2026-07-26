@@ -6,7 +6,7 @@ import { ArrowDisc } from "@/app/components/primitives";
 import { SocialRow } from "@/app/components/SocialRow";
 
 export function Newsletter() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -31,14 +31,24 @@ export function Newsletter() {
               </p>
             ) : (
               <form
-                onSubmit={(event) => {
+                onSubmit={async (event) => {
                   event.preventDefault();
-                  setSubmitted(true);
+                  const form = new FormData(event.currentTarget);
+                  const response = await fetch("/api/newsletter", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                      email: form.get("email"),
+                      locale: lang,
+                    }),
+                  });
+                  if (response.ok) setSubmitted(true);
                 }}
                 className="mt-8 flex items-center gap-4 border-b border-navy-ink/30 pb-2 transition-colors focus-within:border-navy-ink"
               >
                 <input
                   type="email"
+                  name="email"
                   required
                   aria-label={t.newsletter.placeholder}
                   placeholder={t.newsletter.placeholder}

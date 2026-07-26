@@ -9,7 +9,7 @@ import {
   CardTitle,
   Tag,
 } from "@/app/components/primitives";
-import { projectImages } from "@/app/components/pages/projectImages";
+import { resolveProjectImage } from "@/app/components/pages/projectImages";
 
 const tagTones = {
   planning: "azure",
@@ -39,7 +39,7 @@ export function Projects() {
         <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
           {t.projectsPage.details.map((project, index) => {
             const card = t.projects.cards[index];
-            const image = projectImages[project.slug];
+            const image = resolveProjectImage(project);
 
             return (
               <Reveal key={project.slug} delay={index * 90}>

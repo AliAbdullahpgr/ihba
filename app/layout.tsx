@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/app/components/LanguageProvider";
-import { SiteHeader } from "@/app/components/SiteHeader";
-import { SiteFooter } from "@/app/components/SiteFooter";
+import { AppFrame } from "@/app/components/AppFrame";
+import { getSiteCopies } from "@/lib/site-data";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
@@ -30,11 +30,13 @@ export const metadata: Metadata = {
     "IHBA; insani yardımı eğitim, sürdürülebilir kalkınma ve güçlü kurumsal iş birlikleriyle birleştirerek bölgeler arasında kalıcı iyilik köprüleri kurar.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const copies = await getSiteCopies();
+
   return (
     <html lang="tr" className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body>
@@ -42,10 +44,8 @@ export default function RootLayout({
           Chrome and language state live here rather than per page, so switching
           language or navigating between routes never resets either.
         */}
-        <LanguageProvider>
-          <SiteHeader />
-          <main>{children}</main>
-          <SiteFooter />
+        <LanguageProvider initialCopies={copies}>
+          <AppFrame>{children}</AppFrame>
         </LanguageProvider>
       </body>
     </html>

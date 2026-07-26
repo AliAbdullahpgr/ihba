@@ -85,7 +85,7 @@ export function Hero() {
                 aria-hidden="true"
               />
               <img
-                src="/images/generated/ihba-hero.webp"
+                src={t.media.hero.url}
                 alt="Community volunteers crossing a bridge with notebooks and essential supplies"
                 className="arch relative aspect-[4/5] w-full object-cover"
               />

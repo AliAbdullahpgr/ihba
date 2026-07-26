@@ -19,3 +19,16 @@ export const projectImages: Record<string, { src: string; alt: string }> = {
 
 /** Slugs are the routing contract, so they live outside the translated copy. */
 export const projectSlugs = Object.keys(projectImages);
+
+export function resolveProjectImage(project: {
+  slug: string;
+  image?: { src: string; alt: string };
+}) {
+  return (
+    project.image ??
+    projectImages[project.slug] ?? {
+      src: "/images/hero-light.svg",
+      alt: project.slug,
+    }
+  );
+}

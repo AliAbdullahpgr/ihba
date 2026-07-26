@@ -1,19 +1,6 @@
 import { z } from "zod";
 
-/**
- * Form schemas and the compose step they share.
- *
- * The site is a static export (`output: "export"` in next.config.ts), so there
- * is no server to receive a POST and nowhere safe to hold a mail credential.
- * Rather than route the association's post through an outside form service,
- * both forms hand the finished message to the reader's own mail app: on submit
- * the answers are laid out as a message and opened as a draft addressed to the
- * association, and the reader presses Send there.
- *
- * The cost is one extra press, and that the sender's own address is the one the
- * mail arrives from — which is what we want to reply to anyway. Nothing leaves
- * the browser until the reader sends it, and no third party sees it at all.
- */
+/** Shared browser and API validation for contact and volunteer submissions. */
 
 /*
   Honeypot. A field that is present in the DOM but invisible and untabbable, so
@@ -73,46 +60,3 @@ export function fieldErrors(error: z.ZodError): Record<string, string> {
 }
 
 export type SubmitState = "idle" | "sent";
-
-/** One labelled answer, as it should read in the message body. */
-export type MailLine = { label: string; value: string };
-
-/**
- * Lays the answers out as a plain-text message and returns it as a mailto URL.
- *
- * Labels come from the caller rather than from the schema, so the message the
- * association receives is written in the language the sender was reading.
- * Short answers sit one per line and the long one goes last under its own
- * heading, which is the shape a person skimming an inbox expects.
- */
-export function composeMailto({
-  to,
-  subject,
-  lines,
-  bodyLabel,
-  body,
-}: {
-  to: string;
-  subject: string;
-  lines: MailLine[];
-  bodyLabel: string;
-  body: string;
-}): string {
-  const text = [
-    ...lines
-      .filter((line) => line.value.trim())
-      .map((line) => `${line.label}: ${line.value.trim()}`),
-    "",
-    `${bodyLabel}:`,
-    body.trim(),
-  ].join("\r\n");
-
-  /*
-    encodeURIComponent is right for both parts: it escapes the newlines, the
-    ampersands and the Turkish characters that would otherwise end the header
-    or break the query string.
-  */
-  return `mailto:${to}?subject=${encodeURIComponent(
-    subject
-  )}&body=${encodeURIComponent(text)}`;
-}

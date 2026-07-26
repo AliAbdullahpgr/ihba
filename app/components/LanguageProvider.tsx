@@ -3,9 +3,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { dict, type Lang } from "@/lib/i18n";
 import { content } from "@/lib/content";
+import { bundledMedia, type SiteMedia } from "@/lib/media";
 
 /** Everything a page needs to read: homepage copy plus deeper page content. */
-export type Copy = (typeof dict)[Lang] & (typeof content)[Lang];
+export type Copy = (typeof dict)[Lang] &
+  (typeof content)[Lang] & { media: SiteMedia };
 
 interface LanguageContextValue {
   lang: Lang;
@@ -17,7 +19,13 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 const STORAGE_KEY = "ihba-lang";
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
+export function LanguageProvider({
+  children,
+  initialCopies,
+}: {
+  children: React.ReactNode;
+  initialCopies?: Record<Lang, Copy>;
+}) {
   const [lang, setLang] = useState<Lang>("tr");
 
   /*
@@ -39,9 +47,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     () => ({
       lang,
       setLang,
-      t: { ...dict[lang], ...content[lang] },
+      t:
+        initialCopies?.[lang] ?? {
+          ...dict[lang],
+          ...content[lang],
+          media: bundledMedia,
+        },
     }),
-    [lang]
+    [initialCopies, lang]
   );
 
   return (

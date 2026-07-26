@@ -27,7 +27,7 @@ export function AboutPage() {
           </div>
           <div className="lg:col-span-4 lg:col-start-9">
             <img
-              src="/images/generated/ihba-hero.webp"
+              src={t.media.hero.url}
               alt="Community volunteers crossing a bridge with notebooks and essential supplies"
               className="arch aspect-[4/5] w-full object-cover"
             />

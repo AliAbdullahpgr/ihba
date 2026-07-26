@@ -12,13 +12,12 @@ import { PageHeader, PageSection } from "@/app/components/PageShell";
 import { Figure } from "@/app/components/Lightbox";
 import { Reveal } from "@/app/components/Reveal";
 import { ShareRow } from "@/app/components/ShareRow";
-import { projectImages } from "@/app/components/pages/projectImages";
+import { resolveProjectImage } from "@/app/components/pages/projectImages";
 
 export function ProjectDetailPage({ slug }: { slug: string }) {
   const { t } = useI18n();
 
   const project = t.projectsPage.details.find((item) => item.slug === slug);
-  const image = projectImages[slug];
 
   /*
     The slug is validated by the route before this renders, so a miss here can
@@ -26,6 +25,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
   */
   if (!project) return null;
 
+  const image = resolveProjectImage(project);
   const others = t.projectsPage.details.filter((item) => item.slug !== slug);
   const [deck, ...body] = project.body;
 
@@ -111,7 +111,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
       <PageSection title={t.projectsPage.moreTitle} tone="warm">
         <div className="grid gap-10 md:grid-cols-2 md:gap-8">
           {others.map((other, index) => {
-            const otherImage = projectImages[other.slug];
+            const otherImage = resolveProjectImage(other);
             return (
               <Reveal key={other.slug} delay={index * 90}>
                 <CardLink href={`/projects/${other.slug}`}>

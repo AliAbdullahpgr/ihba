@@ -12,6 +12,7 @@ import {
   Mark,
 } from "@/app/components/primitives";
 import type { CategoryKey, ProgramCard } from "@/lib/i18n";
+import type { SiteMedia } from "@/lib/media";
 
 type Rail = "left" | "right";
 
@@ -27,35 +28,37 @@ interface CardSpec {
  * it carries an image, and at what crop. Two flex rails instead of one dense
  * grid means filtering can never open a hole in the middle of the mosaic.
  */
-const specs: CardSpec[] = [
+function getSpecs(media: SiteMedia): CardSpec[] {
+  return [
   {
     rail: "left",
-    image: "/images/generated/project-ramadan-programme.webp",
+    image: media.ramadanProgramme.url,
     alt: "Community volunteers preparing food parcels and shared meals",
     ratio: "aspect-[16/9]",
   },
   {
     rail: "left",
-    image: "/images/generated/project-student-support.webp",
+    image: media.studentSupport.url,
     alt: "University students reviewing applications together on campus",
     ratio: "aspect-[16/9]",
   },
   { rail: "right", image: null, alt: "", ratio: "" },
   {
     rail: "right",
-    image: "/images/generated/project-education-centre.webp",
+    image: media.educationCentre.url,
     alt: "Teacher guiding girls and boys as they study together in a classroom",
     ratio: "aspect-[4/3]",
   },
   { rail: "right", image: null, alt: "", ratio: "" },
   {
     rail: "left",
-    image: "/images/generated/volunteer-team.webp",
+    image: media.volunteerTeam.url,
     alt: "A diverse volunteer team assembling school and essential-supply kits",
     ratio: "aspect-[16/9]",
   },
   { rail: "right", image: null, alt: "", ratio: "" },
-];
+  ];
+}
 
 function MosaicCard({
   card,
@@ -92,6 +95,7 @@ export function FocusMosaic() {
   const { t } = useI18n();
   const [filter, setFilter] = useState<CategoryKey | "all">("all");
   const { title } = t.programs;
+  const specs = getSpecs(t.media);
 
   const labelFor = (key: CategoryKey) =>
     t.programs.filters.find((option) => option.key === key)?.label ?? "";
@@ -101,7 +105,7 @@ export function FocusMosaic() {
       t.programs.cards
         .map((card, index) => ({ card, index, spec: specs[index] }))
         .filter(({ card }) => filter === "all" || card.categoryKey === filter),
-    [t.programs.cards, filter]
+    [t.programs.cards, t.media, filter]
   );
 
   const railCards = (rail: Rail) =>

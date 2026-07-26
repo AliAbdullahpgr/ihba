@@ -10,7 +10,7 @@ import {
   Tag,
 } from "@/app/components/primitives";
 import { PageHeader } from "@/app/components/PageShell";
-import { projectImages } from "@/app/components/pages/projectImages";
+import { resolveProjectImage } from "@/app/components/pages/projectImages";
 
 const tones = ["azure", "gold", "navy"] as const;
 
@@ -24,7 +24,7 @@ export function ProjectsIndexPage() {
       <section className="bg-white pb-16 lg:pb-20">
         <div className="container-site">
           {t.projectsPage.details.map((project, index) => {
-            const image = projectImages[project.slug];
+            const image = resolveProjectImage(project);
             return (
               <Reveal key={project.slug}>
                 {/*

@@ -5,28 +5,26 @@ import { Reveal } from "@/app/components/Reveal";
 import { ArrowLink } from "@/app/components/primitives";
 import { PageHeader, PageSection } from "@/app/components/PageShell";
 
-/** Imagery for the fields that have a photograph; the rest run as type only. */
-const images: Record<number, { src: string; alt: string }> = {
-  0: {
-    src: "/images/generated/project-ramadan-programme.webp",
-    alt: "Community volunteers preparing food parcels and shared meals",
-  },
-  1: {
-    src: "/images/generated/project-student-support.webp",
-    alt: "University students reviewing applications together on campus",
-  },
-  3: {
-    src: "/images/generated/project-education-centre.webp",
-    alt: "Teacher guiding girls and boys as they study together in a classroom",
-  },
-  5: {
-    src: "/images/generated/volunteer-team.webp",
-    alt: "A diverse volunteer team assembling school and essential-supply kits",
-  },
-};
-
 export function AreasPage() {
   const { t } = useI18n();
+  const images: Record<number, { src: string; alt: string }> = {
+    0: {
+      src: t.media.ramadanProgramme.url,
+      alt: "Community volunteers preparing food parcels and shared meals",
+    },
+    1: {
+      src: t.media.studentSupport.url,
+      alt: "University students reviewing applications together on campus",
+    },
+    3: {
+      src: t.media.educationCentre.url,
+      alt: "Teacher guiding girls and boys as they study together in a classroom",
+    },
+    5: {
+      src: t.media.volunteerTeam.url,
+      alt: "A diverse volunteer team assembling school and essential-supply kits",
+    },
+  };
 
   return (
     <>

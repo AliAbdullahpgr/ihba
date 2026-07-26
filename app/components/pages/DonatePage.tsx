@@ -49,7 +49,7 @@ export function DonatePage() {
 
           <aside className="lg:col-span-4 lg:col-start-9">
             <img
-              src="/images/generated/project-ramadan-programme.webp"
+              src={t.media.ramadanProgramme.url}
               alt="Community volunteers preparing food parcels and shared meals"
               className="arch aspect-[4/5] w-full object-cover"
             />

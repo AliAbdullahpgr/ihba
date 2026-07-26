@@ -245,7 +245,7 @@ export function SentPanel({
   body: string;
   hint: string;
   again: string;
-  href: string;
+  href?: string;
 }) {
   return (
     <div role="status" className="border-l-2 border-azure-deep bg-azure-mist p-5">
@@ -254,15 +254,17 @@ export function SentPanel({
         {title}
       </p>
       <p className="mt-2 text-sm leading-relaxed text-ink/70">{body}</p>
-      <p className="mt-4 border-t border-navy-ink/10 pt-4 text-xs leading-relaxed text-ink/55">
-        {hint}{" "}
-        <a
-          href={href}
-          className="font-semibold text-navy-ink underline decoration-gold decoration-2 underline-offset-2 hover:text-navy"
-        >
-          {again}
-        </a>
-      </p>
+      {href && (
+        <p className="mt-4 border-t border-navy-ink/10 pt-4 text-xs leading-relaxed text-ink/55">
+          {hint}{" "}
+          <a
+            href={href}
+            className="font-semibold text-navy-ink underline decoration-gold decoration-2 underline-offset-2 hover:text-navy"
+          >
+            {again}
+          </a>
+        </p>
+      )}
     </div>
   );
 }

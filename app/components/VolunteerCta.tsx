@@ -38,7 +38,7 @@ export function VolunteerCta() {
         {/* Arch-masked, matching the hero — the device bookends the page. */}
         <div className="lg:col-span-4 lg:col-start-9 lg:h-full">
           <img
-            src="/images/generated/volunteer-team.webp"
+            src={t.media.volunteerTeam.url}
             alt="A diverse volunteer team assembling school and essential-supply kits"
             className="arch aspect-[4/5] w-full object-cover lg:aspect-auto lg:h-full lg:min-h-[22rem]"
           />

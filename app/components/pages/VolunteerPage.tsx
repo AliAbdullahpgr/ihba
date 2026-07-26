@@ -34,7 +34,7 @@ export function VolunteerPage() {
             <Figure
               images={[
                 {
-                  src: "/images/generated/volunteer-team.webp",
+                  src: t.media.volunteerTeam.url,
                   alt: "A diverse volunteer team assembling school and essential-supply kits",
                   caption: t.volunteerPage.photoCaption,
                 },

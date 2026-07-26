@@ -43,6 +43,25 @@ export interface ProjectDetail {
   status: string;
   body: string[];
   facts: Row[];
+  chips?: string[];
+  image?: {
+    src: string;
+    alt: string;
+    publicId?: string;
+  };
+}
+
+export interface NewsItem {
+  slug: string;
+  title: string;
+  excerpt: string;
+  body: string[];
+  publishedAt: string;
+  image?: {
+    src: string;
+    alt: string;
+    publicId?: string;
+  };
 }
 
 export interface PageIntro {
@@ -133,7 +152,7 @@ export interface Content {
   };
   areasPage: PageIntro & { items: AreaDetail[] };
   projectsPage: PageIntro & { details: ProjectDetail[]; moreTitle: string };
-  newsPage: PageIntro & { empty: string; emptyCta: string };
+  newsPage: PageIntro & { empty: string; emptyCta: string; items?: NewsItem[] };
   donatePage: PageIntro & {
     body: string[];
     accountsNote: string;
@@ -204,14 +223,14 @@ export const content: Record<Lang, Content> = {
       send: "Send message",
       apply: "Send application",
       privacy:
-        "Your message goes straight from your own email to ours. Nothing is stored on this website and no third party handles it.",
+        "Your information is stored securely so our team can respond. We do not sell or share it for marketing.",
       consentLine: "Consent",
       consentGiven: "Given",
-      sentTitle: "Your message is ready — press Send in your email.",
+      sentTitle: "Your message has been sent.",
       sentBody:
-        "Your email app has opened with everything you wrote already filled in and addressed to us. One press of Send in there and it is on its way; we usually reply within a few working days.",
+        "Thank you for contacting IHBA. Our team has received your message and usually replies within a few working days.",
       volunteerSentBody:
-        "Your email app has opened with your application already filled in and addressed to us. Press Send in there and we will be in touch about the areas where your time would help most.",
+        "Thank you for applying. Our team has received your application and will be in touch about where your time can help most.",
       volunteerSubject: "Volunteer application",
       mailHint: "Nothing opened?",
       mailOpenAgain: "Open the email again",
@@ -514,14 +533,14 @@ export const content: Record<Lang, Content> = {
       send: "Mesajı gönder",
       apply: "Başvuruyu gönder",
       privacy:
-        "Mesajınız kendi e-postanızdan doğrudan bize ulaşır. Bu sitede hiçbir bilgi saklanmaz, araya üçüncü bir taraf girmez.",
+        "Bilgileriniz ekibimizin size dönüş yapabilmesi için güvenli şekilde saklanır; pazarlama amacıyla satılmaz veya paylaşılmaz.",
       consentLine: "Onay",
       consentGiven: "Verildi",
-      sentTitle: "Mesajınız hazır — e-postanızdan Gönder'e basın.",
+      sentTitle: "Mesajınız gönderildi.",
       sentBody:
-        "E-posta uygulamanız, yazdıklarınız hazır doldurulmuş ve adresimize yazılmış olarak açıldı. Orada Gönder'e bir kez basmanız yeterli; genellikle birkaç iş günü içinde yanıt veriyoruz.",
+        "IHBA ile iletişime geçtiğiniz için teşekkür ederiz. Ekibimiz mesajınızı aldı ve genellikle birkaç iş günü içinde yanıt verir.",
       volunteerSentBody:
-        "E-posta uygulamanız, başvurunuz hazır doldurulmuş ve adresimize yazılmış olarak açıldı. Orada Gönder'e basın; zamanınızın en çok fayda sağlayacağı alanlar için sizinle iletişime geçeceğiz.",
+        "Başvurunuz için teşekkür ederiz. Ekibimiz başvurunuzu aldı; zamanınızın en çok fayda sağlayacağı alanlar için sizinle iletişime geçeceğiz.",
       volunteerSubject: "Gönüllü başvurusu",
       mailHint: "Hiçbir şey açılmadı mı?",
       mailOpenAgain: "E-postayı yeniden açın",

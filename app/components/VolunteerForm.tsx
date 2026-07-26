@@ -13,7 +13,6 @@ import {
   TextInput,
 } from "@/app/components/FormFields";
 import {
-  composeMailto,
   fieldErrors,
   volunteerSchema,
   type SubmitState,
@@ -32,12 +31,11 @@ const empty = {
 };
 
 export function VolunteerForm() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const f = t.forms;
   const [values, setValues] = useState(empty);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [state, setState] = useState<SubmitState>("idle");
-  const [draft, setDraft] = useState("");
 
   function set(field: keyof typeof empty, value: string | boolean) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -46,7 +44,7 @@ export function VolunteerForm() {
     }
   }
 
-  function onSubmit(event: React.FormEvent) {
+  async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
 
     const parsed = volunteerSchema.safeParse(values);
@@ -57,25 +55,16 @@ export function VolunteerForm() {
 
     setErrors({});
 
-    const url = composeMailto({
-      to: t.utility.email,
-      subject: `[IHBA] ${f.volunteerSubject} — ${parsed.data.fullName}`,
-      lines: [
-        { label: f.fullName, value: parsed.data.fullName },
-        { label: f.email, value: parsed.data.email },
-        { label: f.phone, value: parsed.data.phone ?? "" },
-        { label: f.city, value: parsed.data.city },
-        { label: f.areaOfInterest, value: parsed.data.areaOfInterest },
-        { label: f.availability, value: parsed.data.availability },
-        { label: f.consentLine, value: f.consentGiven },
-      ],
-      bodyLabel: f.motivation,
-      body: parsed.data.message,
+    const response = await fetch("/api/volunteer", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ...parsed.data, locale: lang }),
     });
-
-    setDraft(url);
+    if (!response.ok) {
+      setErrors({ message: "invalid" });
+      return;
+    }
     setState("sent");
-    window.location.href = url;
   }
 
   if (state === "sent") {
@@ -85,7 +74,6 @@ export function VolunteerForm() {
         body={f.volunteerSentBody}
         hint={f.mailHint}
         again={f.mailOpenAgain}
-        href={draft}
       />
     );
   }

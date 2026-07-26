@@ -10,12 +10,7 @@ import {
   TextArea,
   TextInput,
 } from "@/app/components/FormFields";
-import {
-  composeMailto,
-  contactSchema,
-  fieldErrors,
-  type SubmitState,
-} from "@/lib/forms";
+import { contactSchema, fieldErrors, type SubmitState } from "@/lib/forms";
 
 const empty = {
   fullName: "",
@@ -27,12 +22,11 @@ const empty = {
 };
 
 export function ContactForm() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const f = t.forms;
   const [values, setValues] = useState(empty);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [state, setState] = useState<SubmitState>("idle");
-  const [draft, setDraft] = useState("");
 
   function set(field: keyof typeof empty, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -43,7 +37,7 @@ export function ContactForm() {
     }
   }
 
-  function onSubmit(event: React.FormEvent) {
+  async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
 
     const parsed = contactSchema.safeParse(values);
@@ -54,29 +48,16 @@ export function ContactForm() {
 
     setErrors({});
 
-    const url = composeMailto({
-      to: t.utility.email,
-      // Subject line the association will see in its inbox.
-      subject: `[IHBA] ${parsed.data.subject}`,
-      lines: [
-        { label: f.fullName, value: parsed.data.fullName },
-        { label: f.email, value: parsed.data.email },
-        { label: f.phone, value: parsed.data.phone ?? "" },
-      ],
-      bodyLabel: f.message,
-      body: parsed.data.message,
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ...parsed.data, locale: lang }),
     });
-
-    setDraft(url);
+    if (!response.ok) {
+      setErrors({ message: "invalid" });
+      return;
+    }
     setState("sent");
-
-    /*
-      Hands the draft to whatever the reader uses for mail. The answers stay in
-      state rather than being cleared: if nothing opens — no handler registered,
-      a blocked navigation — the panel can offer the draft again instead of
-      having quietly thrown the message away.
-    */
-    window.location.href = url;
   }
 
   if (state === "sent") {
@@ -86,7 +67,6 @@ export function ContactForm() {
         body={f.sentBody}
         hint={f.mailHint}
         again={f.mailOpenAgain}
-        href={draft}
       />
     );
   }
