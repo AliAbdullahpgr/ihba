@@ -6,17 +6,15 @@ import {
   Consent,
   Field,
   Honeypot,
-  MailFallback,
   SelectField,
-  StatusPanel,
+  SentPanel,
   SubmitButton,
   TextArea,
   TextInput,
 } from "@/app/components/FormFields";
 import {
-  FORM_ENDPOINT,
+  composeMailto,
   fieldErrors,
-  submitForm,
   volunteerSchema,
   type SubmitState,
 } from "@/lib/forms";
@@ -39,10 +37,7 @@ export function VolunteerForm() {
   const [values, setValues] = useState(empty);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [state, setState] = useState<SubmitState>("idle");
-
-  if (!FORM_ENDPOINT) {
-    return <MailFallback note={f.unavailable} email={t.utility.email} />;
-  }
+  const [draft, setDraft] = useState("");
 
   function set(field: keyof typeof empty, value: string | boolean) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -51,35 +46,47 @@ export function VolunteerForm() {
     }
   }
 
-  async function onSubmit(event: React.FormEvent) {
+  function onSubmit(event: React.FormEvent) {
     event.preventDefault();
 
     const parsed = volunteerSchema.safeParse(values);
     if (!parsed.success) {
       setErrors(fieldErrors(parsed.error));
-      setState("idle");
       return;
     }
 
     setErrors({});
-    setState("sending");
 
-    // The honeypot has done its job by now; it does not belong in the inbox.
-    const { companyWebsite: _bait, ...payload } = parsed.data;
-
-    const ok = await submitForm({
-      form: "volunteer",
-      ...payload,
-      _subject: `[IHBA] ${f.volunteerSubject} — ${parsed.data.fullName}`,
+    const url = composeMailto({
+      to: t.utility.email,
+      subject: `[IHBA] ${f.volunteerSubject} — ${parsed.data.fullName}`,
+      lines: [
+        { label: f.fullName, value: parsed.data.fullName },
+        { label: f.email, value: parsed.data.email },
+        { label: f.phone, value: parsed.data.phone ?? "" },
+        { label: f.city, value: parsed.data.city },
+        { label: f.areaOfInterest, value: parsed.data.areaOfInterest },
+        { label: f.availability, value: parsed.data.availability },
+        { label: f.consentLine, value: f.consentGiven },
+      ],
+      bodyLabel: f.motivation,
+      body: parsed.data.message,
     });
 
-    setState(ok ? "sent" : "error");
-    if (ok) setValues(empty);
+    setDraft(url);
+    setState("sent");
+    window.location.href = url;
   }
 
   if (state === "sent") {
     return (
-      <StatusPanel tone="sent" title={f.sentTitle} body={f.volunteerSentBody} />
+      <SentPanel
+        title={f.sentTitle}
+        body={f.volunteerSentBody}
+        hint={f.mailHint}
+        again={f.mailOpenAgain}
+        href={draft}
+      />
     );
   }
 
@@ -203,14 +210,8 @@ export function VolunteerForm() {
         />
       </div>
 
-      {state === "error" && (
-        <StatusPanel tone="error" title={f.errorTitle} body={f.errorBody} />
-      )}
-
       <div className="flex flex-wrap items-center gap-5">
-        <SubmitButton sending={state === "sending"} sendingLabel={f.sending}>
-          {f.apply}
-        </SubmitButton>
+        <SubmitButton>{f.apply}</SubmitButton>
         <p className="text-xs leading-relaxed text-ink/50">{f.privacy}</p>
       </div>
     </form>

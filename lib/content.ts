@@ -97,15 +97,15 @@ export interface Content {
     noPreference: string;
     send: string;
     apply: string;
-    sending: string;
     privacy: string;
+    consentLine: string;
+    consentGiven: string;
     sentTitle: string;
     sentBody: string;
     volunteerSentBody: string;
     volunteerSubject: string;
-    errorTitle: string;
-    errorBody: string;
-    unavailable: string;
+    mailHint: string;
+    mailOpenAgain: string;
     errors: {
       short: string;
       long: string;
@@ -203,20 +203,18 @@ export const content: Record<Lang, Content> = {
       noPreference: "No preference — happy to help anywhere",
       send: "Send message",
       apply: "Send application",
-      sending: "Sending…",
       privacy:
-        "Your details are used only to reply to you and are not shared with third parties.",
-      sentTitle: "Thank you — your message has been sent.",
+        "Your message goes straight from your own email to ours. Nothing is stored on this website and no third party handles it.",
+      consentLine: "Consent",
+      consentGiven: "Given",
+      sentTitle: "Your message is ready — press Send in your email.",
       sentBody:
-        "We read every message and will reply to the address you gave, usually within a few working days.",
+        "Your email app has opened with everything you wrote already filled in and addressed to us. One press of Send in there and it is on its way; we usually reply within a few working days.",
       volunteerSentBody:
-        "We will read your application and get in touch about the areas where your time would help most.",
+        "Your email app has opened with your application already filled in and addressed to us. Press Send in there and we will be in touch about the areas where your time would help most.",
       volunteerSubject: "Volunteer application",
-      errorTitle: "The message could not be sent.",
-      errorBody:
-        "Something went wrong on the way. Please try again, or write to us directly by email.",
-      unavailable:
-        "The online form is not yet connected. Until it is, email reaches us just as reliably.",
+      mailHint: "Nothing opened?",
+      mailOpenAgain: "Open the email again",
       errors: {
         short: "Please write a little more here.",
         long: "This is longer than the field allows.",
@@ -515,20 +513,18 @@ export const content: Record<Lang, Content> = {
       noPreference: "Fark etmez — her alanda yardımcı olabilirim",
       send: "Mesajı gönder",
       apply: "Başvuruyu gönder",
-      sending: "Gönderiliyor…",
       privacy:
-        "Bilgileriniz yalnızca size dönüş yapmak için kullanılır, üçüncü kişilerle paylaşılmaz.",
-      sentTitle: "Teşekkürler — mesajınız gönderildi.",
+        "Mesajınız kendi e-postanızdan doğrudan bize ulaşır. Bu sitede hiçbir bilgi saklanmaz, araya üçüncü bir taraf girmez.",
+      consentLine: "Onay",
+      consentGiven: "Verildi",
+      sentTitle: "Mesajınız hazır — e-postanızdan Gönder'e basın.",
       sentBody:
-        "Her mesajı okuyoruz ve genellikle birkaç iş günü içinde verdiğiniz adrese yanıt veriyoruz.",
+        "E-posta uygulamanız, yazdıklarınız hazır doldurulmuş ve adresimize yazılmış olarak açıldı. Orada Gönder'e bir kez basmanız yeterli; genellikle birkaç iş günü içinde yanıt veriyoruz.",
       volunteerSentBody:
-        "Başvurunuzu okuyacak ve zamanınızın en çok fayda sağlayacağı alanlar için sizinle iletişime geçeceğiz.",
+        "E-posta uygulamanız, başvurunuz hazır doldurulmuş ve adresimize yazılmış olarak açıldı. Orada Gönder'e basın; zamanınızın en çok fayda sağlayacağı alanlar için sizinle iletişime geçeceğiz.",
       volunteerSubject: "Gönüllü başvurusu",
-      errorTitle: "Mesaj gönderilemedi.",
-      errorBody:
-        "Yolda bir sorun oluştu. Lütfen tekrar deneyin ya da doğrudan e-posta ile yazın.",
-      unavailable:
-        "Çevrimiçi form henüz bağlanmadı. O zamana kadar e-posta bize aynı güvenilirlikle ulaşıyor.",
+      mailHint: "Hiçbir şey açılmadı mı?",
+      mailOpenAgain: "E-postayı yeniden açın",
       errors: {
         short: "Lütfen buraya biraz daha yazın.",
         long: "Bu alan için fazla uzun.",

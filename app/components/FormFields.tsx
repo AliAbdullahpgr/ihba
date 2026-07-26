@@ -1,7 +1,6 @@
 "use client";
 
-import { AlertCircle, Check, Loader2, Mail } from "lucide-react";
-import { Button } from "@/app/components/primitives";
+import { AlertCircle, Check, Mail } from "lucide-react";
 
 /*
   Form controls in the site's own idiom: square, hairline-bounded, no pills and
@@ -215,74 +214,55 @@ export function Honeypot({
   );
 }
 
-export function SubmitButton({
-  sending,
-  children,
-  sendingLabel,
-}: {
-  sending: boolean;
-  children: React.ReactNode;
-  sendingLabel: string;
-}) {
+export function SubmitButton({ children }: { children: React.ReactNode }) {
   return (
     <button
       type="submit"
-      disabled={sending}
-      className="inline-flex min-h-11 items-center gap-2 bg-navy-deep px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy disabled:opacity-60"
+      className="inline-flex min-h-11 items-center gap-2 bg-navy-deep px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
     >
-      {sending && (
-        <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
-      )}
-      {sending ? sendingLabel : children}
+      <Mail className="h-4 w-4" aria-hidden="true" />
+      {children}
     </button>
   );
 }
 
 /**
- * What stands in for a form when no delivery endpoint is configured. Rendering
- * the fields anyway would be a lie — the reader would fill them in and hear
- * nothing back — so the email route is offered instead.
+ * What replaces the form once the draft has been handed over.
+ *
+ * The draft is offered a second time below the notice, because the one thing
+ * this route cannot verify is whether anything actually opened: a reader with
+ * no mail app registered would otherwise be left looking at a confirmation for
+ * something that never happened.
  */
-export function MailFallback({ note, email }: { note: string; email: string }) {
-  return (
-    <div className="border-l-2 border-gold pl-5">
-      <p className="text-sm leading-relaxed text-ink/70">{note}</p>
-      <Button href={`mailto:${email}`} className="mt-6">
-        <Mail className="h-4 w-4" aria-hidden="true" />
-        {email}
-      </Button>
-    </div>
-  );
-}
-
-/** Post-submit outcome, announced rather than merely shown. */
-export function StatusPanel({
-  tone,
+export function SentPanel({
   title,
   body,
+  hint,
+  again,
+  href,
 }: {
-  tone: "sent" | "error";
   title: string;
   body: string;
+  hint: string;
+  again: string;
+  href: string;
 }) {
   return (
-    <div
-      role="status"
-      className={`border-l-2 p-5 ${
-        tone === "sent"
-          ? "border-azure-deep bg-azure-mist"
-          : "border-gold-deep bg-gold-mist"
-      }`}
-    >
+    <div role="status" className="border-l-2 border-azure-deep bg-azure-mist p-5">
       <p className="flex items-center gap-2 font-display text-base font-medium text-navy-ink">
-        {tone === "sent" ? (
-          <Check className="h-4 w-4 shrink-0 text-azure-deep" aria-hidden="true" />
-        ) : (
-          <AlertCircle className="h-4 w-4 shrink-0 text-gold-deep" aria-hidden="true" />
-        )}
+        <Check className="h-4 w-4 shrink-0 text-azure-deep" aria-hidden="true" />
         {title}
       </p>
       <p className="mt-2 text-sm leading-relaxed text-ink/70">{body}</p>
+      <p className="mt-4 border-t border-navy-ink/10 pt-4 text-xs leading-relaxed text-ink/55">
+        {hint}{" "}
+        <a
+          href={href}
+          className="font-semibold text-navy-ink underline decoration-gold decoration-2 underline-offset-2 hover:text-navy"
+        >
+          {again}
+        </a>
+      </p>
     </div>
   );
 }
