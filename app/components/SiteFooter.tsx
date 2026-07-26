@@ -32,7 +32,7 @@ export function SiteFooter() {
           href: `/projects/${project.slug}`,
           label: project.title,
         })),
-        { href: "/news", label: t.nav.news },
+        { href: "/articles", label: t.nav.articles ?? t.nav.news },
       ],
     },
   ];
@@ -65,7 +65,7 @@ export function SiteFooter() {
                 { href: "/donate", label: t.nav.donate },
                 { href: "/volunteer", label: t.nav.volunteer },
                 { href: "/projects", label: t.nav.projects },
-                { href: "/news", label: t.nav.news },
+                { href: "/articles", label: t.nav.articles ?? t.nav.news },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
