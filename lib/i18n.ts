@@ -63,21 +63,6 @@ export interface Dictionary {
     linkedin: string;
     youtube: string;
   };
-  nav: {
-    about: string;
-    programs: string;
-    projects: string;
-    approach: string;
-    contact: string;
-    donate: string;
-    explore: string;
-    newsroom: string;
-    transparency: string;
-    accessibility: string;
-    search: string;
-    openMenu: string;
-    closeMenu: string;
-  };
   hero: {
     headline: TitleParts;
     subcopy: string;
@@ -111,13 +96,11 @@ export interface Dictionary {
     title: TitleParts;
     filterLabel: string;
     filters: FilterOption[];
-    tag: string;
     cards: ProgramCard[];
     signposts: Signpost[];
   };
   projects: {
     title: string;
-    label: string;
     lede: string;
     browseAll: string;
     cards: ProjectCard[];
@@ -171,21 +154,6 @@ export const dict: Record<Lang, Dictionary> = {
       twitter: "X",
       linkedin: "LinkedIn",
       youtube: "YouTube",
-    },
-    nav: {
-      about: "About",
-      programs: "Areas of Work",
-      projects: "Projects",
-      approach: "Our Approach",
-      contact: "Contact",
-      donate: "Donate",
-      explore: "Explore IHBA",
-      newsroom: "Newsroom",
-      transparency: "Transparency",
-      accessibility: "Accessibility",
-      search: "Search",
-      openMenu: "Open menu",
-      closeMenu: "Close menu",
     },
     hero: {
       headline: {
@@ -260,7 +228,6 @@ export const dict: Record<Lang, Dictionary> = {
         { key: "development", label: "Development" },
         { key: "community", label: "Community" },
       ],
-      tag: "Focus",
       cards: [
         {
           title: "Humanitarian Assistance",
@@ -313,7 +280,6 @@ export const dict: Record<Lang, Dictionary> = {
     },
     projects: {
       title: "We're building three bridges.",
-      label: "Latest projects",
       lede:
         "There's a lot going on throughout the year at IHBA. Here's some of what we're building right now.",
       browseAll: "Browse all projects",
@@ -437,21 +403,6 @@ export const dict: Record<Lang, Dictionary> = {
       linkedin: "LinkedIn",
       youtube: "YouTube",
     },
-    nav: {
-      about: "Hakkımızda",
-      programs: "Faaliyet Alanlarımız",
-      projects: "Projeler",
-      approach: "Yaklaşımımız",
-      contact: "İletişim",
-      donate: "Bağış Yap",
-      explore: "IHBA'yı Keşfet",
-      newsroom: "Basın Odası",
-      transparency: "Şeffaflık",
-      accessibility: "Erişilebilirlik",
-      search: "Ara",
-      openMenu: "Menüyü aç",
-      closeMenu: "Menüyü kapat",
-    },
     hero: {
       headline: {
         pre: "Yaptığımız her şeyin merkezinde tek bir inanç var: onur verilmez, ",
@@ -525,7 +476,6 @@ export const dict: Record<Lang, Dictionary> = {
         { key: "development", label: "Kalkınma" },
         { key: "community", label: "Toplum" },
       ],
-      tag: "Alan",
       cards: [
         {
           title: "İnsani Yardım",
@@ -578,7 +528,6 @@ export const dict: Record<Lang, Dictionary> = {
     },
     projects: {
       title: "Üç köprü inşa ediyoruz.",
-      label: "Güncel projeler",
       lede:
         "IHBA'da yıl boyunca çok şey oluyor. Şu anda inşa ettiklerimizden bazıları burada.",
       browseAll: "Tüm projelere bakın",

@@ -1,9 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #16255C;
-  --color-navy-deep: #0D1738;
-  --color-navy-ink: #101736;
+  /*
+    Dark ramp derived from the logo's navy (#204080, hsl 220 60% 31%) rather than
+    by darkening at fixed saturation — the old ramp held 62% saturation down to
+    14% lightness, which is where blue reads violet against a warm cream.
+    Saturation now falls as lightness falls, and type is near-neutral.
+  */
+  --color-navy: #204080;
+  --color-navy-deep: #243A63;
+  --color-navy-ink: #262A33;
   --color-azure: #2E8FD4;
   --color-azure-deep: #1C7BB8;
   --color-azure-mist: #F2F8FC;
@@ -97,11 +103,57 @@
   @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
 }
 
-/* Editorial mosaic: seven equal tracks so cards can span 2/3/4/7 columns and
-   build the asymmetric rhythm instead of a uniform card wall. */
-@utility mosaic {
-  @apply grid grid-cols-1 gap-8 md:grid-cols-6 lg:grid-cols-7;
+/* ---------------------------------------------------------------------------
+   The bridge: IHBA's own structural device, and the reason this layout is not
+   just a neutral Swiss grid. Three parts — the span rule (a deck line carrying
+   piers), the arch (the only curve in the system), and marginal labels.
+   --------------------------------------------------------------------------- */
+
+/*
+  A deck line with piers dropping from it at a fixed interval. Used instead of a
+  plain hairline wherever a divider should carry weight. Inherits currentColor,
+  so the caller sets the tone with a text utility.
+*/
+@utility span-rule {
+  height: 0.625rem;
+  border-top: 1px solid currentColor;
+  background-image: linear-gradient(
+    to right,
+    currentColor 0,
+    currentColor 1px,
+    transparent 1px
+  );
+  background-size: 6rem 0.625rem;
+  background-repeat: repeat-x;
+  background-position: left top;
 }
+
+/* Tighter pier interval, for narrower columns. */
+@utility span-rule-tight {
+  height: 0.5rem;
+  border-top: 1px solid currentColor;
+  background-image: linear-gradient(
+    to right,
+    currentColor 0,
+    currentColor 1px,
+    transparent 1px
+  );
+  background-size: 2.5rem 0.5rem;
+  background-repeat: repeat-x;
+  background-position: left top;
+}
+
+/*
+  An elliptical arch. Percentage radii mean it scales with the box instead of
+  flattening at large sizes. Reserved for feature imagery and pier markers only
+  — everywhere else stays square, which is what makes the arch read as a mark
+  rather than as rounding.
+*/
+@utility arch {
+  border-radius: 50% 50% 0 0 / 38% 38% 0 0;
+  overflow: hidden;
+}
+
 
 /* ---------------------------------------------------------------------------
    Surfaces
@@ -148,22 +200,17 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Hero square field — 33px squares on a 48px pitch, fading out to the left,
-   with a finer dot grid filling the fade. Reproduces QF's pattern in CSS.
+   Column rule field — vertical hairlines on the layout's own track interval.
+   The grid made visible, which is a Swiss habit rather than a graphic pattern.
    --------------------------------------------------------------------------- */
 
-@utility square-field {
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='33' height='33' fill='%23F3EDDF'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='4' height='4' x='14' y='14' fill='%23E9E6DE'/%3E%3C/svg%3E");
-  background-position: right top, right top;
-  background-repeat: repeat, repeat;
-  mask-image:
-    linear-gradient(to left, #000 0%, #000 42%, transparent 88%),
-    linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
-  mask-composite: intersect;
-  -webkit-mask-image:
-    linear-gradient(to left, #000 0%, #000 42%, transparent 88%),
-    linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
-  -webkit-mask-composite: source-in;
+@utility column-rules {
+  background-image: linear-gradient(
+    to right,
+    var(--color-line) 0,
+    var(--color-line) 1px,
+    transparent 1px
+  );
+  background-size: calc(100% / 6) 100%;
+  background-repeat: repeat-x;
 }

@@ -1,23 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { ArrowDisc } from "@/app/components/primitives";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  LinkedinIcon,
-  YoutubeIcon,
-} from "@/app/components/SocialIcons";
-
-const socials = [
-  { key: "twitter", Icon: X },
-  { key: "facebook", Icon: FacebookIcon },
-  { key: "linkedin", Icon: LinkedinIcon },
-  { key: "instagram", Icon: InstagramIcon },
-  { key: "youtube", Icon: YoutubeIcon },
-] as const;
+import { SocialRow } from "@/app/components/SocialRow";
 
 export function Newsletter() {
   const { t } = useI18n();
@@ -26,23 +12,12 @@ export function Newsletter() {
   return (
     <section className="bg-white pb-20 lg:pb-28">
       <div className="container-site">
-        <div className="grid gap-12 border-t border-navy-ink pt-14 lg:grid-cols-2 lg:gap-16">
+        <div className="grid gap-12 border-t border-navy-ink/15 pt-14 lg:grid-cols-2 lg:gap-16">
           <div>
             <p className="display-xl text-xl text-navy-ink sm:text-2xl">
               {t.newsletter.socialTitle}
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-2">
-              {socials.map(({ key, Icon }) => (
-                <a
-                  key={key}
-                  href="#"
-                  aria-label={t.social[key]}
-                  className="grid size-10 place-items-center border border-navy-ink/25 text-navy-ink transition-colors hover:border-navy-ink hover:bg-navy-ink hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
-                >
-                  <Icon className="h-4 w-4" aria-hidden="true" />
-                </a>
-              ))}
-            </div>
+            <SocialRow className="mt-8" />
           </div>
 
           <div>

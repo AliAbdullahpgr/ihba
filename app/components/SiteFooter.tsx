@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Mark } from "@/app/components/primitives";
@@ -8,10 +9,38 @@ export function SiteFooter() {
   const { t } = useI18n();
   const { headline } = t.hero;
 
+  const columns = [
+    {
+      header: t.nav.about,
+      links: [
+        { href: "/about", label: t.aboutPage.title },
+        { href: "/president", label: t.presidentPage.title },
+        { href: "/board", label: t.boardPage.title },
+        { href: "/contact", label: t.nav.contact },
+      ],
+    },
+    {
+      header: t.nav.areas,
+      links: t.areasPage.items
+        .slice(0, 4)
+        .map((item) => ({ href: "/areas-of-work", label: item.title })),
+    },
+    {
+      header: t.nav.projects,
+      links: [
+        ...t.projectsPage.details.map((project) => ({
+          href: `/projects/${project.slug}`,
+          label: project.title,
+        })),
+        { href: "/news", label: t.nav.news },
+      ],
+    },
+  ];
+
   return (
-    <footer id="contact" className="bg-paper-warm/60">
+    <footer className="bg-paper-warm/60">
       <div className="container-site pt-16">
-        {/* Mark and mission, restated — the page closes on the line it opened with. */}
+        {/* The page closes on the line it opened with. */}
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-2">
             <img
@@ -32,43 +61,46 @@ export function SiteFooter() {
             aria-label="Footer quick links"
           >
             <ul className="space-y-2.5 text-sm text-navy-ink/80">
-              {[t.nav.about, t.nav.programs, t.nav.projects, t.nav.newsroom].map(
-                (link) => (
-                  <li key={link}>
-                    <a
-                      href="#top"
-                      className="transition-colors hover:text-azure-deep"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                )
-              )}
+              {[
+                { href: "/donate", label: t.nav.donate },
+                { href: "/volunteer", label: t.nav.volunteer },
+                { href: "/projects", label: t.nav.projects },
+                { href: "/news", label: t.nav.news },
+              ].map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="transition-colors hover:text-azure-deep"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>
 
         {/* Link columns, divided by vertical rules. */}
         <div className="mt-14 grid gap-10 border-t border-navy-ink/15 pt-12 md:grid-cols-3 md:gap-0">
-          {t.footer.columns.map((column, index) => (
+          {columns.map((column, index) => (
             <div
               key={column.header}
               className={`md:px-10 ${
                 index === 0 ? "md:pl-0" : "md:border-l md:border-navy-ink/15"
               }`}
             >
-              <h3 className="font-display text-base font-medium text-navy-ink">
+              <h2 className="font-display text-base font-medium text-navy-ink">
                 {column.header}
-              </h3>
+              </h2>
               <ul className="mt-5 space-y-2.5 text-sm text-navy-ink/70">
                 {column.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#top"
+                  <li key={`${link.href}-${link.label}`}>
+                    <Link
+                      href={link.href}
                       className="transition-colors hover:text-azure-deep"
                     >
-                      {link}
-                    </a>
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -142,12 +174,12 @@ export function SiteFooter() {
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {t.footer.legal.map((item) => (
               <li key={item}>
-                <a
-                  href="#top"
+                <Link
+                  href="/contact"
                   className="transition-colors hover:text-azure-deep"
                 >
                   {item}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
