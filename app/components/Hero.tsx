@@ -12,9 +12,32 @@ export function Hero() {
       <div className="container-site pt-14 lg:pt-20">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">
-            <h1 className="display-xl text-[2.25rem] text-navy-ink sm:text-[2.75rem] lg:text-[3.375rem]">
+            {/*
+              A standfirst, not an eyebrow. The sentence that used to open the
+              headline still gets said, at reading size and in normal case — an
+              uppercase tracked kicker here would put a label above the one
+              piece of type on the page that should need no introduction.
+            */}
+            <p className="max-w-md text-base leading-snug text-navy-ink/60">
+              {t.hero.standfirst}
+            </p>
+
+            {/*
+              Fluid rather than three fixed steps: the old ladder topped out at
+              54px and then held that size however wide the column grew.
+            */}
+            <h1 className="display-xl text-balance mt-5 text-[clamp(2.25rem,5.5vw,4.25rem)] text-navy-ink">
               {headline.pre}
-              <Mark tone="azure">{headline.highlight}</Mark>
+              {/*
+                The mark takes its own line. Flowing inline it began mid-
+                sentence, so one box floated in the middle of a line and the
+                rest resumed at the margin below — and it landed in a different
+                place in each language. Given its own line, every box shares the
+                left edge whatever the locale does to the wrap.
+              */}
+              <span className="block">
+                <Mark tone="azure">{headline.highlight}</Mark>
+              </span>
               {headline.post}
             </h1>
 

@@ -64,6 +64,13 @@ export interface Dictionary {
     youtube: string;
   };
   hero: {
+    /*
+      The conviction is the headline; this is the sentence that used to introduce
+      it. Kept as a standfirst above the h1 so the idea leads and the setup still
+      gets said, rather than spending the first fifty characters of display type
+      clearing its throat.
+    */
+    standfirst: string;
     headline: TitleParts;
     subcopy: string;
     ctaPrimary: string;
@@ -156,8 +163,9 @@ export const dict: Record<Lang, Dictionary> = {
       youtube: "YouTube",
     },
     hero: {
+      standfirst: "At the heart of everything we do is one conviction",
       headline: {
-        pre: "At the heart of everything we do is one conviction: dignity is not given, it is ",
+        pre: "Dignity is not given, it is",
         highlight: "built together.",
         post: "",
       },
@@ -404,8 +412,9 @@ export const dict: Record<Lang, Dictionary> = {
       youtube: "YouTube",
     },
     hero: {
+      standfirst: "Yaptığımız her şeyin merkezinde tek bir inanç var",
       headline: {
-        pre: "Yaptığımız her şeyin merkezinde tek bir inanç var: onur verilmez, ",
+        pre: "Onur verilmez,",
         highlight: "birlikte inşa edilir.",
         post: "",
       },
