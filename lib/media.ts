@@ -19,6 +19,12 @@ export const bundledMedia = {
     url: "/images/generated/volunteer-team.webp",
     publicId: "",
   },
+  // Empty until an admin uploads a portrait; the president page hides the frame
+  // while this is blank.
+  presidentPortrait: {
+    url: "",
+    publicId: "",
+  },
 };
 
 export type SiteMedia = typeof bundledMedia;
@@ -30,4 +36,5 @@ export const mediaLabels: Record<SiteMediaKey, string> = {
   ramadanProgramme: "Ramadan programme",
   studentSupport: "Student support",
   volunteerTeam: "Volunteer team",
+  presidentPortrait: "President portrait",
 };

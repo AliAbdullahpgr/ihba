@@ -148,7 +148,6 @@ export interface Content {
     name: string;
     role: string;
     message: string[];
-    portraitNote: string;
   };
   areasPage: PageIntro & { items: AreaDetail[] };
   projectsPage: PageIntro & { details: ProjectDetail[]; moreTitle: string };
@@ -297,7 +296,6 @@ export const content: Record<Lang, Content> = {
       lede: "Humanity is a shared responsibility that reaches beyond borders and cultural differences.",
       name: "Abdullah Serenli",
       role: "Chairman of the Board",
-      portraitNote: "The President's photograph will be added here.",
       message: [
         "Humanity is a shared responsibility that reaches beyond borders and cultural differences. Wars, disasters, poverty, displacement and unequal access to education across the world require more than short-term relief. They call for lasting solutions that protect people and prepare them for the future.",
         "We established International Humanity Bridge to bring humanitarian assistance together with education, sustainable development and strong institutional cooperation. Our purpose is not merely to meet an immediate need, but to create opportunities through which people can rebuild their own lives, strengthen solidarity between societies and develop bridges of trust between institutions.",
@@ -608,7 +606,6 @@ export const content: Record<Lang, Content> = {
         "İnsanlık, coğrafi sınırların ve kültürel farklılıkların ötesinde hepimizin ortak sorumluluğudur.",
       name: "Abdullah Serenli",
       role: "Yönetim Kurulu Başkanı",
-      portraitNote: "Başkan fotoğrafı bu alana eklenecektir.",
       message: [
         "İnsanlık, coğrafi sınırların ve kültürel farklılıkların ötesinde hepimizin ortak sorumluluğudur. Dünyanın farklı bölgelerinde yaşanan savaşlar, afetler, yoksulluk, göç ve eğitim eşitsizliği; yalnızca kısa süreli yardımları değil, insanı koruyan ve geleceğe hazırlayan kalıcı çözümleri gerekli kılmaktadır.",
         "Uluslararası İnsanlık Köprüsü Derneği'ni, insani yardım çalışmalarını eğitim, sürdürülebilir kalkınma ve güçlü kurumsal iş birlikleriyle buluşturan bir anlayışla kurduk. Amacımız yalnızca bir ihtiyacı geçici olarak karşılamak değil; insanların kendi hayatlarını yeniden inşa edebilecekleri imkânları oluşturmak, toplumlar arasında dayanışmayı güçlendirmek ve kurumlar arasında güvene dayalı köprüler kurmaktır.",

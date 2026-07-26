@@ -413,6 +413,7 @@ export async function saveSiteMedia(form: FormData) {
     "/",
     "/about",
     "/areas-of-work",
+    "/president",
     "/donate",
     "/volunteer"
   );

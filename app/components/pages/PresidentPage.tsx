@@ -7,6 +7,7 @@ import { PageHeader, PageSection } from "@/app/components/PageShell";
 export function PresidentPage() {
   const { t } = useI18n();
   const { presidentPage } = t;
+  const portrait = t.media.presidentPortrait?.url;
 
   return (
     <>
@@ -19,18 +20,18 @@ export function PresidentPage() {
 
       <section className="bg-white pb-16 lg:pb-20">
         <div className="container-site grid gap-12 lg:grid-cols-12 lg:gap-8">
-          {/* Attribution rail: portrait placeholder plus name and role. */}
+          {/* Attribution rail: portrait (once uploaded) plus name and role. */}
           <aside className="lg:col-span-4">
+            {portrait ? (
+              <img
+                src={portrait}
+                alt={`${presidentPage.name}, ${presidentPage.role}`}
+                className="arch aspect-[4/5] w-full object-cover"
+              />
+            ) : null}
             <div
-              className="arch grid aspect-[4/5] w-full place-items-center border border-line bg-paper-warm/60 p-8"
-              role="img"
-              aria-label={presidentPage.portraitNote}
+              className={`border-t border-navy-ink/15 pt-4 ${portrait ? "mt-5" : ""}`}
             >
-              <p className="text-center text-sm leading-relaxed text-ink/45">
-                {presidentPage.portraitNote}
-              </p>
-            </div>
-            <div className="mt-5 border-t border-navy-ink/15 pt-4">
               <p className="font-display text-lg font-medium text-navy-ink">
                 {presidentPage.name}
               </p>
