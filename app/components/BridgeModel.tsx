@@ -28,7 +28,7 @@ export function BridgeModel() {
 
           <div className="grid gap-x-8 gap-y-12 pt-8 md:grid-cols-2 lg:grid-cols-4">
             {t.approach.steps.map((step, index) => (
-              <Reveal key={step.title}>
+              <Reveal key={step.title} delay={index * 90}>
                 {/* Pier stem: the vertical drop from the deck to the marker. */}
                 <div
                   className="mx-auto h-8 w-px bg-white/35 md:mx-0 md:ml-5"

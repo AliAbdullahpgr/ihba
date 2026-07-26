@@ -71,6 +71,48 @@ export interface Content {
     allProjects: string;
     readProject: string;
     skipToContent: string;
+    share: string;
+    copyLink: string;
+    copied: string;
+    enlarge: string;
+    close: string;
+    previous: string;
+    next: string;
+  };
+  /** Shared across both forms: labels, validation wording and outcomes. */
+  forms: {
+    fullName: string;
+    email: string;
+    phone: string;
+    subject: string;
+    message: string;
+    city: string;
+    areaOfInterest: string;
+    availability: string;
+    availabilityHint: string;
+    motivation: string;
+    consent: string;
+    optional: string;
+    selectPrompt: string;
+    noPreference: string;
+    send: string;
+    apply: string;
+    sending: string;
+    privacy: string;
+    sentTitle: string;
+    sentBody: string;
+    volunteerSentBody: string;
+    volunteerSubject: string;
+    errorTitle: string;
+    errorBody: string;
+    unavailable: string;
+    errors: {
+      short: string;
+      long: string;
+      email: string;
+      invalid: string;
+      consent: string;
+    };
   };
   identity: PageIntro & { rows: Row[] };
   aboutPage: PageIntro & {
@@ -90,7 +132,7 @@ export interface Content {
     portraitNote: string;
   };
   areasPage: PageIntro & { items: AreaDetail[] };
-  projectsPage: PageIntro & { details: ProjectDetail[] };
+  projectsPage: PageIntro & { details: ProjectDetail[]; moreTitle: string };
   newsPage: PageIntro & { empty: string; emptyCta: string };
   donatePage: PageIntro & {
     body: string[];
@@ -103,8 +145,15 @@ export interface Content {
     areasLabel: string;
     areas: string[];
     formNote: string;
+    formTitle: string;
+    photoCaption: string;
   };
-  contactPage: PageIntro & { rows: Row[]; addressLabel: string; address: string };
+  contactPage: PageIntro & {
+    rows: Row[];
+    addressLabel: string;
+    address: string;
+    formTitle: string;
+  };
 }
 
 export const content: Record<Lang, Content> = {
@@ -128,6 +177,53 @@ export const content: Record<Lang, Content> = {
       allProjects: "See all projects",
       readProject: "Read the project",
       skipToContent: "Skip to content",
+      share: "Share",
+      copyLink: "Copy link",
+      copied: "Copied",
+      enlarge: "View larger",
+      close: "Close",
+      previous: "Previous image",
+      next: "Next image",
+    },
+    forms: {
+      fullName: "Full name",
+      email: "Email address",
+      phone: "Telephone",
+      subject: "Subject",
+      message: "Message",
+      city: "City",
+      areaOfInterest: "Area of interest",
+      availability: "Availability",
+      availabilityHint: "For example: weekday evenings, two days a month",
+      motivation: "Why would you like to volunteer with us?",
+      consent:
+        "I agree that the association may keep the information above in order to respond to my application.",
+      optional: "(optional)",
+      selectPrompt: "Please choose",
+      noPreference: "No preference — happy to help anywhere",
+      send: "Send message",
+      apply: "Send application",
+      sending: "Sending…",
+      privacy:
+        "Your details are used only to reply to you and are not shared with third parties.",
+      sentTitle: "Thank you — your message has been sent.",
+      sentBody:
+        "We read every message and will reply to the address you gave, usually within a few working days.",
+      volunteerSentBody:
+        "We will read your application and get in touch about the areas where your time would help most.",
+      volunteerSubject: "Volunteer application",
+      errorTitle: "The message could not be sent.",
+      errorBody:
+        "Something went wrong on the way. Please try again, or write to us directly by email.",
+      unavailable:
+        "The online form is not yet connected. Until it is, email reaches us just as reliably.",
+      errors: {
+        short: "Please write a little more here.",
+        long: "This is longer than the field allows.",
+        email: "Please check the email address.",
+        invalid: "Please check this field.",
+        consent: "Please confirm this to send your application.",
+      },
     },
     identity: {
       title: "Institutional identity",
@@ -236,6 +332,7 @@ export const content: Record<Lang, Content> = {
       title: "Our projects and ongoing programmes",
       lede:
         "Three bridges under construction — one campus, one student pathway, and one seasonal programme that runs every year.",
+      moreTitle: "More of our work",
       details: [
         {
           slug: "mazar-i-sharif-education-centre",
@@ -351,12 +448,16 @@ export const content: Record<Lang, Content> = {
         "Seasonal humanitarian programmes",
       ],
       formNote:
-        "Volunteer applications will be received through a form on this website. Until it is live, please write to us.",
+        "Tell us where your time and skills fit best. There is no minimum commitment — a few hours a month is a real contribution.",
+      formTitle: "Volunteer application",
+      photoCaption:
+        "Volunteers preparing school and essential-supply kits for distribution.",
     },
     contactPage: {
       title: "Contact",
       lede: "Get in touch about donations, volunteering, partnerships or media enquiries.",
       addressLabel: "Head office address",
+      formTitle: "Write to us",
       address:
         "Mecidiye Neighbourhood, Süngü Street, Tevhit Çarşısı, Building No. 2, Unit No. 212, Sultanbeyli / Istanbul / Türkiye",
       rows: [
@@ -388,6 +489,53 @@ export const content: Record<Lang, Content> = {
       allProjects: "Tüm projelere bakın",
       readProject: "Projeyi okuyun",
       skipToContent: "İçeriğe geç",
+      share: "Paylaş",
+      copyLink: "Bağlantıyı kopyala",
+      copied: "Kopyalandı",
+      enlarge: "Büyük görüntüle",
+      close: "Kapat",
+      previous: "Önceki görsel",
+      next: "Sonraki görsel",
+    },
+    forms: {
+      fullName: "Ad soyad",
+      email: "E-posta adresi",
+      phone: "Telefon",
+      subject: "Konu",
+      message: "Mesajınız",
+      city: "Şehir",
+      areaOfInterest: "İlgi alanı",
+      availability: "Uygun olduğunuz zamanlar",
+      availabilityHint: "Örneğin: hafta içi akşamları, ayda iki gün",
+      motivation: "Neden gönüllü olmak istiyorsunuz?",
+      consent:
+        "Başvuruma dönüş yapılabilmesi için yukarıdaki bilgilerin derneğimizde saklanmasını kabul ediyorum.",
+      optional: "(isteğe bağlı)",
+      selectPrompt: "Lütfen seçin",
+      noPreference: "Fark etmez — her alanda yardımcı olabilirim",
+      send: "Mesajı gönder",
+      apply: "Başvuruyu gönder",
+      sending: "Gönderiliyor…",
+      privacy:
+        "Bilgileriniz yalnızca size dönüş yapmak için kullanılır, üçüncü kişilerle paylaşılmaz.",
+      sentTitle: "Teşekkürler — mesajınız gönderildi.",
+      sentBody:
+        "Her mesajı okuyoruz ve genellikle birkaç iş günü içinde verdiğiniz adrese yanıt veriyoruz.",
+      volunteerSentBody:
+        "Başvurunuzu okuyacak ve zamanınızın en çok fayda sağlayacağı alanlar için sizinle iletişime geçeceğiz.",
+      volunteerSubject: "Gönüllü başvurusu",
+      errorTitle: "Mesaj gönderilemedi.",
+      errorBody:
+        "Yolda bir sorun oluştu. Lütfen tekrar deneyin ya da doğrudan e-posta ile yazın.",
+      unavailable:
+        "Çevrimiçi form henüz bağlanmadı. O zamana kadar e-posta bize aynı güvenilirlikle ulaşıyor.",
+      errors: {
+        short: "Lütfen buraya biraz daha yazın.",
+        long: "Bu alan için fazla uzun.",
+        email: "Lütfen e-posta adresini kontrol edin.",
+        invalid: "Lütfen bu alanı kontrol edin.",
+        consent: "Başvurunuzu göndermek için lütfen bunu onaylayın.",
+      },
     },
     identity: {
       title: "Kurumsal kimlik",
@@ -497,6 +645,7 @@ export const content: Record<Lang, Content> = {
       title: "Projelerimiz ve süreklilik gösteren çalışmalarımız",
       lede:
         "İnşa hâlinde üç köprü — bir eğitim yerleşkesi, bir öğrenci yolculuğu ve her yıl tekrarlanan bir dönemsel program.",
+      moreTitle: "Çalışmalarımızdan diğerleri",
       details: [
         {
           slug: "mazar-i-sharif-education-centre",
@@ -606,12 +755,16 @@ export const content: Record<Lang, Content> = {
         "Dönemsel yardım çalışmaları",
       ],
       formNote:
-        "Gönüllülük başvuruları web sitesindeki form üzerinden alınacaktır. Form yayına girene kadar bize yazabilirsiniz.",
+        "Zamanınızın ve becerilerinizin en çok nerede karşılık bulacağını bize yazın. Asgari bir taahhüt yok — ayda birkaç saat de gerçek bir katkıdır.",
+      formTitle: "Gönüllü başvurusu",
+      photoCaption:
+        "Dağıtım için okul ve temel ihtiyaç kolileri hazırlayan gönüllüler.",
     },
     contactPage: {
       title: "İletişim",
       lede: "Bağış, gönüllülük, iş birliği veya basın talepleriniz için bize ulaşın.",
       addressLabel: "Merkez adresi",
+      formTitle: "Bize yazın",
       address:
         "Mecidiye Mahallesi, Süngü Sokak, Tevhit Çarşısı, Dış Kapı No: 2, İç Kapı No: 212, Sultanbeyli / İstanbul / Türkiye",
       rows: [

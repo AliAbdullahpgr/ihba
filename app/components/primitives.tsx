@@ -175,7 +175,7 @@ export function ChipToggle({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`border px-4 py-2 text-xs font-bold uppercase tracking-[0.1em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure ${
+      className={`inline-flex min-h-11 items-center border px-4 py-2 text-xs font-bold uppercase tracking-[0.1em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure ${
         active
           ? "border-navy-ink bg-navy-ink text-white"
           : "border-navy-ink/25 text-navy-ink/70 hover:border-navy-ink hover:text-navy-ink"
@@ -225,7 +225,7 @@ export function ArrowLink({
   return (
     <Anchor
       href={href}
-      className={`group inline-flex items-center gap-3 text-sm font-semibold text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure ${
+      className={`group inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure ${
         tone === "white" ? "text-white hover:text-gold" : ""
       } ${className}`}
     >
@@ -259,7 +259,7 @@ export function Button({
   return (
     <Anchor
       href={href}
-      className={`inline-flex items-center gap-2 px-6 py-3 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 ${variants[variant]} ${className}`}
+      className={`inline-flex min-h-11 items-center gap-2 px-6 py-3 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 ${variants[variant]} ${className}`}
     >
       {children}
     </Anchor>

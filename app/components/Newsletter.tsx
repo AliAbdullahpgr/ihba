@@ -42,12 +42,12 @@ export function Newsletter() {
                   required
                   aria-label={t.newsletter.placeholder}
                   placeholder={t.newsletter.placeholder}
-                  className="min-w-0 flex-1 bg-transparent py-2 text-sm text-navy-ink outline-none placeholder:text-ink/40"
+                  className="min-h-11 min-w-0 flex-1 bg-transparent py-2 text-sm text-navy-ink outline-none placeholder:text-ink/40"
                 />
                 <button
                   type="submit"
                   aria-label={t.newsletter.subscribeLabel}
-                  className="group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+                  className="group grid min-h-11 min-w-11 shrink-0 place-items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
                 >
                   <ArrowDisc />
                 </button>

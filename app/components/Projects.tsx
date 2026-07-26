@@ -42,7 +42,7 @@ export function Projects() {
             const image = projectImages[project.slug];
 
             return (
-              <Reveal key={project.slug}>
+              <Reveal key={project.slug} delay={index * 90}>
                 <CardLink href={`/projects/${project.slug}`}>
                   <CardMedia
                     src={image.src}

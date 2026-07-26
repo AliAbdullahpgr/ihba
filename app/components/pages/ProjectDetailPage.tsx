@@ -1,9 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { useI18n } from "@/app/components/LanguageProvider";
-import { ArrowDisc, Tag } from "@/app/components/primitives";
-import { DataList, PageHeader, PageSection } from "@/app/components/PageShell";
+import {
+  ArrowDisc,
+  CardLink,
+  CardMedia,
+  CardTitle,
+  Tag,
+} from "@/app/components/primitives";
+import { PageHeader, PageSection } from "@/app/components/PageShell";
+import { Figure } from "@/app/components/Lightbox";
+import { Reveal } from "@/app/components/Reveal";
+import { ShareRow } from "@/app/components/ShareRow";
 import { projectImages } from "@/app/components/pages/projectImages";
 
 export function ProjectDetailPage({ slug }: { slug: string }) {
@@ -19,29 +27,41 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
   if (!project) return null;
 
   const others = t.projectsPage.details.filter((item) => item.slug !== slug);
+  const [deck, ...body] = project.body;
 
   return (
     <>
+      {/*
+        The opening paragraph is promoted to a deck — set larger, above the
+        photograph — so the page reads as an article rather than as a record.
+      */}
       <PageHeader
         title={project.title}
         eyebrow={project.region}
+        lede={deck}
         backHref="/projects"
         backLabel={t.common.backToProjects}
       />
 
       <section className="bg-white pb-16 lg:pb-20">
         <div className="container-site">
-          <img
-            src={image.src}
-            alt={image.alt}
-            className="aspect-[16/9] w-full object-cover"
+          {/*
+            No caption here on purpose: the only text available is the alt, and
+            printing it underneath would make a screen reader read the same
+            sentence twice. A caption belongs here once the content drafts carry
+            translated ones.
+          */}
+          <Figure
+            images={[{ src: image.src, alt: image.alt }]}
+            imageClassName="aspect-[16/9] w-full object-cover"
           />
 
-          <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-8">
+          <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-7">
               <Tag tone="gold">{project.status}</Tag>
+
               <div className="mt-6 space-y-5">
-                {project.body.map((paragraph) => (
+                {body.map((paragraph) => (
                   <p
                     key={paragraph}
                     className="text-base leading-relaxed text-ink/75"
@@ -50,10 +70,18 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
                   </p>
                 ))}
               </div>
+
+              <div className="mt-12 border-t border-navy-ink/15 pt-6">
+                <ShareRow title={project.title} />
+              </div>
             </div>
 
-            {/* Facts rail: the project's hard numbers, ruled not boxed. */}
-            <aside className="lg:col-span-4 lg:col-start-9">
+            {/*
+              Facts rail: the project's hard numbers, ruled not boxed, and stuck
+              to the viewport so the figures stay beside the paragraph that
+              refers to them instead of scrolling out of the argument.
+            */}
+            <aside className="lg:col-span-4 lg:col-start-9 lg:sticky lg:top-28 lg:self-start">
               <dl className="border-t border-navy-ink/40 pt-6">
                 {project.facts.map((fact) => (
                   <div
@@ -68,40 +96,40 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
                 ))}
               </dl>
 
-              <Link
-                href="/donate"
-                className="group mt-8 inline-flex items-center gap-3 text-sm font-semibold text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
-              >
-                <ArrowDisc />
-                {t.nav.donate}
-              </Link>
+              <CardLink href="/donate" className="mt-8">
+                <span className="inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy-ink transition-colors group-hover:text-azure-deep">
+                  <ArrowDisc />
+                  {t.nav.donate}
+                </span>
+              </CardLink>
             </aside>
           </div>
         </div>
       </section>
 
-      <PageSection tone="warm">
-        <div className="grid gap-10 md:grid-cols-2 md:gap-16">
-          {others.map((other) => (
-            <div key={other.slug}>
-              <p className="eyebrow text-gold-deep">{other.region}</p>
-              <h2 className="mt-3 font-display text-xl font-medium leading-snug text-navy-ink">
-                <Link
-                  href={`/projects/${other.slug}`}
-                  className="transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
-                >
-                  {other.title}
-                </Link>
-              </h2>
-              <Link
-                href={`/projects/${other.slug}`}
-                className="group mt-5 inline-flex items-center gap-3 text-sm font-semibold text-navy-ink transition-colors hover:text-azure-deep"
-              >
-                <ArrowDisc />
-                {t.common.readProject}
-              </Link>
-            </div>
-          ))}
+      {/* No dead end: the reader always leaves with somewhere else to go. */}
+      <PageSection title={t.projectsPage.moreTitle} tone="warm">
+        <div className="grid gap-10 md:grid-cols-2 md:gap-8">
+          {others.map((other, index) => {
+            const otherImage = projectImages[other.slug];
+            return (
+              <Reveal key={other.slug} delay={index * 90}>
+                <CardLink href={`/projects/${other.slug}`}>
+                  <CardMedia
+                    src={otherImage.src}
+                    alt={otherImage.alt}
+                    ratio="aspect-[16/9]"
+                  />
+                  <p className="eyebrow mt-5 text-gold-deep">{other.region}</p>
+                  <CardTitle className="mt-3 text-xl">{other.title}</CardTitle>
+                  <span className="mt-5 inline-flex items-center gap-3 text-sm font-semibold text-navy-ink">
+                    <ArrowDisc />
+                    {t.common.readProject}
+                  </span>
+                </CardLink>
+              </Reveal>
+            );
+          })}
         </div>
       </PageSection>
     </>

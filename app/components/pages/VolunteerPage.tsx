@@ -1,8 +1,9 @@
 "use client";
 
-import { Mail } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
-import { ArrowLink, Button } from "@/app/components/primitives";
+import { ArrowLink } from "@/app/components/primitives";
+import { Figure } from "@/app/components/Lightbox";
+import { VolunteerForm } from "@/app/components/VolunteerForm";
 import {
   NumberedList,
   PageHeader,
@@ -22,30 +23,36 @@ export function VolunteerPage() {
           <div className="lg:col-span-7">
             <Prose paragraphs={t.volunteerPage.body} />
 
-            {/* The form is not built yet, so email is the working route. */}
             <div className="mt-10 border-l-2 border-gold pl-5">
               <p className="text-sm leading-relaxed text-ink/70">
                 {t.volunteerPage.formNote}
               </p>
             </div>
-
-            <Button href={`mailto:${t.utility.email}`} className="mt-8">
-              <Mail className="h-4 w-4" aria-hidden="true" />
-              {t.utility.email}
-            </Button>
           </div>
 
           <aside className="lg:col-span-4 lg:col-start-9">
-            <img
-              src="/images/generated/volunteer-team.webp"
-              alt="A diverse volunteer team assembling school and essential-supply kits"
-              className="arch aspect-[4/5] w-full object-cover"
+            <Figure
+              images={[
+                {
+                  src: "/images/generated/volunteer-team.webp",
+                  alt: "A diverse volunteer team assembling school and essential-supply kits",
+                  caption: t.volunteerPage.photoCaption,
+                },
+              ]}
+              imageClassName="arch aspect-[4/5] w-full object-cover"
             />
           </aside>
         </div>
       </section>
 
-      <PageSection title={t.volunteerPage.areasLabel} tone="warm">
+      {/* The application itself, on its own band so it cannot be scrolled past. */}
+      <PageSection title={t.volunteerPage.formTitle} tone="warm" id="apply">
+        <div className="max-w-3xl">
+          <VolunteerForm />
+        </div>
+      </PageSection>
+
+      <PageSection title={t.volunteerPage.areasLabel}>
         <NumberedList items={t.volunteerPage.areas} />
 
         <div className="mt-12 border-t border-navy-ink/15">

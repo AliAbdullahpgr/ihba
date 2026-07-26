@@ -41,7 +41,7 @@ export function AreasPage() {
           {t.areasPage.items.map((item, index) => {
             const image = images[index];
             return (
-              <Reveal key={item.title}>
+              <Reveal key={item.title} delay={(index % 3) * 90}>
                 <article className="grid gap-6 border-b border-navy-ink/12 py-12 lg:grid-cols-12 lg:gap-8">
                   <div className="lg:col-span-4">
                     <p className="font-display text-5xl font-medium tracking-[-0.03em] text-navy-ink/15">

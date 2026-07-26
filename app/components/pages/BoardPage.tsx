@@ -33,7 +33,7 @@ export function BoardPage() {
 
           <ul>
             {t.boardPage.members.map((member, index) => (
-              <Reveal key={member.name}>
+              <Reveal key={member.name} delay={index * 70}>
                 <li className="grid grid-cols-12 items-baseline gap-x-8 gap-y-1 border-b border-navy-ink/12 py-5">
                   <span className="col-span-12 font-display text-sm font-medium text-navy-ink/35 sm:col-span-1">
                     {String(index + 1).padStart(2, "0")}

@@ -3,6 +3,7 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { ArrowLink } from "@/app/components/primitives";
+import { ContactForm } from "@/app/components/ContactForm";
 import { DataList, PageHeader, PageSection } from "@/app/components/PageShell";
 import { SocialRow } from "@/app/components/SocialRow";
 import { socialLinks } from "@/lib/content";
@@ -25,7 +26,7 @@ export function ContactPage() {
                 </p>
                 <a
                   href={`mailto:${t.utility.email}`}
-                  className="group mt-3 flex items-center gap-3 font-display text-xl font-medium text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+                  className="group mt-3 flex min-h-11 items-center gap-3 font-display text-xl font-medium text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
                 >
                   <Mail
                     className="h-5 w-5 shrink-0 text-gold-deep"
@@ -41,7 +42,7 @@ export function ContactPage() {
                 </p>
                 <a
                   href={`tel:${t.utility.phone.replace(/\s+/g, "")}`}
-                  className="mt-3 flex items-center gap-3 font-display text-xl font-medium text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+                  className="mt-3 flex min-h-11 items-center gap-3 font-display text-xl font-medium text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
                 >
                   <Phone
                     className="h-5 w-5 shrink-0 text-gold-deep"
@@ -72,9 +73,13 @@ export function ContactPage() {
             )}
           </div>
 
-          <div className="lg:col-span-6 lg:col-start-7">
+          {/* The form gets the wider bank: writing to us is the point of the page. */}
+          <div className="lg:col-span-7 lg:col-start-6">
             <div className="border-t border-navy-ink/40 pt-8">
-              <DataList rows={t.contactPage.rows} />
+              <h2 className="display-xl mb-8 text-xl text-navy-ink sm:text-2xl">
+                {t.contactPage.formTitle}
+              </h2>
+              <ContactForm />
             </div>
           </div>
         </div>
