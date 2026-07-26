@@ -74,8 +74,12 @@ export default async function EditContentPage({
   return (
     <>
       <AdminPageHeader
-        title={`${locale === "en" ? "English" : "Turkish"} content`}
-        description="Fields are grouped by the public section that uses them."
+        title={`${locale === "en" ? "English (optional)" : "Turkish"} content`}
+        description={
+          locale === "en"
+            ? "Optional translation. Leave a field empty to use its Turkish value."
+            : "Required source content, grouped by the public section that uses it."
+        }
       />
       {saved && (
         <p

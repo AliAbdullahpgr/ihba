@@ -23,6 +23,33 @@ import {
 
 const locales: Lang[] = ["en", "tr"];
 
+function fallbackBlankStrings<T>(primary: T, fallback: unknown): T {
+  if (typeof primary === "string") {
+    return (primary.trim() || typeof fallback !== "string"
+      ? primary
+      : fallback) as T;
+  }
+  if (Array.isArray(primary)) {
+    const fallbackItems = Array.isArray(fallback) ? fallback : [];
+    return primary.map((item, index) =>
+      fallbackBlankStrings(item, fallbackItems[index])
+    ) as T;
+  }
+  if (primary && typeof primary === "object") {
+    const fallbackRecord =
+      fallback && typeof fallback === "object"
+        ? (fallback as Record<string, unknown>)
+        : {};
+    return Object.fromEntries(
+      Object.entries(primary as Record<string, unknown>).map(([key, value]) => [
+        key,
+        fallbackBlankStrings(value, fallbackRecord[key]),
+      ])
+    ) as T;
+  }
+  return primary;
+}
+
 export function fallbackCopies(): Record<Lang, Copy> {
   return {
     en: { ...dict.en, ...content.en, media: structuredClone(bundledMedia) },
@@ -88,7 +115,17 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
       }
 
       const localizedProjects = projectRows
-        .filter((row) => row.translation.locale === locale)
+        .filter(
+          (row) =>
+            row.translation.locale === locale ||
+            (locale === "en" &&
+              row.translation.locale === "tr" &&
+              !projectRows.some(
+                (candidate) =>
+                  candidate.project.id === row.project.id &&
+                  candidate.translation.locale === "en"
+              ))
+        )
         .map(({ project, translation }) => ({
           slug: project.slug,
           title: translation.title,
@@ -122,12 +159,25 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
       if (boardRows.length) {
         copies[locale].boardPage.members = boardRows.map((member) => ({
           name: member.name,
-          role: locale === "en" ? member.roleEn : member.roleTr,
+          role:
+            locale === "en"
+              ? member.roleEn || member.roleTr
+              : member.roleTr,
         }));
       }
 
       copies[locale].newsPage.items = newsRows
-        .filter((row) => row.translation.locale === locale)
+        .filter(
+          (row) =>
+            row.translation.locale === locale ||
+            (locale === "en" &&
+              row.translation.locale === "tr" &&
+              !newsRows.some(
+                (candidate) =>
+                  candidate.article.id === row.article.id &&
+                  candidate.translation.locale === "en"
+              ))
+        )
         .map(({ article, translation }) => ({
           slug: article.slug,
           title: translation.title,
@@ -144,6 +194,7 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
         }));
     }
 
+    copies.en = fallbackBlankStrings(copies.en, copies.tr);
     return copies;
   } catch (error) {
     console.error("Falling back to bundled site content:", error);

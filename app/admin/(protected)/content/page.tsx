@@ -5,8 +5,9 @@ import Link from "next/link";
 const languages = [
   {
     code: "en",
-    name: "English",
-    description: "Public navigation, page copy, labels and messages.",
+    name: "English (optional)",
+    description:
+      "Optional translation. Empty fields fall back to the Turkish content.",
   },
   {
     code: "tr",

@@ -51,7 +51,7 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
             >
               <div className="flex items-baseline justify-between border-b border-line pb-4">
                 <h2 className="text-base font-semibold text-navy-ink">
-                  {locale === "en" ? "English" : "Turkish"}
+                  {locale === "en" ? "English (optional)" : "Turkish"}
                 </h2>
                 <span className="text-xs font-bold uppercase text-ink/45">
                   {locale}
@@ -61,7 +61,7 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
                 <FormField label="Title">
                   <input
                     name={`title_${locale}`}
-                    required
+                    required={locale === "tr"}
                     defaultValue={item?.title}
                     className={inputClass}
                   />
@@ -69,7 +69,7 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
                 <FormField label="Excerpt">
                   <textarea
                     name={`excerpt_${locale}`}
-                    required
+                    required={locale === "tr"}
                     rows={3}
                     defaultValue={item?.excerpt}
                     className={inputClass}
@@ -77,11 +77,11 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
                 </FormField>
                 <FormField
                   label="Article body"
-                  hint="Separate paragraphs with a blank line."
+                  hint="Separate paragraphs with a blank line. Start a section heading with ##."
                 >
                   <textarea
                     name={`body_${locale}`}
-                    required
+                    required={locale === "tr"}
                     rows={12}
                     defaultValue={item?.body.join("\n\n")}
                     className={inputClass}
@@ -90,7 +90,7 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
                 <FormField label="Image alt text">
                   <input
                     name={`imageAlt_${locale}`}
-                    required
+                    required={locale === "tr"}
                     defaultValue={item?.imageAlt}
                     className={inputClass}
                   />

@@ -31,11 +31,23 @@ export function NewsDetailPage({ slug }: { slug: string }) {
               {new Date(article.publishedAt).toLocaleDateString()}
             </time>
             <div className="mt-6 space-y-5">
-              {article.body.map((paragraph) => (
-                <p key={paragraph} className="text-base leading-relaxed text-ink/75">
-                  {paragraph}
-                </p>
-              ))}
+              {article.body.map((paragraph) =>
+                paragraph.startsWith("## ") ? (
+                  <h2
+                    key={paragraph}
+                    className="border-t border-navy-ink/15 pt-8 font-display text-2xl font-medium leading-tight text-navy-ink"
+                  >
+                    {paragraph.slice(3)}
+                  </h2>
+                ) : (
+                  <p
+                    key={paragraph}
+                    className="text-base leading-relaxed text-ink/75"
+                  >
+                    {paragraph}
+                  </p>
+                )
+              )}
             </div>
             <div className="mt-12 border-t border-navy-ink/15 pt-6">
               <ShareRow title={article.title} />

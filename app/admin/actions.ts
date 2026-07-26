@@ -1,7 +1,7 @@
 "use server";
 
 import { randomUUID } from "crypto";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -86,30 +86,50 @@ export async function saveProject(form: FormData) {
   const imagePublicId = text(form, "imagePublicId") || null;
   const sortOrder = z.coerce.number().int().min(0).parse(text(form, "sortOrder"));
 
-  const translations = (["en", "tr"] as const).map((locale) => {
-    const title = z.string().min(2).parse(text(form, `title_${locale}`));
-    const body = paragraphs(text(form, `body_${locale}`));
-    return {
-      locale,
-      title,
-      region: z.string().min(2).parse(text(form, `region_${locale}`)),
-      statusLabel: z
-        .string()
-        .min(2)
-        .parse(text(form, `statusLabel_${locale}`)),
-      summary: z
-        .string()
-        .min(10)
-        .parse(text(form, `summary_${locale}`)),
-      body: body.length ? body : [text(form, `summary_${locale}`)],
-      facts: facts(text(form, `facts_${locale}`)),
-      chips: chips(text(form, `chips_${locale}`)),
-      imageAlt: z
-        .string()
-        .min(3)
-        .parse(text(form, `imageAlt_${locale}`)),
-    };
-  });
+  const turkishBody = paragraphs(text(form, "body_tr"));
+  const turkish = {
+    locale: "tr" as const,
+    title: z.string().min(2).parse(text(form, "title_tr")),
+    region: z.string().min(2).parse(text(form, "region_tr")),
+    statusLabel: z.string().min(2).parse(text(form, "statusLabel_tr")),
+    summary: z.string().min(10).parse(text(form, "summary_tr")),
+    body: turkishBody.length
+      ? turkishBody
+      : [text(form, "summary_tr")],
+    facts: facts(text(form, "facts_tr")),
+    chips: chips(text(form, "chips_tr")),
+    imageAlt: z.string().min(3).parse(text(form, "imageAlt_tr")),
+  };
+
+  const englishValues = [
+    "title_en",
+    "region_en",
+    "statusLabel_en",
+    "summary_en",
+    "body_en",
+    "facts_en",
+    "chips_en",
+    "imageAlt_en",
+  ].map((name) => text(form, name));
+  const hasEnglish = englishValues.some(Boolean);
+  const englishBody = paragraphs(text(form, "body_en"));
+  const englishFacts = facts(text(form, "facts_en"));
+  const englishChips = chips(text(form, "chips_en"));
+  const english = hasEnglish
+    ? {
+        locale: "en" as const,
+        title: text(form, "title_en") || turkish.title,
+        region: text(form, "region_en") || turkish.region,
+        statusLabel:
+          text(form, "statusLabel_en") || turkish.statusLabel,
+        summary: text(form, "summary_en") || turkish.summary,
+        body: englishBody.length ? englishBody : turkish.body,
+        facts: englishFacts.length ? englishFacts : turkish.facts,
+        chips: englishChips.length ? englishChips : turkish.chips,
+        imageAlt: text(form, "imageAlt_en") || turkish.imageAlt,
+      }
+    : null;
+  const translations = english ? [turkish, english] : [turkish];
 
   await db.transaction(async (tx) => {
     await tx
@@ -174,13 +194,33 @@ export async function saveNews(form: FormData) {
   const state = stateSchema.parse(text(form, "state"));
   const imageUrl = text(form, "imageUrl") || null;
   const imagePublicId = text(form, "imagePublicId") || null;
-  const translations = (["en", "tr"] as const).map((locale) => ({
-    locale,
-    title: z.string().min(2).parse(text(form, `title_${locale}`)),
-    excerpt: z.string().min(10).parse(text(form, `excerpt_${locale}`)),
-    body: paragraphs(text(form, `body_${locale}`)),
-    imageAlt: z.string().min(3).parse(text(form, `imageAlt_${locale}`)),
-  }));
+  const turkish = {
+    locale: "tr" as const,
+    title: z.string().min(2).parse(text(form, "title_tr")),
+    excerpt: z.string().min(10).parse(text(form, "excerpt_tr")),
+    body: z
+      .array(z.string())
+      .min(1)
+      .parse(paragraphs(text(form, "body_tr"))),
+    imageAlt: z.string().min(3).parse(text(form, "imageAlt_tr")),
+  };
+  const hasEnglish = [
+    "title_en",
+    "excerpt_en",
+    "body_en",
+    "imageAlt_en",
+  ].some((name) => Boolean(text(form, name)));
+  const englishBody = paragraphs(text(form, "body_en"));
+  const english = hasEnglish
+    ? {
+        locale: "en" as const,
+        title: text(form, "title_en") || turkish.title,
+        excerpt: text(form, "excerpt_en") || turkish.excerpt,
+        body: englishBody.length ? englishBody : turkish.body,
+        imageAlt: text(form, "imageAlt_en") || turkish.imageAlt,
+      }
+    : null;
+  const translations = english ? [turkish, english] : [turkish];
 
   await db.transaction(async (tx) => {
     await tx
@@ -236,10 +276,11 @@ export async function archiveNews(form: FormData) {
 export async function saveBoardMember(form: FormData) {
   const session = await requireAdmin();
   const id = text(form, "id") || randomUUID();
+  const roleTr = z.string().min(2).parse(text(form, "roleTr"));
   const values = {
     name: z.string().min(2).parse(text(form, "name")),
-    roleEn: z.string().min(2).parse(text(form, "roleEn")),
-    roleTr: z.string().min(2).parse(text(form, "roleTr")),
+    roleEn: text(form, "roleEn") || roleTr,
+    roleTr,
     sortOrder: z.coerce
       .number()
       .int()

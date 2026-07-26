@@ -70,7 +70,8 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
 
         {(["en", "tr"] as const).map((locale) => {
           const item = translation(project, locale);
-          const language = locale === "en" ? "English" : "Turkish";
+          const language =
+            locale === "en" ? "English (optional)" : "Turkish";
           return (
             <section
               key={locale}
@@ -88,7 +89,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 <FormField label="Title">
                   <input
                     name={`title_${locale}`}
-                    required
+                    required={locale === "tr"}
                     defaultValue={item?.title}
                     className={inputClass}
                   />
@@ -96,7 +97,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 <FormField label="Region">
                   <input
                     name={`region_${locale}`}
-                    required
+                    required={locale === "tr"}
                     defaultValue={item?.region}
                     className={inputClass}
                   />
@@ -104,7 +105,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 <FormField label="Public status label">
                   <input
                     name={`statusLabel_${locale}`}
-                    required
+                    required={locale === "tr"}
                     defaultValue={item?.statusLabel}
                     className={inputClass}
                   />
@@ -112,7 +113,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 <FormField label="Image alt text">
                   <input
                     name={`imageAlt_${locale}`}
-                    required
+                    required={locale === "tr"}
                     defaultValue={item?.imageAlt}
                     className={inputClass}
                   />
@@ -122,7 +123,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 <FormField label="Summary">
                   <textarea
                     name={`summary_${locale}`}
-                    required
+                    required={locale === "tr"}
                     rows={3}
                     defaultValue={item?.summary}
                     className={inputClass}
@@ -134,7 +135,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 >
                   <textarea
                     name={`body_${locale}`}
-                    required
+                    required={locale === "tr"}
                     rows={9}
                     defaultValue={item?.body.join("\n\n")}
                     className={inputClass}

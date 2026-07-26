@@ -52,7 +52,7 @@ export function SiteHeader() {
         })),
       ],
     },
-    { href: "/articles", label: t.nav.articles ?? t.nav.news },
+    { href: "/news", label: t.nav.news },
     {
       href: "/contact",
       label: t.nav.contact,

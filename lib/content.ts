@@ -79,7 +79,6 @@ export interface Content {
     areas: string;
     projects: string;
     news: string;
-    articles?: string;
     donate: string;
     volunteer: string;
     contact: string;
@@ -186,7 +185,6 @@ export const content: Record<Lang, Content> = {
       areas: "Our Areas of Work",
       projects: "Projects",
       news: "News",
-      articles: "Articles",
       donate: "Donate",
       volunteer: "Volunteer",
       contact: "Contact",
@@ -497,7 +495,6 @@ export const content: Record<Lang, Content> = {
       areas: "Faaliyet Alanlarımız",
       projects: "Projeler",
       news: "Haberler",
-      articles: "Makaleler",
       donate: "Bağış",
       volunteer: "Gönüllülük",
       contact: "İletişim",

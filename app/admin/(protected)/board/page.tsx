@@ -37,10 +37,9 @@ function MemberForm({
               className={inputClass}
             />
           </FormField>
-          <FormField label="Role in English">
+          <FormField label="Role in English (optional)">
             <input
               name="roleEn"
-              required
               defaultValue={member?.roleEn}
               className={inputClass}
             />
