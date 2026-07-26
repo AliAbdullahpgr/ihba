@@ -1,92 +1,106 @@
 "use client";
 
-import { ArrowRight, CalendarCheck, Globe2, Heart, MapPin } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
+import { ArrowLink, Button, Mark, Tag } from "@/app/components/primitives";
 
-const chipIcons = [CalendarCheck, MapPin, Globe2];
+/**
+ * Accent squares scattered across the field, positioned as percentages so they
+ * stay on the pattern's rhythm at any width.
+ */
+const accents = [
+  { top: "6%", right: "14%", size: "size-6", tone: "bg-gold", delay: "0s" },
+  { top: "26%", right: "38%", size: "size-6", tone: "bg-gold", delay: "0.9s" },
+  { top: "24%", right: "16%", size: "size-6", tone: "bg-azure", delay: "1.8s" },
+  { top: "50%", right: "5%", size: "size-5", tone: "bg-gold", delay: "2.7s" },
+  { top: "66%", right: "0%", size: "size-5", tone: "bg-azure", delay: "3.6s" },
+];
 
 export function Hero() {
   const { t } = useI18n();
-  const { headline } = t.hero;
+  const { headline, feature } = t.hero;
 
   return (
-    <section id="top" className="relative overflow-hidden bg-white py-16 lg:py-24">
-      <div className="container-site grid gap-14 lg:grid-cols-2 lg:items-center">
-        <div>
-          <h1 className="text-balance font-display font-bold tracking-tight text-5xl leading-[1.05] text-navy-ink sm:text-6xl">
+    <section id="top" className="relative bg-white">
+      {/* Square field: bleeds off the right edge and fades in toward the copy. */}
+      <div
+        className="square-field pointer-events-none absolute inset-y-0 right-0 hidden w-[46%] md:block"
+        aria-hidden="true"
+      >
+        {accents.map((accent) => (
+          <span
+            key={`${accent.top}-${accent.right}`}
+            className={`absolute animate-float-y ${accent.size} ${accent.tone}`}
+            style={{
+              top: accent.top,
+              right: accent.right,
+              animationDelay: accent.delay,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Copy sits in the first four of seven tracks, clear of the field. */}
+      <div className="container-site relative lg:grid lg:grid-cols-7 lg:gap-8">
+        <div className="pt-14 pb-10 lg:col-span-4 lg:pt-20 lg:pb-40">
+          <h1 className="display-xl text-[2.25rem] text-navy-ink sm:text-[2.75rem] lg:text-[3.25rem]">
             {headline.pre}
-            <span className="bg-gold-soft px-2 rounded-md box-decoration-clone">
-              {headline.highlight}
-            </span>
+            <Mark tone="azure">{headline.highlight}</Mark>
             {headline.post}
           </h1>
 
-          <p className="mt-6 max-w-lg text-lg text-ink/70">{t.hero.subcopy}</p>
+          <p className="mt-8 max-w-lg text-base leading-relaxed text-ink/70">
+            {t.hero.subcopy}
+          </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 rounded-xl bg-gold px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-gold-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
-            >
-              <Heart className="h-4 w-4" aria-hidden="true" />
-              {t.hero.ctaPrimary}
-            </a>
-            <a
-              href="#programs"
-              className="inline-flex items-center gap-2 rounded-xl border border-navy/20 px-7 py-3.5 text-sm font-bold text-navy transition-colors hover:border-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
-            >
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Button href="#donate">{t.hero.ctaPrimary}</Button>
+            <Button href="#programs" variant="outline">
               {t.hero.ctaSecondary}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </a>
+            </Button>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2">
-            {t.hero.chips.map((chip, index) => {
-              const Icon = chipIcons[index];
-              return (
-                <span
-                  key={chip}
-                  className="flex items-center gap-2 text-sm font-semibold text-navy/80"
-                >
-                  <Icon className="size-4 text-azure-deep" aria-hidden="true" />
-                  {chip}
-                </span>
-              );
-            })}
-          </div>
+          <ul className="mt-8 max-w-lg flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line pt-5 text-sm font-semibold text-navy-ink/75">
+            {t.hero.chips.map((chip, index) => (
+              <li key={chip} className="flex items-center gap-4">
+                {index > 0 && (
+                  <span className="h-3 w-px bg-navy-ink/20" aria-hidden="true" />
+                )}
+                {chip}
+              </li>
+            ))}
+          </ul>
         </div>
+      </div>
 
-        <div className="relative">
-          <img
-            src="/images/generated/ihba-hero.webp"
-            alt="Community volunteers crossing a bridge with notebooks and essential supplies"
-            className="aspect-[4/3] w-full rounded-t-[10rem] rounded-b-2xl border border-line object-cover"
-          />
-          <span
-            className="absolute -top-4 left-10 size-4 rounded-sm bg-gold animate-float-y"
-            style={{ animationDelay: "0s" }}
-            aria-hidden="true"
-          />
-          <span
-            className="absolute top-10 -right-3 size-3 rounded-sm bg-azure animate-float-y"
-            style={{ animationDelay: "0.8s" }}
-            aria-hidden="true"
-          />
-          <span
-            className="absolute -bottom-3 left-1/4 size-3 rounded-sm bg-azure animate-float-y"
-            style={{ animationDelay: "1.6s" }}
-            aria-hidden="true"
-          />
-          <span
-            className="absolute bottom-8 -left-4 size-4 rounded-sm bg-gold animate-float-y"
-            style={{ animationDelay: "2.4s" }}
-            aria-hidden="true"
-          />
-          <span
-            className="absolute top-1/3 -right-4 size-3 rounded-sm bg-gold animate-float-y"
-            style={{ animationDelay: "3.2s" }}
-            aria-hidden="true"
-          />
+      {/*
+        The feature card occupies tracks 5-7 and straddles the boundary into the
+        mosaic band below, exactly like QF's video card. On mobile it stacks.
+      */}
+      <div className="container-site relative lg:absolute lg:inset-x-0 lg:bottom-0 lg:translate-y-1/2">
+        <div className="pb-14 lg:grid lg:grid-cols-7 lg:gap-8 lg:pb-0">
+          <article className="flex flex-col bg-white lg:col-span-3 lg:col-start-5 lg:border lg:border-line">
+            <div className="relative">
+              <img
+                src="/images/generated/ihba-hero.webp"
+                alt="Community volunteers crossing a bridge with notebooks and essential supplies"
+                className="aspect-[16/9] w-full object-cover"
+              />
+              <span className="absolute left-0 top-0">
+                <Tag tone="gold">{feature.tag}</Tag>
+              </span>
+            </div>
+            <div className="pt-5 lg:p-6">
+              <h2 className="font-display text-lg font-medium leading-snug text-navy-ink">
+                {feature.title}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-ink/65">
+                {feature.copy}
+              </p>
+              <ArrowLink href="#projects" className="mt-5">
+                {feature.cta}
+              </ArrowLink>
+            </div>
+          </article>
         </div>
       </div>
     </section>

@@ -28,7 +28,12 @@
   --breakpoint-2xl: 96rem;
 
   --container-prose: 68ch;
-  --radius-card: 1.25rem;
+
+  /* Editorial grid: 1240px content column, 16px gutters (QF-style). */
+  --container-site: 1240px;
+
+  /* Sharp-edge design system — the only curve in the system is the arrow disc. */
+  --radius-card: 0px;
 }
 
 @layer base {
@@ -84,14 +89,81 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Layout
+   --------------------------------------------------------------------------- */
+
 @utility container-site {
-  @apply mx-auto max-w-7xl px-5 sm:px-8 lg:px-12;
+  @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
 }
 
-@utility card {
-  @apply rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(16,23,54,0.04)];
+/* Editorial mosaic: seven equal tracks so cards can span 2/3/4/7 columns and
+   build the asymmetric rhythm instead of a uniform card wall. */
+@utility mosaic {
+  @apply grid grid-cols-1 gap-8 md:grid-cols-6 lg:grid-cols-7;
 }
+
+/* ---------------------------------------------------------------------------
+   Surfaces
+   --------------------------------------------------------------------------- */
+
+/* Hairline-bounded panel: the workhorse container of the system. */
+@utility card {
+  @apply border border-line bg-white;
+}
+
+/* Heavy-ruled panel used for the "signpost" cards that hold an icon + link. */
+@utility frame {
+  @apply border-2 border-navy-ink bg-transparent;
+}
+
+@utility rule {
+  @apply border-0 border-t border-line;
+}
+
+/* ---------------------------------------------------------------------------
+   Type
+   --------------------------------------------------------------------------- */
 
 @utility text-balance {
   text-wrap: balance;
+}
+
+/* Editorial display setting: large, tight, and slightly negative-tracked so
+   Space Grotesk reads as a broadsheet headline rather than a UI heading. */
+@utility display-xl {
+  @apply font-display font-medium tracking-[-0.02em] leading-[1.14];
+}
+
+@utility eyebrow {
+  @apply text-[11px] font-bold uppercase tracking-[0.18em];
+}
+
+/* Highlighted phrase inside a headline — a solid block behind the words, sized
+   to the text with no radius, wrapping cleanly across lines. */
+@utility mark-block {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  @apply px-[0.18em] py-[0.06em];
+}
+
+/* ---------------------------------------------------------------------------
+   Hero square field — 33px squares on a 48px pitch, fading out to the left,
+   with a finer dot grid filling the fade. Reproduces QF's pattern in CSS.
+   --------------------------------------------------------------------------- */
+
+@utility square-field {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='33' height='33' fill='%23F3EDDF'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='4' height='4' x='14' y='14' fill='%23E9E6DE'/%3E%3C/svg%3E");
+  background-position: right top, right top;
+  background-repeat: repeat, repeat;
+  mask-image:
+    linear-gradient(to left, #000 0%, #000 42%, transparent 88%),
+    linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    linear-gradient(to left, #000 0%, #000 42%, transparent 88%),
+    linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+  -webkit-mask-composite: source-in;
 }

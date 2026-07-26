@@ -1,8 +1,23 @@
 export type Lang = "en" | "tr";
 
+/** Stable, language-independent keys used for filtering the focus mosaic. */
+export type CategoryKey = "relief" | "education" | "development" | "community";
+
 export interface ProgramCard {
   title: string;
   blurb: string;
+  categoryKey: CategoryKey;
+}
+
+export interface FilterOption {
+  key: CategoryKey | "all";
+  label: string;
+}
+
+export interface Signpost {
+  title: string;
+  copy: string;
+  cta: string;
 }
 
 export interface StatItem {
@@ -55,6 +70,11 @@ export interface Dictionary {
     approach: string;
     contact: string;
     donate: string;
+    explore: string;
+    newsroom: string;
+    transparency: string;
+    accessibility: string;
+    search: string;
     openMenu: string;
     closeMenu: string;
   };
@@ -64,6 +84,12 @@ export interface Dictionary {
     ctaPrimary: string;
     ctaSecondary: string;
     chips: string[];
+    feature: {
+      tag: string;
+      title: string;
+      copy: string;
+      cta: string;
+    };
   };
   ticker: {
     items: string[];
@@ -73,6 +99,7 @@ export interface Dictionary {
   };
   about: {
     title: string;
+    lede: string;
     missionLabel: string;
     missionText: string;
     visionLabel: string;
@@ -82,10 +109,17 @@ export interface Dictionary {
   };
   programs: {
     title: TitleParts;
+    filterLabel: string;
+    filters: FilterOption[];
+    tag: string;
     cards: ProgramCard[];
+    signposts: Signpost[];
   };
   projects: {
     title: string;
+    label: string;
+    lede: string;
+    browseAll: string;
     cards: ProjectCard[];
   };
   approach: {
@@ -105,6 +139,7 @@ export interface Dictionary {
     note: string;
   };
   newsletter: {
+    socialTitle: string;
     title: string;
     copy: string;
     placeholder: string;
@@ -114,8 +149,12 @@ export interface Dictionary {
   footer: {
     addressLine: string;
     columns: FooterColumn[];
+    contactLabel: string;
+    reportTitle: string;
+    reportCopy: string;
     copyright: string;
     transparency: string;
+    legal: string[];
   };
 }
 
@@ -140,20 +179,32 @@ export const dict: Record<Lang, Dictionary> = {
       approach: "Our Approach",
       contact: "Contact",
       donate: "Donate",
+      explore: "Explore IHBA",
+      newsroom: "Newsroom",
+      transparency: "Transparency",
+      accessibility: "Accessibility",
+      search: "Search",
       openMenu: "Open menu",
       closeMenu: "Close menu",
     },
     hero: {
       headline: {
-        pre: "A ",
-        highlight: "bridge",
-        post: " for humanity",
+        pre: "At the heart of everything we do is one conviction: dignity is not given, it is ",
+        highlight: "built together.",
+        post: "",
       },
       subcopy:
         "IHBA connects humanitarian assistance with education, sustainable development and strong institutional partnerships to build lasting bridges of compassion across regions.",
       ctaPrimary: "Donate",
       ctaSecondary: "Our Work",
       chips: ["Founded 2025", "Istanbul, Türkiye", "Asia & Africa focus"],
+      feature: {
+        tag: "Our story",
+        title: "The IHBA Bridge: Our People, Our Projects",
+        copy:
+          "A growing record of the students, families and communities on both sides of every bridge we build.",
+        cta: "Learn more",
+      },
     },
     ticker: {
       items: [
@@ -176,6 +227,8 @@ export const dict: Record<Lang, Dictionary> = {
     },
     about: {
       title: "Who we are?",
+      lede:
+        "An international civil society organisation founded in Istanbul, working where urgent need and long-term opportunity meet.",
       missionLabel: "Our Mission",
       missionText:
         "To help meet essential humanitarian needs in both ordinary and emergency situations; to improve the living conditions of children, young people, women, older persons, students and disadvantaged communities through education, social support and sustainable development programmes; and to develop lasting solutions that protect human dignity, rights and freedoms.",
@@ -196,42 +249,74 @@ export const dict: Record<Lang, Dictionary> = {
     programs: {
       title: {
         pre: "Seven fields, one purpose: ",
-        highlight: "human dignity",
-        post: ".",
+        highlight: "human dignity.",
+        post: "",
       },
+      filterLabel: "I'm interested in",
+      filters: [
+        { key: "all", label: "All our work" },
+        { key: "relief", label: "Aid & relief" },
+        { key: "education", label: "Education" },
+        { key: "development", label: "Development" },
+        { key: "community", label: "Community" },
+      ],
+      tag: "Focus",
       cards: [
         {
           title: "Humanitarian Assistance",
           blurb: "Food, shelter, health, essential needs, in-kind and financial support.",
+          categoryKey: "relief",
         },
         {
           title: "Education",
           blurb: "Scholarships, student support, education centres, guidance.",
+          categoryKey: "education",
         },
         {
           title: "Sustainable Development",
           blurb: "Long-term programmes building productive capacity and economic independence.",
+          categoryKey: "development",
         },
         {
           title: "Children, Youth & Women",
           blurb: "Protective and developmental education, social support and skills programmes.",
+          categoryKey: "community",
         },
         {
           title: "Health & Social Support",
           blurb: "Support for people in need, disaster-affected, displaced, elderly, disabled and orphans.",
+          categoryKey: "relief",
         },
         {
           title: "Culture, Arts & Volunteering",
           blurb: "Activities strengthening solidarity and volunteer participation.",
+          categoryKey: "community",
         },
         {
           title: "Institutional Cooperation",
           blurb: "Joint projects with institutions and universities across countries.",
+          categoryKey: "development",
+        },
+      ],
+      signposts: [
+        {
+          title: "More from the field",
+          copy: "Reports and updates from the regions where our programmes run.",
+          cta: "Read field notes",
+        },
+        {
+          title: "What's happening at IHBA",
+          copy: "Volunteer calls, seasonal campaigns, partner events and student intakes.",
+          cta: "See what's on",
         },
       ],
     },
     projects: {
       title: "We're building three bridges.",
+      label: "Latest projects",
+      lede:
+        "There's a lot going on throughout the year at IHBA. Here's some of what we're building right now.",
+      browseAll: "Browse all projects",
       cards: [
         {
           badgeKey: "planning",
@@ -292,8 +377,8 @@ export const dict: Record<Lang, Dictionary> = {
     volunteer: {
       title: {
         pre: "Become a ",
-        highlight: "bridge",
-        post: ".",
+        highlight: "bridge.",
+        post: "",
       },
       copy: "Give your time, your skills, or a donation — whatever you bring, we'll make sure it reaches the other side.",
       ctaPrimary: "Donate",
@@ -301,9 +386,11 @@ export const dict: Record<Lang, Dictionary> = {
       note: "Donation accounts will be published soon — reach us to contribute today.",
     },
     newsletter: {
-      title: "Follow our journey.",
+      socialTitle:
+        "Want to see and read even more from us? Our social channels carry the field updates, the student stories and the day-to-day of life at IHBA.",
+      title: "Interested in our monthly curation of projects and calls? Sign up for our newsletter.",
       copy: "New projects and field reports, in your inbox.",
-      placeholder: "Your email address",
+      placeholder: "Email",
       subscribeLabel: "Subscribe",
       success: "Thank you — you've been added.",
     },
@@ -328,8 +415,13 @@ export const dict: Record<Lang, Dictionary> = {
           ],
         },
       ],
+      contactLabel: "For general inquiries, please contact",
+      reportTitle: "Would you like to report a concern?",
+      reportCopy:
+        "Every donation and project is auditable. Write to us and we will respond within five working days.",
       copyright: "© 2026 IHBA — International Humanity Bridge. All rights reserved.",
       transparency: "Registry No: 34-291-110 · Tax No: 8900485331 · MERSIS: 0890048533100001",
+      legal: ["Terms of Use", "Privacy Policy", "Transparency", "Media Inquiries"],
     },
   },
   tr: {
@@ -352,13 +444,18 @@ export const dict: Record<Lang, Dictionary> = {
       approach: "Yaklaşımımız",
       contact: "İletişim",
       donate: "Bağış Yap",
+      explore: "IHBA'yı Keşfet",
+      newsroom: "Basın Odası",
+      transparency: "Şeffaflık",
+      accessibility: "Erişilebilirlik",
+      search: "Ara",
       openMenu: "Menüyü aç",
       closeMenu: "Menüyü kapat",
     },
     hero: {
       headline: {
-        pre: "İnsanlık için ",
-        highlight: "bir köprü",
+        pre: "Yaptığımız her şeyin merkezinde tek bir inanç var: onur verilmez, ",
+        highlight: "birlikte inşa edilir.",
         post: "",
       },
       subcopy:
@@ -366,6 +463,13 @@ export const dict: Record<Lang, Dictionary> = {
       ctaPrimary: "Bağış Yapın",
       ctaSecondary: "Çalışmalarımız",
       chips: ["2025'te kuruldu", "İstanbul, Türkiye", "Asya ve Afrika odağı"],
+      feature: {
+        tag: "Hikâyemiz",
+        title: "IHBA Köprüsü: İnsanlarımız, Projelerimiz",
+        copy:
+          "Kurduğumuz her köprünün iki yakasındaki öğrencilerin, ailelerin ve toplulukların büyüyen kaydı.",
+        cta: "Daha fazlası",
+      },
     },
     ticker: {
       items: [
@@ -388,6 +492,8 @@ export const dict: Record<Lang, Dictionary> = {
     },
     about: {
       title: "Biz kimiz?",
+      lede:
+        "İstanbul'da kurulan, acil ihtiyaç ile uzun vadeli fırsatın kesiştiği yerde çalışan uluslararası bir sivil toplum kuruluşu.",
       missionLabel: "Misyonumuz",
       missionText:
         "Olağan ve olağanüstü durumlarda temel insani ihtiyaçların karşılanmasına katkı sunmak; eğitim, sosyal destek ve sürdürülebilir kalkınma projeleriyle çocukların, gençlerin, kadınların, yaşlıların, öğrencilerin ve dezavantajlı grupların yaşam şartlarını iyileştirmek; insan onurunu, hak ve hürriyetleri koruyan kalıcı çözümler geliştirmek.",
@@ -408,42 +514,74 @@ export const dict: Record<Lang, Dictionary> = {
     programs: {
       title: {
         pre: "Yedi alan, tek amaç: ",
-        highlight: "insan onuru",
-        post: ".",
+        highlight: "insan onuru.",
+        post: "",
       },
+      filterLabel: "İlgilendiğim alan",
+      filters: [
+        { key: "all", label: "Tüm çalışmalarımız" },
+        { key: "relief", label: "Yardım ve destek" },
+        { key: "education", label: "Eğitim" },
+        { key: "development", label: "Kalkınma" },
+        { key: "community", label: "Toplum" },
+      ],
+      tag: "Alan",
       cards: [
         {
           title: "İnsani Yardım",
           blurb: "Gıda, barınma, sağlık, temel ihtiyaç, ayni ve nakdî destek.",
+          categoryKey: "relief",
         },
         {
           title: "Eğitim",
           blurb: "Burslar, öğrenci destek programları, eğitim merkezleri, rehberlik.",
+          categoryKey: "education",
         },
         {
           title: "Sürdürülebilir Kalkınma",
           blurb: "Üretim kapasitesini ve ekonomik bağımsızlığı güçlendiren uzun vadeli projeler.",
+          categoryKey: "development",
         },
         {
           title: "Çocuk, Gençlik ve Kadın",
           blurb: "Koruyucu ve geliştirici eğitim, sosyal destek ve beceri programları.",
+          categoryKey: "community",
         },
         {
           title: "Sağlık ve Sosyal Destek",
           blurb: "İhtiyaç sahibi, afetzede, göçmen, yaşlı, engelli ve yetimlere destek.",
+          categoryKey: "relief",
         },
         {
           title: "Kültür, Sanat ve Gönüllülük",
           blurb: "Toplumsal dayanışmayı ve gönüllü katılımını güçlendiren çalışmalar.",
+          categoryKey: "community",
         },
         {
           title: "Kurumsal İş Birlikleri",
           blurb: "Farklı ülkelerdeki kurum ve üniversitelerle ortak projeler.",
+          categoryKey: "development",
+        },
+      ],
+      signposts: [
+        {
+          title: "Sahadan dahası",
+          copy: "Programlarımızın yürüdüğü bölgelerden raporlar ve güncellemeler.",
+          cta: "Saha notlarını okuyun",
+        },
+        {
+          title: "IHBA'da neler oluyor",
+          copy: "Gönüllü çağrıları, dönemsel kampanyalar, paydaş etkinlikleri ve öğrenci alımları.",
+          cta: "Takvime bakın",
         },
       ],
     },
     projects: {
       title: "Üç köprü inşa ediyoruz.",
+      label: "Güncel projeler",
+      lede:
+        "IHBA'da yıl boyunca çok şey oluyor. Şu anda inşa ettiklerimizden bazıları burada.",
+      browseAll: "Tüm projelere bakın",
       cards: [
         {
           badgeKey: "planning",
@@ -504,8 +642,8 @@ export const dict: Record<Lang, Dictionary> = {
     volunteer: {
       title: {
         pre: "",
-        highlight: "Köprü",
-        post: " olun.",
+        highlight: "Köprü olun.",
+        post: "",
       },
       copy: "Zamanınızı, yeteneklerinizi veya bağışınızı verin — ne sunarsanız sunun, karşı kıyıya ulaştıralım.",
       ctaPrimary: "Bağış Yapın",
@@ -513,9 +651,11 @@ export const dict: Record<Lang, Dictionary> = {
       note: "Bağış hesapları yakında yayınlanacaktır — bugün katkı sağlamak için bize ulaşın.",
     },
     newsletter: {
-      title: "Yolculuğumuzu takip edin.",
+      socialTitle:
+        "Bizden daha fazlasını görmek ve okumak ister misiniz? Sosyal medya hesaplarımızda saha güncellemeleri, öğrenci hikâyeleri ve IHBA'daki günlük hayat var.",
+      title: "Aylık proje ve çağrı derlememizle ilgileniyor musunuz? Bültenimize kaydolun.",
       copy: "Yeni projeler ve saha haberleri, e-postanızda.",
-      placeholder: "E-posta adresiniz",
+      placeholder: "E-posta",
       subscribeLabel: "Abone ol",
       success: "Teşekkürler — listeye eklendiniz.",
     },
@@ -540,8 +680,13 @@ export const dict: Record<Lang, Dictionary> = {
           ],
         },
       ],
+      contactLabel: "Genel sorularınız için bize ulaşın",
+      reportTitle: "Bir sorunu bildirmek ister misiniz?",
+      reportCopy:
+        "Her bağış ve proje denetlenebilir. Bize yazın, beş iş günü içinde yanıt veririz.",
       copyright: "© 2026 IHBA — Uluslararası İnsanlık Köprüsü Derneği. Tüm hakları saklıdır.",
       transparency: "Kütük No: 34-291-110 · Vergi No: 8900485331 · MERSİS: 0890048533100001",
+      legal: ["Kullanım Şartları", "Gizlilik Politikası", "Şeffaflık", "Basın İletişim"],
     },
   },
 };

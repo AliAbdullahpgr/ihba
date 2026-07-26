@@ -1,6 +1,5 @@
 "use client";
 
-import { Eye, Target } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Reveal } from "@/app/components/Reveal";
 import { SectionHeader } from "@/app/components/SectionHeader";
@@ -9,49 +8,49 @@ export function About() {
   const { t } = useI18n();
 
   return (
-    <section id="about" className="bg-white py-16 lg:py-24">
+    <section id="about" className="bg-white py-20 lg:py-28">
       <div className="container-site">
-        <SectionHeader align="center" title={t.about.title} />
+        <SectionHeader
+          label={t.nav.about}
+          title={t.about.title}
+          lede={t.about.lede}
+        />
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">
-          <Reveal>
-            <article className="h-full rounded-2xl border border-line bg-white p-8 lg:p-10">
-              <span className="grid size-11 place-items-center rounded-full bg-gold-mist text-gold-deep">
-                <Target className="h-5 w-5" aria-hidden="true" />
-              </span>
-              <h3 className="mt-5 font-display text-xl font-bold text-navy-ink">
-                {t.about.missionLabel}
+        {/* Mission and vision as two ruled columns rather than boxed cards. */}
+        <div className="mt-16 grid gap-12 border-t border-line pt-12 lg:grid-cols-2 lg:gap-16">
+          {[
+            { label: t.about.missionLabel, text: t.about.missionText },
+            { label: t.about.visionLabel, text: t.about.visionText },
+          ].map((block) => (
+            <Reveal key={block.label}>
+              <h3 className="font-display text-2xl font-medium text-navy-ink">
+                {block.label}
               </h3>
-              <p className="mt-3 text-ink/70 leading-relaxed">{t.about.missionText}</p>
-            </article>
-          </Reveal>
-
-          <Reveal>
-            <article className="h-full rounded-2xl border border-line bg-white p-8 lg:p-10">
-              <span className="grid size-11 place-items-center rounded-full bg-gold-mist text-gold-deep">
-                <Eye className="h-5 w-5" aria-hidden="true" />
-              </span>
-              <h3 className="mt-5 font-display text-xl font-bold text-navy-ink">
-                {t.about.visionLabel}
-              </h3>
-              <p className="mt-3 text-ink/70 leading-relaxed">{t.about.visionText}</p>
-            </article>
-          </Reveal>
+              <p className="mt-4 text-base leading-relaxed text-ink/70">
+                {block.text}
+              </p>
+            </Reveal>
+          ))}
         </div>
 
-        <Reveal className="mt-10 text-center">
-          <p className="text-sm font-bold text-navy-ink">{t.about.valuesLabel}</p>
-          <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2.5">
-            {t.about.values.map((value) => (
-              <span
+        {/* Values as a numbered ledger — a list, not chips. */}
+        <Reveal className="mt-16 border-t border-line pt-12">
+          <p className="eyebrow text-ink/50">{t.about.valuesLabel}</p>
+          <ol className="mt-6 grid gap-x-12 sm:grid-cols-2 lg:grid-cols-3">
+            {t.about.values.map((value, index) => (
+              <li
                 key={value}
-                className="flex items-center gap-2 text-sm font-semibold text-navy-ink"
+                className="flex items-baseline gap-4 border-b border-line py-4"
               >
-                <span className="size-1.5 rounded-full bg-azure" aria-hidden="true" />
-                {value}
-              </span>
+                <span className="font-display text-sm font-medium text-gold-deep">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="text-base font-semibold text-navy-ink">
+                  {value}
+                </span>
+              </li>
             ))}
-          </div>
+          </ol>
         </Reveal>
       </div>
     </section>

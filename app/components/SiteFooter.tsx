@@ -1,82 +1,156 @@
 "use client";
 
-import { Mail, MapPin, Phone, X } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  LinkedinIcon,
-  YoutubeIcon,
-} from "@/app/components/SocialIcons";
+import { Mark } from "@/app/components/primitives";
 
 export function SiteFooter() {
   const { t } = useI18n();
+  const { headline } = t.hero;
 
   return (
-    <footer id="contact" className="bg-navy-deep pt-16 pb-8">
-      <div className="container-site">
-        <div className="grid gap-10 pb-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <img src="/brand/logo-white.png" alt="IHBA" className="h-11 w-auto" />
-            <p className="mt-4 text-sm text-white/60">{t.utility.tagline}</p>
-            <div className="mt-6 space-y-2.5 text-sm text-white/75">
-              <div className="flex items-start gap-2">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" aria-hidden="true" />
-                <span>{t.footer.addressLine}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 shrink-0 text-gold" aria-hidden="true" />
-                <a href={`tel:${t.utility.phone.replace(/\s+/g, "")}`} className="hover:text-gold transition-colors">
-                  {t.utility.phone}
-                </a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 shrink-0 text-gold" aria-hidden="true" />
-                <a href={`mailto:${t.utility.email}`} className="hover:text-gold transition-colors">
-                  {t.utility.email}
-                </a>
-              </div>
-            </div>
-            <div className="mt-6 flex items-center gap-3">
-              <a href="#" aria-label={t.social.facebook} className="grid size-10 place-items-center rounded-md border border-white/15 text-white transition-colors hover:bg-gold hover:text-white hover:border-gold">
-                <FacebookIcon className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label={t.social.instagram} className="grid size-10 place-items-center rounded-md border border-white/15 text-white transition-colors hover:bg-gold hover:text-white hover:border-gold">
-                <InstagramIcon className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label={t.social.twitter} className="grid size-10 place-items-center rounded-md border border-white/15 text-white transition-colors hover:bg-gold hover:text-white hover:border-gold">
-                <X className="h-4 w-4" aria-hidden="true" />
-              </a>
-              <a href="#" aria-label={t.social.linkedin} className="grid size-10 place-items-center rounded-md border border-white/15 text-white transition-colors hover:bg-gold hover:text-white hover:border-gold">
-                <LinkedinIcon className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label={t.social.youtube} className="grid size-10 place-items-center rounded-md border border-white/15 text-white transition-colors hover:bg-gold hover:text-white hover:border-gold">
-                <YoutubeIcon className="h-4 w-4" />
-              </a>
-            </div>
+    <footer id="contact" className="bg-paper-warm/60">
+      <div className="container-site pt-16">
+        {/* Mark and mission, restated — the page closes on the line it opened with. */}
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-2">
+            <img
+              src="/brand/logo-horizontal.png"
+              alt="IHBA"
+              className="h-14 w-auto"
+            />
           </div>
 
-          {t.footer.columns.map((column) => (
-            <div key={column.header} className="lg:col-span-2">
-              <h3 className="text-sm font-bold text-white mb-4">
+          <p className="font-display text-lg font-medium leading-relaxed text-navy-ink lg:col-span-5 lg:border-r lg:border-navy-ink/15 lg:pr-10">
+            {headline.pre}
+            <Mark tone="azure">{headline.highlight}</Mark>
+            {headline.post}
+          </p>
+
+          <nav
+            className="lg:col-span-4 lg:col-start-9"
+            aria-label="Footer quick links"
+          >
+            <ul className="space-y-2.5 text-sm text-navy-ink/80">
+              {[t.nav.about, t.nav.programs, t.nav.projects, t.nav.newsroom].map(
+                (link) => (
+                  <li key={link}>
+                    <a
+                      href="#top"
+                      className="transition-colors hover:text-azure-deep"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                )
+              )}
+            </ul>
+          </nav>
+        </div>
+
+        {/* Link columns, divided by vertical rules. */}
+        <div className="mt-14 grid gap-10 border-t border-navy-ink/15 pt-12 md:grid-cols-3 md:gap-0">
+          {t.footer.columns.map((column, index) => (
+            <div
+              key={column.header}
+              className={`md:px-10 ${
+                index === 0 ? "md:pl-0" : "md:border-l md:border-navy-ink/15"
+              }`}
+            >
+              <h3 className="font-display text-base font-medium text-navy-ink">
                 {column.header}
               </h3>
-              <ul className="space-y-2.5 text-sm text-white/60">
+              <ul className="mt-5 space-y-2.5 text-sm text-navy-ink/70">
                 {column.links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="transition-colors hover:text-gold">
+                    <a
+                      href="#top"
+                      className="transition-colors hover:text-azure-deep"
+                    >
                       {link}
                     </a>
                   </li>
                 ))}
               </ul>
+
+              {index === 0 && (
+                <address className="mt-8 space-y-2.5 text-sm not-italic text-navy-ink/70">
+                  <span className="flex items-start gap-2">
+                    <MapPin
+                      className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep"
+                      aria-hidden="true"
+                    />
+                    {t.footer.addressLine}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Phone
+                      className="h-4 w-4 shrink-0 text-gold-deep"
+                      aria-hidden="true"
+                    />
+                    <a
+                      href={`tel:${t.utility.phone.replace(/\s+/g, "")}`}
+                      className="underline decoration-navy-ink/30 underline-offset-4 transition-colors hover:text-azure-deep"
+                    >
+                      {t.utility.phone}
+                    </a>
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Mail
+                      className="h-4 w-4 shrink-0 text-gold-deep"
+                      aria-hidden="true"
+                    />
+                    <a
+                      href={`mailto:${t.utility.email}`}
+                      className="underline decoration-navy-ink/30 underline-offset-4 transition-colors hover:text-azure-deep"
+                    >
+                      {t.utility.email}
+                    </a>
+                  </span>
+                </address>
+              )}
             </div>
           ))}
         </div>
 
-        <div className="flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/40 md:flex-row md:justify-between">
+        {/* Accountability row. */}
+        <div className="mt-12 grid gap-8 border-t border-navy-ink/15 pt-10 text-sm text-navy-ink/70 md:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <p className="font-semibold text-navy-ink">
+              {t.footer.reportTitle}
+            </p>
+            <p className="mt-2 leading-relaxed">{t.footer.reportCopy}</p>
+          </div>
+          <div>
+            <p className="font-semibold text-navy-ink">
+              {t.footer.contactLabel}
+            </p>
+            <a
+              href={`mailto:${t.utility.email}`}
+              className="mt-2 inline-block underline decoration-navy-ink/30 underline-offset-4 transition-colors hover:text-azure-deep"
+            >
+              {t.utility.email}
+            </a>
+          </div>
+          <p className="leading-relaxed lg:text-right">
+            {t.footer.transparency}
+          </p>
+        </div>
+
+        {/* Legal row. */}
+        <div className="mt-10 flex flex-col gap-4 border-t border-navy-ink/15 py-6 text-xs text-navy-ink/55 md:flex-row md:items-center md:justify-between">
           <p>{t.footer.copyright}</p>
-          <p>{t.footer.transparency}</p>
+          <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            {t.footer.legal.map((item) => (
+              <li key={item}>
+                <a
+                  href="#top"
+                  className="transition-colors hover:text-azure-deep"
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

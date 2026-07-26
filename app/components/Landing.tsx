@@ -3,10 +3,10 @@
 import { LanguageProvider } from "@/app/components/LanguageProvider";
 import { SiteHeader } from "@/app/components/SiteHeader";
 import { Hero } from "@/app/components/Hero";
-import { Ticker } from "@/app/components/Ticker";
+import { FocusMosaic } from "@/app/components/FocusMosaic";
 import { FactsStrip } from "@/app/components/FactsStrip";
+import { Ticker } from "@/app/components/Ticker";
 import { About } from "@/app/components/About";
-import { Programs } from "@/app/components/Programs";
 import { Projects } from "@/app/components/Projects";
 import { BridgeModel } from "@/app/components/BridgeModel";
 import { PresidentQuote } from "@/app/components/PresidentQuote";
@@ -19,11 +19,13 @@ export function Landing() {
     <LanguageProvider>
       <SiteHeader />
       <main>
+        {/* Hero and mosaic share one continuous band so the feature card can
+            straddle them, then the stats close the band out. */}
         <Hero />
-        <Ticker />
+        <FocusMosaic />
         <FactsStrip />
+        <Ticker />
         <About />
-        <Programs />
         <Projects />
         <BridgeModel />
         <PresidentQuote />

@@ -7,16 +7,14 @@ export function FactsStrip() {
   const { t } = useI18n();
 
   return (
-    <section id="impact" className="bg-paper-warm py-16">
-      <div className="container-site grid grid-cols-2 gap-8 lg:grid-cols-4">
+    <section id="impact" className="bg-paper-warm/50">
+      <div className="container-site grid grid-cols-2 gap-x-8 gap-y-12 pb-24 lg:grid-cols-4 lg:pb-28">
         {t.facts.stats.map((stat) => (
-          <Reveal key={stat.label} className="text-center lg:text-left">
-            <p className="font-display font-bold text-6xl text-navy lg:text-7xl">
+          <Reveal key={stat.label}>
+            <p className="font-display text-5xl font-medium tracking-[-0.03em] text-navy-ink lg:text-6xl">
               {stat.value}
             </p>
-            <p className="mt-2 text-xs font-bold uppercase tracking-widest text-ink/55">
-              {stat.label}
-            </p>
+            <p className="eyebrow mt-3 text-ink/55">{stat.label}</p>
           </Reveal>
         ))}
       </div>

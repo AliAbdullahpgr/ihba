@@ -1,9 +1,8 @@
 "use client";
 
-import { MapPin } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Reveal } from "@/app/components/Reveal";
-import { SectionHeader } from "@/app/components/SectionHeader";
+import { ArrowLink, Tag, TagRow } from "@/app/components/primitives";
 
 const images = [
   {
@@ -20,54 +19,63 @@ const images = [
   },
 ];
 
-const badgeClasses: Record<string, string> = {
-  planning: "bg-azure-soft/60 text-navy",
-  active: "bg-gold-soft text-navy-ink",
-  seasonal: "bg-navy text-white",
-};
+const tagTones = {
+  planning: "azure",
+  active: "gold",
+  seasonal: "navy",
+} as const;
 
 export function Projects() {
   const { t } = useI18n();
 
   return (
-    <section id="projects" className="bg-white py-16 lg:py-24">
-      <div className="container-site">
-        <SectionHeader align="center" title={t.projects.title} />
+    <section id="projects" className="bg-white pb-20 lg:pb-28">
+      <div className="container-site border-t border-line pt-16 lg:pt-20">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+          {/* Label rail: sits alongside the cards and holds the section voice. */}
+          <div className="lg:col-span-3">
+            <p className="eyebrow text-ink/50">{t.projects.label}</p>
+            <h2 className="display-xl mt-6 text-2xl text-navy-ink sm:text-[1.75rem]">
+              {t.projects.lede}
+            </h2>
+            <ArrowLink href="#contact" className="mt-8">
+              {t.projects.browseAll}
+            </ArrowLink>
+          </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {t.projects.cards.map((card, index) => (
-            <Reveal key={card.title}>
-              <article className="h-full overflow-hidden rounded-2xl border border-line bg-white transition-all hover:border-azure/60 hover:-translate-y-0.5">
-                <div className="rounded-t-[9rem] rounded-b-none overflow-hidden bg-paper-warm">
-                  <img
-                    src={images[index].src}
-                    alt={images[index].alt}
-                    className="aspect-[4/3] w-full object-cover"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between gap-2">
-                    <span
-                      className={`rounded-md px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ${badgeClasses[card.badgeKey]}`}
-                    >
-                      {card.badge}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-ink/50">
-                      <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
-                      {card.region}
+          <div className="grid gap-8 sm:grid-cols-2 lg:col-span-9 lg:col-start-4 lg:grid-cols-3">
+            {t.projects.cards.map((card, index) => (
+              <Reveal key={card.title}>
+                <article className="flex h-full flex-col">
+                  <div className="relative">
+                    <img
+                      src={images[index].src}
+                      alt={images[index].alt}
+                      className="aspect-[4/3] w-full object-cover"
+                    />
+                    <span className="absolute left-0 top-0">
+                      <Tag tone={tagTones[card.badgeKey]}>{card.badge}</Tag>
                     </span>
                   </div>
-                  <h3 className="mt-3 font-display text-lg font-bold text-navy-ink">
+
+                  <h3 className="mt-5 font-display text-lg font-medium leading-snug text-navy-ink">
                     {card.title}
                   </h3>
-                  <p className="mt-2 text-sm text-ink/65">{card.summary}</p>
-                  <p className="mt-4 text-xs font-semibold text-ink/55">
-                    {card.chips.join(" · ")}
+                  <p className="mt-1.5 text-xs font-semibold text-ink/50">
+                    {card.region}
                   </p>
-                </div>
-              </article>
-            </Reveal>
-          ))}
+
+                  <div className="mt-4 border-y border-line py-3">
+                    <TagRow items={card.chips} />
+                  </div>
+
+                  <p className="mt-4 text-sm leading-relaxed text-ink/65">
+                    {card.summary}
+                  </p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>

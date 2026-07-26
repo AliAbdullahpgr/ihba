@@ -7,14 +7,15 @@ export function Ticker() {
   const items = t.ticker.items;
 
   return (
-    <div className="bg-navy-deep py-3.5 overflow-hidden">
-      <div className="flex w-max animate-marquee gap-8" aria-hidden="true">
+    <div className="overflow-hidden border-y border-navy-ink bg-white py-3">
+      <div className="flex w-max animate-marquee gap-10" aria-hidden="true">
         {[...items, ...items].map((item, index) => (
           <span
             key={`${item}-${index}`}
-            className="flex items-center gap-8 text-sm font-bold uppercase tracking-[0.2em] text-gold/90 whitespace-nowrap"
+            className="flex items-center gap-10 whitespace-nowrap text-xs font-bold uppercase tracking-[0.18em] text-navy-ink"
           >
-            {item} <span className="text-gold">✦</span>
+            {item}
+            <span className="size-1.5 shrink-0 bg-gold" />
           </span>
         ))}
       </div>
