@@ -8,7 +8,23 @@ export const bundledMedia = {
     publicId: "",
   },
   ramadanProgramme: {
-    url: "/images/generated/project-ramadan-programme.webp",
+    url: "/images/field-ramadan-iftar-wide.webp",
+    publicId: "",
+  },
+  fieldRamadanIftar: {
+    url: "/images/field-ramadan-iftar-wide.webp",
+    publicId: "",
+  },
+  ramadanProgrammeAlternate: {
+    url: "/images/field-ramadan-iftar.webp",
+    publicId: "",
+  },
+  solarWaterPump: {
+    url: "/images/field-solar-water-pump.webp",
+    publicId: "",
+  },
+  cleanWaterOpening: {
+    url: "/images/field-clean-water-opening.webp",
     publicId: "",
   },
   studentSupport: {
@@ -16,13 +32,15 @@ export const bundledMedia = {
     publicId: "",
   },
   volunteerTeam: {
-    url: "/images/generated/volunteer-team.webp",
+    url: "/images/field-team-pakistan.webp",
     publicId: "",
   },
-  // Empty until an admin uploads a portrait; the president page hides the frame
-  // while this is blank.
+  fieldTeamPakistan: {
+    url: "/images/field-team-pakistan.webp",
+    publicId: "",
+  },
   presidentPortrait: {
-    url: "",
+    url: "/images/president-abdullah-serenli.webp",
     publicId: "",
   },
 };
@@ -34,7 +52,12 @@ export const mediaLabels: Record<SiteMediaKey, string> = {
   hero: "Homepage and about hero",
   educationCentre: "Education centre",
   ramadanProgramme: "Ramadan programme",
+  fieldRamadanIftar: "Ramadan iftar field photograph",
+  ramadanProgrammeAlternate: "Ramadan programme (alternate)",
+  solarWaterPump: "Solar-powered water pump",
+  cleanWaterOpening: "Clean-water opening",
   studentSupport: "Student support",
   volunteerTeam: "Volunteer team",
+  fieldTeamPakistan: "IHBA field team in Pakistan",
   presidentPortrait: "President portrait",
 };

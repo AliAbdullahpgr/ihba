@@ -233,6 +233,63 @@ export const newsTranslationRelations = relations(
   })
 );
 
+export const galleryItems = sqliteTable(
+  "gallery_items",
+  {
+    id: text("id").primaryKey(),
+    state: text("state", {
+      enum: ["draft", "published", "archived"],
+    })
+      .default("draft")
+      .notNull(),
+    imageUrl: text("image_url").notNull(),
+    imagePublicId: text("image_public_id"),
+    layout: text("layout", {
+      enum: ["portrait", "landscape", "wide"],
+    })
+      .default("landscape")
+      .notNull(),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [
+    index("gallery_state_order_idx").on(table.state, table.sortOrder),
+  ]
+);
+
+export const galleryTranslations = sqliteTable(
+  "gallery_translations",
+  {
+    galleryId: text("gallery_id")
+      .notNull()
+      .references(() => galleryItems.id, { onDelete: "cascade" }),
+    locale: text("locale", { enum: ["en", "tr"] }).notNull(),
+    category: text("category").notNull(),
+    place: text("place").notNull(),
+    caption: text("caption").notNull(),
+    imageAlt: text("image_alt").notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.galleryId, table.locale] }),
+    index("gallery_translation_locale_idx").on(table.locale),
+  ]
+);
+
+export const galleryRelations = relations(galleryItems, ({ many }) => ({
+  galleryTranslations: many(galleryTranslations),
+}));
+
+export const galleryTranslationRelations = relations(
+  galleryTranslations,
+  ({ one }) => ({
+    galleryItem: one(galleryItems, {
+      fields: [galleryTranslations.galleryId],
+      references: [galleryItems.id],
+    }),
+  })
+);
+
 export const boardMembers = sqliteTable("board_members", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -324,6 +381,10 @@ export const schema = {
   newsTranslations,
   newsRelations,
   newsTranslationRelations,
+  galleryItems,
+  galleryTranslations,
+  galleryRelations,
+  galleryTranslationRelations,
   boardMembers,
   contactSubmissions,
   volunteerApplications,

@@ -79,6 +79,7 @@ export interface Content {
     areas: string;
     projects: string;
     news: string;
+    gallery: string;
     donate: string;
     volunteer: string;
     contact: string;
@@ -152,6 +153,7 @@ export interface Content {
   areasPage: PageIntro & { items: AreaDetail[] };
   projectsPage: PageIntro & { details: ProjectDetail[]; moreTitle: string };
   newsPage: PageIntro & { empty: string; emptyCta: string; items?: NewsItem[] };
+  galleryPage: PageIntro;
   donatePage: PageIntro & {
     body: string[];
     accountsNote: string;
@@ -184,6 +186,7 @@ export const content: Record<Lang, Content> = {
       areas: "Our Areas of Work",
       projects: "Projects",
       news: "News",
+      gallery: "Gallery",
       donate: "Donate",
       volunteer: "Volunteer",
       contact: "Contact",
@@ -427,6 +430,11 @@ export const content: Record<Lang, Content> = {
         "We are preparing our first field reports. Until they are published, our current work is documented on the project pages.",
       emptyCta: "See our projects",
     },
+    galleryPage: {
+      title: "Field Gallery",
+      lede:
+        "A visual record of shared meals, clean-water work and the people carrying IHBA's work into communities.",
+    },
     donatePage: {
       title: "Donate",
       lede:
@@ -493,6 +501,7 @@ export const content: Record<Lang, Content> = {
       areas: "Faaliyet Alanlarımız",
       projects: "Projeler",
       news: "Haberler",
+      gallery: "Galeri",
       donate: "Bağış",
       volunteer: "Gönüllülük",
       contact: "İletişim",
@@ -729,6 +738,11 @@ export const content: Record<Lang, Content> = {
       empty:
         "İlk saha raporlarımızı hazırlıyoruz. Yayınlanana kadar güncel çalışmalarımız proje sayfalarında yer alıyor.",
       emptyCta: "Projelerimize bakın",
+    },
+    galleryPage: {
+      title: "Saha Galerisi",
+      lede:
+        "Paylaşılan sofraların, temiz su çalışmalarının ve IHBA'nın hizmetini topluluklara ulaştıran insanların görsel kaydı.",
     },
     donatePage: {
       title: "Bağış",

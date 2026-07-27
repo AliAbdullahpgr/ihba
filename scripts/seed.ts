@@ -7,11 +7,14 @@ import { db } from "../lib/db/client";
 import {
   account,
   boardMembers,
+  galleryItems,
+  galleryTranslations,
   projectTranslations,
   projects,
   siteContent,
   user,
 } from "../lib/db/schema";
+import { bundledGalleryItems } from "../lib/gallery";
 import { dict, type Lang } from "../lib/i18n";
 
 const ADMIN_EMAIL = "admin@ihba.local";
@@ -80,6 +83,32 @@ async function seedContent() {
   }
 }
 
+async function seedGallery() {
+  for (const item of bundledGalleryItems) {
+    await db
+      .insert(galleryItems)
+      .values({
+        id: item.id,
+        state: "published",
+        imageUrl: item.imageUrl,
+        imagePublicId: null,
+        layout: item.layout,
+        sortOrder: item.sortOrder,
+      })
+      .onConflictDoNothing();
+
+    for (const translation of item.galleryTranslations) {
+      await db
+        .insert(galleryTranslations)
+        .values({
+          galleryId: item.id,
+          ...translation,
+        })
+        .onConflictDoNothing();
+    }
+  }
+}
+
 async function seedAdmin() {
   const existing = await db.query.user.findFirst({
     where: eq(user.email, ADMIN_EMAIL),
@@ -116,6 +145,7 @@ async function seedAdmin() {
 
 async function main() {
   await seedContent();
+  await seedGallery();
   await seedAdmin();
   console.log("Seed complete.");
   console.log(`Admin email: ${ADMIN_EMAIL}`);

@@ -32,8 +32,8 @@ function getSpecs(media: SiteMedia): CardSpec[] {
   return [
   {
     rail: "left",
-    image: media.ramadanProgramme.url,
-    alt: "Community volunteers preparing food parcels and shared meals",
+    image: media.fieldRamadanIftar.url,
+    alt: "A large IHBA Ramadan iftar gathering in Pakistan",
     ratio: "aspect-[16/9]",
   },
   {
@@ -52,8 +52,8 @@ function getSpecs(media: SiteMedia): CardSpec[] {
   { rail: "right", image: null, alt: "", ratio: "" },
   {
     rail: "left",
-    image: media.volunteerTeam.url,
-    alt: "A diverse volunteer team assembling school and essential-supply kits",
+    image: media.fieldTeamPakistan.url,
+    alt: "IHBA volunteers and local partners together in Pakistan",
     ratio: "aspect-[16/9]",
   },
   { rail: "right", image: null, alt: "", ratio: "" },
@@ -168,7 +168,7 @@ export function FocusMosaic() {
           {t.programs.signposts.map((signpost, index) => (
             <CardLink
               key={signpost.title}
-              href={index === 0 ? "/news" : "/volunteer"}
+              href={index === 0 ? "/gallery" : "/volunteer"}
             >
               <CardTitle className="text-xl">{signpost.title}</CardTitle>
               <p className="mt-2 max-w-md text-sm leading-relaxed text-ink/65">

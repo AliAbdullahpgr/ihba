@@ -9,8 +9,8 @@ export function AreasPage() {
   const { t } = useI18n();
   const images: Record<number, { src: string; alt: string }> = {
     0: {
-      src: t.media.ramadanProgramme.url,
-      alt: "Community volunteers preparing food parcels and shared meals",
+      src: t.media.fieldRamadanIftar.url,
+      alt: "A large IHBA Ramadan iftar gathering in Pakistan",
     },
     1: {
       src: t.media.studentSupport.url,
@@ -20,9 +20,17 @@ export function AreasPage() {
       src: t.media.educationCentre.url,
       alt: "Teacher guiding girls and boys as they study together in a classroom",
     },
+    2: {
+      src: t.media.solarWaterPump.url,
+      alt: "A solar-powered pump carrying water into a village channel in Pakistan",
+    },
+    4: {
+      src: t.media.cleanWaterOpening.url,
+      alt: "Families gathered for the opening of an IHBA clean-water well in Pakistan",
+    },
     5: {
-      src: t.media.volunteerTeam.url,
-      alt: "A diverse volunteer team assembling school and essential-supply kits",
+      src: t.media.fieldTeamPakistan.url,
+      alt: "IHBA volunteers and local partners together in Pakistan",
     },
   };
 

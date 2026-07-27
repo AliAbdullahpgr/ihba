@@ -5,13 +5,15 @@ import { eq } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import type { Copy } from "@/app/components/LanguageProvider";
 import { requireAdmin } from "@/lib/auth-guard";
+import { content } from "@/lib/content";
 import { db } from "@/lib/db/client";
 import {
   auditLogs,
   boardMembers,
   contactSubmissions,
+  galleryItems,
+  galleryTranslations,
   newsArticles,
   newsTranslations,
   projectTranslations,
@@ -20,7 +22,8 @@ import {
   siteMedia,
   volunteerApplications,
 } from "@/lib/db/schema";
-import type { Lang } from "@/lib/i18n";
+import { dict } from "@/lib/i18n";
+import { mergeContentDefaults } from "@/lib/merge-content";
 import { mediaLabels, type SiteMediaKey } from "@/lib/media";
 
 const stateSchema = z.enum(["draft", "published", "archived"]);
@@ -273,6 +276,97 @@ export async function archiveNews(form: FormData) {
   redirect("/admin/news");
 }
 
+export async function saveGalleryItem(form: FormData) {
+  const session = await requireAdmin();
+  const id = text(form, "id") || randomUUID();
+  const state = stateSchema.parse(text(form, "state"));
+  const layout = z
+    .enum(["portrait", "landscape", "wide"])
+    .parse(text(form, "layout"));
+  const imageUrl = z.string().min(1).parse(text(form, "imageUrl"));
+  const imagePublicId = text(form, "imagePublicId") || null;
+  const sortOrder = z.coerce.number().int().min(0).parse(text(form, "sortOrder"));
+
+  const turkish = {
+    locale: "tr" as const,
+    category: z.string().min(2).parse(text(form, "category_tr")),
+    place: z.string().min(2).parse(text(form, "place_tr")),
+    caption: z.string().min(10).parse(text(form, "caption_tr")),
+    imageAlt: z.string().min(3).parse(text(form, "imageAlt_tr")),
+  };
+  const hasEnglish = [
+    "category_en",
+    "place_en",
+    "caption_en",
+    "imageAlt_en",
+  ].some((name) => Boolean(text(form, name)));
+  const english = hasEnglish
+    ? {
+        locale: "en" as const,
+        category: text(form, "category_en") || turkish.category,
+        place: text(form, "place_en") || turkish.place,
+        caption: text(form, "caption_en") || turkish.caption,
+        imageAlt: text(form, "imageAlt_en") || turkish.imageAlt,
+      }
+    : null;
+  const translations = english ? [turkish, english] : [turkish];
+
+  await db.transaction(async (tx) => {
+    await tx
+      .insert(galleryItems)
+      .values({
+        id,
+        state,
+        imageUrl,
+        imagePublicId,
+        layout,
+        sortOrder,
+      })
+      .onConflictDoUpdate({
+        target: galleryItems.id,
+        set: {
+          state,
+          imageUrl,
+          imagePublicId,
+          layout,
+          sortOrder,
+          updatedAt: new Date(),
+        },
+      });
+
+    for (const translation of translations) {
+      await tx
+        .insert(galleryTranslations)
+        .values({ galleryId: id, ...translation })
+        .onConflictDoUpdate({
+          target: [
+            galleryTranslations.galleryId,
+            galleryTranslations.locale,
+          ],
+          set: translation,
+        });
+    }
+  });
+
+  await audit(session.user.id, "save", "gallery_item", id);
+  revalidateTag("gallery");
+  revalidatePath("/gallery");
+  redirect("/admin/gallery");
+}
+
+export async function archiveGalleryItem(form: FormData) {
+  const session = await requireAdmin();
+  const id = text(form, "id");
+  await db
+    .update(galleryItems)
+    .set({ state: "archived", updatedAt: new Date() })
+    .where(eq(galleryItems.id, id));
+  await audit(session.user.id, "archive", "gallery_item", id);
+  revalidateTag("gallery");
+  revalidatePath("/gallery");
+  redirect("/admin/gallery");
+}
+
 export async function saveBoardMember(form: FormData) {
   const session = await requireAdmin();
   const id = text(form, "id") || randomUUID();
@@ -325,7 +419,10 @@ export async function saveSiteContent(form: FormData) {
   });
   if (!row) throw new Error("Site content has not been seeded");
 
-  const document = structuredClone(row.document) as Record<string, unknown>;
+  const document = mergeContentDefaults(
+    { ...dict[locale], ...content[locale] },
+    row.document
+  ) as Record<string, unknown>;
   for (const [key, value] of form.entries()) {
     if (!key.startsWith("field:") || typeof value !== "string") continue;
     const path = z
@@ -352,6 +449,7 @@ export async function saveSiteContent(form: FormData) {
     "/president",
     "/projects",
     "/news",
+    "/gallery",
     "/donate",
     "/volunteer",
     "/contact"

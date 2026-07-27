@@ -7,6 +7,7 @@ import { content } from "@/lib/content";
 import { db } from "@/lib/db/client";
 import {
   boardMembers,
+  galleryItems,
   newsArticles,
   newsTranslations,
   projects,
@@ -14,7 +15,9 @@ import {
   siteContent,
   siteMedia,
 } from "@/lib/db/schema";
+import { bundledGalleryItems, type PublicGalleryItem } from "@/lib/gallery";
 import { dict, type Lang } from "@/lib/i18n";
+import { mergeContentDefaults } from "@/lib/merge-content";
 import {
   bundledMedia,
   type SiteMedia,
@@ -99,7 +102,10 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
     const copies = structuredClone(fallback);
     for (const row of documents) {
       if (row.locale === "en" || row.locale === "tr") {
-        copies[row.locale] = row.document as unknown as Copy;
+        copies[row.locale] = mergeContentDefaults(
+          fallback[row.locale],
+          row.document
+        );
       }
     }
 
@@ -202,10 +208,35 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
   }
 }
 
-export const getSiteCopies = unstable_cache(readSiteCopies, ["site-copies"], {
+// Bump the key whenever the bundled copy/media shape gains fields. Reusing a
+// pre-change cached object would leave new routes with an older runtime shape.
+export const getSiteCopies = unstable_cache(readSiteCopies, ["site-copies-v2"], {
   tags: ["site-content"],
   revalidate: 300,
 });
+
+async function readPublicGalleryItems(): Promise<PublicGalleryItem[]> {
+  try {
+    const rows = await db.query.galleryItems.findMany({
+      where: eq(galleryItems.state, "published"),
+      with: { galleryTranslations: true },
+      orderBy: [asc(galleryItems.sortOrder), asc(galleryItems.createdAt)],
+    });
+    return rows.length ? rows : bundledGalleryItems;
+  } catch (error) {
+    console.error("Falling back to bundled gallery:", error);
+    return bundledGalleryItems;
+  }
+}
+
+export const getPublicGalleryItems = unstable_cache(
+  readPublicGalleryItems,
+  ["public-gallery-v1"],
+  {
+    tags: ["gallery"],
+    revalidate: 300,
+  }
+);
 
 export async function getPublicProject(slug: string) {
   return db.query.projects.findFirst({

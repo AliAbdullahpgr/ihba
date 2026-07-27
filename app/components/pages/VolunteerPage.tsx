@@ -34,8 +34,8 @@ export function VolunteerPage() {
             <Figure
               images={[
                 {
-                  src: t.media.volunteerTeam.url,
-                  alt: "A diverse volunteer team assembling school and essential-supply kits",
+                  src: t.media.fieldTeamPakistan.url,
+                  alt: "IHBA volunteers and local partners together in Pakistan",
                   caption: t.volunteerPage.photoCaption,
                 },
               ]}

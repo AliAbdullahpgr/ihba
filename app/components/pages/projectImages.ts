@@ -12,8 +12,8 @@ export const projectImages: Record<string, { src: string; alt: string }> = {
     alt: "University students reviewing applications together on campus",
   },
   "ramadan-qurban-programmes": {
-    src: "/images/generated/project-ramadan-programme.webp",
-    alt: "Community volunteers preparing food and shared meals together",
+    src: "/images/field-ramadan-iftar-wide.webp",
+    alt: "A large IHBA Ramadan iftar gathering in Pakistan",
   },
 };
 
@@ -24,8 +24,12 @@ export function resolveProjectImage(project: {
   slug: string;
   image?: { src: string; alt: string };
 }) {
+  const legacyRamadanImage =
+    project.slug === "ramadan-qurban-programmes" &&
+    project.image?.src === "/images/generated/project-ramadan-programme.webp";
+
   return (
-    project.image ??
+    (!legacyRamadanImage ? project.image : undefined) ??
     projectImages[project.slug] ?? {
       src: "/images/hero-light.svg",
       alt: project.slug,

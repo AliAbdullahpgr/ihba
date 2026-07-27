@@ -6,7 +6,7 @@ import { useI18n } from "@/app/components/LanguageProvider";
 import { Mark } from "@/app/components/primitives";
 
 export function SiteFooter() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { headline } = t.hero;
 
   const columns = [
@@ -33,6 +33,10 @@ export function SiteFooter() {
           label: project.title,
         })),
         { href: "/news", label: t.nav.news },
+        {
+          href: "/gallery",
+          label: t.nav.gallery ?? (lang === "tr" ? "Galeri" : "Gallery"),
+        },
       ],
     },
   ];
@@ -66,6 +70,10 @@ export function SiteFooter() {
                 { href: "/volunteer", label: t.nav.volunteer },
                 { href: "/projects", label: t.nav.projects },
                 { href: "/news", label: t.nav.news },
+                {
+                  href: "/gallery",
+                  label: t.nav.gallery ?? (lang === "tr" ? "Galeri" : "Gallery"),
+                },
               ].map((link) => (
                 <li key={link.href}>
                   <Link

@@ -8,6 +8,9 @@ import {
 } from "@/app/admin/components/AdminUi";
 import { db } from "@/lib/db/client";
 import { siteContent } from "@/lib/db/schema";
+import { content } from "@/lib/content";
+import { dict } from "@/lib/i18n";
+import { mergeContentDefaults } from "@/lib/merge-content";
 
 type Params = Promise<{ locale: string }>;
 type SearchParams = Promise<{ saved?: string }>;
@@ -66,7 +69,10 @@ export default async function EditContentPage({
   });
   if (!row) notFound();
   const saved = (await searchParams).saved === "1";
-  const document = row.document as Record<string, unknown>;
+  const document = mergeContentDefaults(
+    { ...dict[locale], ...content[locale] },
+    row.document
+  ) as Record<string, unknown>;
   const groups = Object.entries(document)
     .map(([key, value]) => ({ key, fields: flatten(value, [key]) }))
     .filter((group) => group.fields.length);

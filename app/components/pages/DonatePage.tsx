@@ -49,8 +49,8 @@ export function DonatePage() {
 
           <aside className="lg:col-span-4 lg:col-start-9">
             <img
-              src={t.media.ramadanProgramme.url}
-              alt="Community volunteers preparing food parcels and shared meals"
+              src={t.media.fieldRamadanIftar.url}
+              alt="A large IHBA Ramadan iftar gathering in Pakistan"
               className="arch aspect-[4/5] w-full object-cover"
             />
           </aside>

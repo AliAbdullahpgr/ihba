@@ -5,6 +5,7 @@ import {
   ContactRound,
   FileText,
   FolderKanban,
+  ImagePlus,
   Images,
   LayoutDashboard,
   LogOut,
@@ -23,10 +24,11 @@ const navigation = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
   { href: "/admin/news", label: "News", icon: Newspaper },
+  { href: "/admin/gallery", label: "Gallery", icon: Images },
   { href: "/admin/content", label: "Site content", icon: FileText },
   { href: "/admin/board", label: "Board", icon: UsersRound },
   { href: "/admin/submissions", label: "Submissions", icon: ContactRound },
-  { href: "/admin/media", label: "Media", icon: Images },
+  { href: "/admin/media", label: "Media", icon: ImagePlus },
   { href: "/admin/account", label: "Account", icon: Settings },
 ] as const;
 

@@ -14,7 +14,7 @@ interface NavLink {
 }
 
 export function SiteHeader() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   /* Which desktop dropdown is open, keyed by its top-level href. */
@@ -53,6 +53,10 @@ export function SiteHeader() {
       ],
     },
     { href: "/news", label: t.nav.news },
+    {
+      href: "/gallery",
+      label: t.nav.gallery ?? (lang === "tr" ? "Galeri" : "Gallery"),
+    },
     {
       href: "/contact",
       label: t.nav.contact,
