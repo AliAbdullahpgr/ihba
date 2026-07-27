@@ -12,7 +12,14 @@ export function BridgeModel() {
   const { t } = useI18n();
 
   return (
-    <section id="approach" className="bg-navy-deep py-20 text-white lg:py-28">
+    /*
+      Charcoal rather than navy-deep. The blue band was the one saturated
+      surface on a page of white and warm cream, so it read as a different
+      site's section dropped in; `navy-ink` is the same ramp taken to a
+      near-neutral, which lets the band do its job — one dark pause between two
+      light halves — without introducing a second brand colour at full strength.
+    */
+    <section id="approach" className="bg-navy-ink py-20 text-white lg:py-28">
       <div className="container-site">
         <h2 className="display-xl max-w-[24ch] text-3xl text-white sm:text-4xl">
           {t.approach.title}

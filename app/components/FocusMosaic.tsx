@@ -1,91 +1,100 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Reveal } from "@/app/components/Reveal";
 import {
-  ArrowDisc,
   CardLink,
   CardMedia,
   CardTitle,
-  ChipToggle,
   Mark,
 } from "@/app/components/primitives";
 import type { CategoryKey, ProgramCard } from "@/lib/i18n";
 import type { SiteMedia } from "@/lib/media";
 
-type Rail = "left" | "right";
-
 interface CardSpec {
-  rail: Rail;
-  image: string | null;
+  image: string;
   alt: string;
+  /** Column span at `lg`, against the section's 12-column track. */
+  span: string;
   ratio: string;
 }
 
 /**
- * Each card is composed rather than templated: which rail it lives in, whether
- * it carries an image, and at what crop. Two flex rails instead of one dense
- * grid means filtering can never open a hole in the middle of the mosaic.
+ * The seven fields, as a two-scale mosaic.
+ *
+ * The mosaic is worth keeping — a flat seven-up grid says nothing about the
+ * work. What was wrong before was the mechanism: two independent flex rails
+ * holding 3 and 4 cards, so nothing lined up across the gutter and the section
+ * read as two unrelated lists, with the wide rail rendering ~690px-wide 16/9
+ * photographs. Here every card sits on one 12-column track, so every edge in
+ * the section aligns with every other, and the variation is deliberate rather
+ * than emergent: a top row of three at 4-of-12 and a 4/3 crop, then a bottom
+ * row of four at 3-of-12 and a square. Two scales, two crops, no orphan cell,
+ * and the widest image is ~390px.
+ *
+ * Every field carries a photograph. Three of them used to render a bare rule
+ * where the others had an image, which made the section look half-loaded — a
+ * section is either photographic throughout or it is not.
  */
 function getSpecs(media: SiteMedia): CardSpec[] {
+  const lead = { span: "lg:col-span-4", ratio: "aspect-[4/3]" };
+  const rest = { span: "lg:col-span-3", ratio: "aspect-square" };
+
   return [
-  {
-    rail: "left",
-    image: media.fieldRamadanIftar.url,
-    alt: "A large IHBA Ramadan iftar gathering in Pakistan",
-    ratio: "aspect-[16/9]",
-  },
-  {
-    rail: "left",
-    image: media.studentSupport.url,
-    alt: "University students reviewing applications together on campus",
-    ratio: "aspect-[16/9]",
-  },
-  { rail: "right", image: null, alt: "", ratio: "" },
-  {
-    rail: "right",
-    image: media.educationCentre.url,
-    alt: "Teacher guiding girls and boys as they study together in a classroom",
-    ratio: "aspect-[4/3]",
-  },
-  { rail: "right", image: null, alt: "", ratio: "" },
-  {
-    rail: "left",
-    image: media.fieldTeamPakistan.url,
-    alt: "IHBA volunteers and local partners together in Pakistan",
-    ratio: "aspect-[16/9]",
-  },
-  { rail: "right", image: null, alt: "", ratio: "" },
+    {
+      image: media.fieldRamadanIftar.url,
+      alt: "A large IHBA Ramadan iftar gathering in Pakistan",
+      ...lead,
+    },
+    {
+      image: media.educationCentre.url,
+      alt: "Teacher guiding girls and boys as they study together in a classroom",
+      ...lead,
+    },
+    {
+      image: media.solarWaterPump.url,
+      alt: "A solar-powered water pump installed for a rural community",
+      ...lead,
+    },
+    {
+      image: media.studentSupport.url,
+      alt: "University students reviewing applications together on campus",
+      ...rest,
+    },
+    {
+      image: media.cleanWaterOpening.url,
+      alt: "Residents gathering at the opening of a clean-water point",
+      ...rest,
+    },
+    {
+      image: media.volunteerTeam.url,
+      alt: "IHBA volunteers preparing supplies together",
+      ...rest,
+    },
+    {
+      image: media.fieldTeamPakistan.url,
+      alt: "IHBA volunteers and local partners together in Pakistan",
+      ...rest,
+    },
   ];
 }
 
 function MosaicCard({
   card,
   spec,
-  index,
   categoryLabel,
 }: {
   card: ProgramCard;
   spec: CardSpec;
-  index: number;
   categoryLabel: string;
 }) {
   return (
-    <Reveal>
+    <Reveal className={spec.span}>
       {/* The whole card is one link into the areas of work. */}
       <CardLink href="/areas-of-work">
-        {spec.image ? (
-          <CardMedia src={spec.image} alt={spec.alt} ratio={spec.ratio} />
-        ) : (
-          <p className="font-display text-6xl font-medium tracking-[-0.03em] text-navy-ink/15 transition-colors group-hover:text-navy-ink/30">
-            {String(index + 1).padStart(2, "0")}
-          </p>
-        )}
-
+        <CardMedia src={spec.image} alt={spec.alt} ratio={spec.ratio} />
         <p className="eyebrow mt-5 text-gold-deep">{categoryLabel}</p>
-        <CardTitle className="mt-2 text-xl">{card.title}</CardTitle>
-        <p className="mt-2 text-sm leading-relaxed text-ink/65">{card.blurb}</p>
+        <CardTitle className="mt-2 text-lg">{card.title}</CardTitle>
       </CardLink>
     </Reveal>
   );
@@ -93,25 +102,20 @@ function MosaicCard({
 
 export function FocusMosaic() {
   const { t } = useI18n();
-  const [filter, setFilter] = useState<CategoryKey | "all">("all");
   const { title } = t.programs;
   const specs = getSpecs(t.media);
 
   const labelFor = (key: CategoryKey) =>
     t.programs.filters.find((option) => option.key === key)?.label ?? "";
 
-  const visible = useMemo(
-    () =>
-      t.programs.cards
-        .map((card, index) => ({ card, index, spec: specs[index] }))
-        .filter(({ card }) => filter === "all" || card.categoryKey === filter),
-    [t.programs.cards, t.media, filter]
-  );
-
-  const railCards = (rail: Rail) =>
-    visible.filter(({ spec }) => spec.rail === rail);
-
   return (
+    /*
+      Opens the page's one warm band, which runs unbroken through About and the
+      president's quote. No filter row: every card lands on /areas-of-work, so
+      the chips let a visitor rearrange a seven-item list without ever leaving
+      the page — an interaction that cost a control strip and bought nothing.
+      Filtering belongs on the destination.
+    */
     <section id="programs" className="bg-paper-warm/50 py-20 lg:py-28">
       <div className="container-site">
         <h2 className="display-xl max-w-[22ch] text-3xl text-navy-ink sm:text-4xl">
@@ -120,67 +124,22 @@ export function FocusMosaic() {
           {title.post}
         </h2>
 
-        {/* The taxonomy is on show as an index, not hidden in a dropdown. */}
-        <div
-          className="mt-10 flex flex-wrap gap-2"
-          role="group"
-          aria-label={t.programs.filterLabel}
-        >
-          {t.programs.filters.map((option) => (
-            <ChipToggle
-              key={option.key}
-              active={filter === option.key}
-              onClick={() => setFilter(option.key)}
-            >
-              {option.label}
-            </ChipToggle>
+        {/*
+          One 12-column track carrying both scales. Below `lg` the spans do not
+          apply and the mosaic collapses to a plain one- then two-up stack,
+          which is the only thing that reads on a narrow screen anyway.
+        */}
+        <div className="mt-14 grid items-start gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-12">
+          {t.programs.cards.map((card, index) => (
+            <MosaicCard
+              key={card.title}
+              card={card}
+              spec={specs[index]}
+              categoryLabel={labelFor(card.categoryKey)}
+            />
           ))}
         </div>
 
-        <div className="mt-14 lg:grid lg:grid-cols-7 lg:gap-8">
-          <div className="flex flex-col gap-14 lg:col-span-4">
-            {railCards("left").map(({ card, index, spec }) => (
-              <MosaicCard
-                key={card.title}
-                card={card}
-                spec={spec}
-                index={index}
-                categoryLabel={labelFor(card.categoryKey)}
-              />
-            ))}
-          </div>
-
-          <div className="mt-14 flex flex-col gap-14 lg:col-span-3 lg:mt-0">
-            {railCards("right").map(({ card, index, spec }) => (
-              <MosaicCard
-                key={card.title}
-                card={card}
-                spec={spec}
-                index={index}
-                categoryLabel={labelFor(card.categoryKey)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Signposts: each a single clickable block on a plain hairline. */}
-        <div className="mt-20 grid gap-10 border-t border-navy-ink/15 pt-10 md:grid-cols-2 md:gap-16">
-          {t.programs.signposts.map((signpost, index) => (
-            <CardLink
-              key={signpost.title}
-              href={index === 0 ? "/gallery" : "/volunteer"}
-            >
-              <CardTitle className="text-xl">{signpost.title}</CardTitle>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-ink/65">
-                {signpost.copy}
-              </p>
-              <span className="mt-5 inline-flex items-center gap-3 text-sm font-semibold text-navy-ink">
-                <ArrowDisc />
-                {signpost.cta}
-              </span>
-            </CardLink>
-          ))}
-        </div>
       </div>
     </section>
   );

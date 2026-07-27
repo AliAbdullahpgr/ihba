@@ -210,7 +210,7 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
 
 // Bump the key whenever the bundled copy/media shape gains fields. Reusing a
 // pre-change cached object would leave new routes with an older runtime shape.
-export const getSiteCopies = unstable_cache(readSiteCopies, ["site-copies-v2"], {
+export const getSiteCopies = unstable_cache(readSiteCopies, ["site-copies-v3"], {
   tags: ["site-content"],
   revalidate: 300,
 });

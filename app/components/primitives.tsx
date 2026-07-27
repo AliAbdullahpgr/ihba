@@ -157,35 +157,6 @@ export function CardTitle({
   );
 }
 
-/**
- * Filter chips. A visible set of options reads as an editorial index; a select
- * hides the taxonomy behind a click.
- */
-export function ChipToggle({
-  active,
-  children,
-  onClick,
-}: {
-  active: boolean;
-  children: React.ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`inline-flex min-h-11 items-center border px-4 py-2 text-xs font-bold uppercase tracking-[0.1em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure ${
-        active
-          ? "border-navy-ink bg-navy-ink text-white"
-          : "border-navy-ink/25 text-navy-ink/70 hover:border-navy-ink hover:text-navy-ink"
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
-
 /** The one circular element in the system: a filled disc holding an arrow. */
 export function ArrowDisc({
   className = "",

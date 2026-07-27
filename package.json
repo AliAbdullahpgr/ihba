@@ -11,7 +11,9 @@
     "db:seed": "tsx --env-file=.env.local scripts/seed.ts",
     "gallery:seed": "tsx --env-file=.env.local scripts/seed-gallery.ts",
     "gallery:media": "tsx --env-file=.env.local scripts/migrate-gallery-media.ts",
-    "media:migrate": "tsx --env-file=.env.local scripts/migrate-media.ts"
+    "media:migrate": "tsx --env-file=.env.local scripts/migrate-media.ts",
+    "news:batch": "tsx --env-file=.env.local scripts/publish-news-batch.ts",
+    "projects:expand": "tsx --env-file=.env.local scripts/expand-project-bodies.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",

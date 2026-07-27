@@ -22,9 +22,11 @@ function isYear(n: number) {
  * A figure that counts up the first time it scrolls into view.
  *
  * Years are left alone — watching 1970 tick up to 2025 reads as a loading bar,
- * not as an achievement — and so are single digits, where the animation is over
- * before the eye lands on it. Everything else counts, which means the strip
- * comes alive on its own as real programme numbers replace the founding facts.
+ * not as an achievement. Everything else counts, single digits included: the
+ * strip's real figures are 7, 3 and 2, and the old `>= 10` floor meant the one
+ * animation on the page never actually ran on the numbers that were there.
+ * Small figures get a shorter sweep so 0→7 reads as a count rather than as
+ * seven digits crawling.
  */
 export function Counter({
   value,
@@ -38,7 +40,7 @@ export function Counter({
   const ref = useRef<HTMLSpanElement | null>(null);
   const parsed = parse(value);
   const target = parsed?.target ?? 0;
-  const animatable = parsed !== null && target >= 10 && !isYear(target);
+  const animatable = parsed !== null && target >= 2 && !isYear(target);
   const [display, setDisplay] = useState<number | null>(null);
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export function Counter({
 
     let frame = 0;
     let start: number | null = null;
-    const duration = 1600;
+    const duration = target >= 10 ? 1600 : 900;
 
     const step = (now: number) => {
       start ??= now;

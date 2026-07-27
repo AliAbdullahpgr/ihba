@@ -3,7 +3,7 @@
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Reveal } from "@/app/components/Reveal";
 import { ArrowLink } from "@/app/components/primitives";
-import { PageHeader, PageSection } from "@/app/components/PageShell";
+import { PageHeader, PageSection, Prose } from "@/app/components/PageShell";
 
 export function AreasPage() {
   const { t } = useI18n();
@@ -38,6 +38,13 @@ export function AreasPage() {
     <>
       <PageHeader title={t.areasPage.title} lede={t.areasPage.lede} />
 
+      {/* Why the seven fields belong together, before they are listed apart. */}
+      <section className="bg-white pb-14 lg:pb-16">
+        <div className="container-site">
+          <Prose paragraphs={t.areasPage.intro} />
+        </div>
+      </section>
+
       {/*
         Each field is a numbered entry on the deck line: the number and title on
         the left bank, the description and any imagery on the right.
@@ -59,9 +66,20 @@ export function AreasPage() {
                   </div>
 
                   <div className="lg:col-span-5">
-                    <p className="text-base leading-relaxed text-ink/75">
+                    {/* The blurb stands as the standfirst; the body carries the substance. */}
+                    <p className="text-base font-medium leading-relaxed text-navy-ink">
                       {item.blurb}
                     </p>
+                    <div className="mt-5 space-y-4">
+                      {item.body.map((paragraph) => (
+                        <p
+                          key={paragraph}
+                          className="text-sm leading-relaxed text-ink/70"
+                        >
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="lg:col-span-3">
@@ -72,6 +90,21 @@ export function AreasPage() {
                         className="aspect-[4/3] w-full object-cover"
                       />
                     )}
+                    <p
+                      className={`eyebrow text-ink/50 ${image ? "mt-6" : ""}`}
+                    >
+                      {t.areasPage.activitiesLabel}
+                    </p>
+                    <ul className="mt-3">
+                      {item.activities.map((activity) => (
+                        <li
+                          key={activity}
+                          className="border-b border-navy-ink/12 py-2.5 text-sm leading-snug text-ink/70"
+                        >
+                          {activity}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </article>
               </Reveal>

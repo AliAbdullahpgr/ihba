@@ -23,19 +23,25 @@ export function Projects() {
   return (
     <section id="projects" className="bg-white pb-20 lg:pb-28">
       <div className="container-site">
-        <div className="max-w-2xl">
-          <h2 className="display-xl text-3xl text-navy-ink sm:text-4xl">
+        {/*
+          Heading and one link, no standfirst. Every section used to open with
+          title + lede + link before any content arrived; three of those down a
+          page is three paragraphs a visitor reads before seeing the work.
+        */}
+        {/*
+          Heading left, "browse all" hard right on the same line. The link is
+          the section's outlet, so it belongs at the end of the section's
+          header rather than stacked under the title where it reads as a
+          subtitle. `items-end` sits it on the heading's baseline.
+        */}
+        <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+          <h2 className="display-xl max-w-2xl text-3xl text-navy-ink sm:text-4xl">
             {t.projects.title}
           </h2>
-          <p className="mt-5 text-base leading-relaxed text-ink/65">
-            {t.projects.lede}
-          </p>
-          <ArrowLink href="/projects" className="mt-7">
-            {t.projects.browseAll}
-          </ArrowLink>
+          <ArrowLink href="/projects">{t.projects.browseAll}</ArrowLink>
         </div>
 
-        {/* Three spans, numbered like stations — each opens its project page. */}
+        {/* Three spans — each opens its project page. */}
         <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
           {t.projectsPage.details.map((project, index) => {
             const card = t.projects.cards[index];
@@ -44,26 +50,27 @@ export function Projects() {
             return (
               <Reveal key={project.slug} delay={index * 90}>
                 <CardLink href={`/projects/${project.slug}`}>
+                  {/* Square, like every other image on the landing page. */}
                   <CardMedia
                     src={image.src}
                     alt={image.alt}
-                    ratio="aspect-[4/3]"
+                    ratio="aspect-square"
                   />
 
+                  {/*
+                    Status and region, then the title. The station number and
+                    the summary are gone: six elements per card is what made a
+                    three-up row read as a wall, and both are on the project
+                    page one click away.
+                  */}
                   <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <span className="font-display text-sm font-bold text-navy-ink/35">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
                     <Tag tone={tagTones[card.badgeKey]}>{card.badge}</Tag>
                     <span className="text-xs font-semibold text-ink/50">
                       {card.region}
                     </span>
                   </div>
 
-                  <CardTitle className="mt-4 text-lg">{card.title}</CardTitle>
-                  <p className="mt-2 text-sm leading-relaxed text-ink/65">
-                    {card.summary}
-                  </p>
+                  <CardTitle className="mt-3 text-lg">{card.title}</CardTitle>
                 </CardLink>
               </Reveal>
             );

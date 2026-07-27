@@ -12,14 +12,14 @@ export function Newsletter() {
   return (
     <section className="bg-white pb-20 lg:pb-28">
       <div className="container-site">
-        <div className="grid gap-12 border-t border-navy-ink/15 pt-14 lg:grid-cols-2 lg:gap-16">
-          <div>
-            <p className="display-xl text-xl text-navy-ink sm:text-2xl">
-              {t.newsletter.socialTitle}
-            </p>
-            <SocialRow className="mt-8" />
-          </div>
-
+        {/*
+          One block, not two columns. Dropping the social sentence left a
+          heading-plus-form facing a bare row of icons — two halves of a split
+          layout with nothing in common, which is what read as inconsistent.
+          The icons now sit under the form as a footnote to it, and the section
+          has a single heading and a single measure.
+        */}
+        <div className="max-w-xl border-t border-navy-ink/15 pt-14">
           <div>
             <p className="display-xl text-xl text-navy-ink sm:text-2xl">
               {t.newsletter.title}
@@ -65,6 +65,8 @@ export function Newsletter() {
             )}
 
             <p className="mt-4 text-sm text-ink/55">{t.newsletter.copy}</p>
+
+            <SocialRow className="mt-10" />
           </div>
         </div>
       </div>

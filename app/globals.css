@@ -62,38 +62,12 @@
   }
 }
 
-@keyframes float-y {
-  from {
-    transform: translateY(-6px);
-  }
-  to {
-    transform: translateY(6px);
-  }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-float-y {
-  animation: float-y 6s ease-in-out infinite alternate;
-}
-
-.animate-marquee {
-  animation: marquee 28s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-float-y,
-  .animate-marquee {
-    animation: none;
-  }
-}
+/*
+  No ambient animation. The float and marquee keyframes that used to live here
+  ran continuously with nothing to say, and permanent movement is the loudest
+  thing a page can do. Motion is now limited to states a visitor causes:
+  scroll-in reveals and hover.
+*/
 
 /* ---------------------------------------------------------------------------
    Layout

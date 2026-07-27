@@ -11,10 +11,11 @@ import type { PrinciplePanel } from "@/lib/content";
  * matter changes when a topic is chosen.
  */
 export function PrinciplesTabs({
-  panels,
+  panels = [],
   navLabel,
 }: {
-  panels: PrinciplePanel[];
+  /* Tolerates a cached copy document written before this field was bundled. */
+  panels?: PrinciplePanel[];
   navLabel: string;
 }) {
   const [activeKey, setActiveKey] = useState(panels[0]?.key ?? "");

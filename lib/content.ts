@@ -34,6 +34,10 @@ export interface Member {
 export interface AreaDetail {
   title: string;
   blurb: string;
+  /** The substance of the field: how IHBA approaches it and what it prioritises. */
+  body: string[];
+  /** Short noun phrases naming the kinds of activity the field covers. */
+  activities: string[];
 }
 
 export interface ProjectDetail {
@@ -67,6 +71,18 @@ export interface NewsItem {
 export interface PageIntro {
   title: string;
   lede: string;
+}
+
+/**
+ * One switchable panel in the "principles and governance" band on the About
+ * page. `key` is stable and language-independent so the open panel survives a
+ * language switch; it is also hidden from the CMS field editor.
+ */
+export interface PrinciplePanel {
+  key: string;
+  label: string;
+  heading: string;
+  paragraphs: string[];
 }
 
 export interface Content {
@@ -143,6 +159,10 @@ export interface Content {
     serveText: string;
     geographyLabel: string;
     geographyText: string;
+    principlesTitle: string;
+    principlesLede: string;
+    principlesNavLabel: string;
+    panels: PrinciplePanel[];
   };
   boardPage: PageIntro & { members: Member[]; nameHeader: string; roleHeader: string };
   presidentPage: PageIntro & {
@@ -150,7 +170,11 @@ export interface Content {
     role: string;
     message: string[];
   };
-  areasPage: PageIntro & { items: AreaDetail[] };
+  areasPage: PageIntro & {
+    intro: string[];
+    activitiesLabel: string;
+    items: AreaDetail[];
+  };
   projectsPage: PageIntro & { details: ProjectDetail[]; moreTitle: string };
   newsPage: PageIntro & { empty: string; emptyCta: string; items?: NewsItem[] };
   galleryPage: PageIntro;
@@ -280,6 +304,54 @@ export const content: Record<Lang, Content> = {
       geographyLabel: "Where we work",
       geographyText:
         "IHBA works across regions where humanitarian needs and reliable local partnerships are present, with a particular focus on Asia and Africa. Activities are designed around local conditions and needs, bringing together humanitarian assistance, education, social support and sustainable development.",
+      principlesTitle: "Our principles and how we are governed",
+      principlesLede:
+        "Humanitarian work is only as good as the standards behind it. These are the commitments that decide how we act in the field, how we handle the resources entrusted to us, and how our work is checked.",
+      principlesNavLabel: "Choose a topic",
+      panels: [
+        {
+          key: "ethics",
+          label: "Ethical values",
+          heading: "Ethical values",
+          paragraphs: [
+            "IHBA regards the protection of human life, belief, reason, property and family as a fundamental right, and organises its work accordingly. Everything we do begins from the dignity of the person in front of us: assistance is offered because someone needs it, never as a reward, an inducement or a condition attached to something else. Where dignity and need conflict with convenience, we choose dignity.",
+            "We deliver humanitarian assistance on the basis of need alone. Nationality, race, gender, religious belief, social class and political opinion play no part in deciding who is helped and who is not. Within a community we assess need honestly and openly, and we accept that the most urgent case is not always the most visible one.",
+            "We remain independent of political, economic and military objectives wherever we work. In places of conflict or tension IHBA takes no side and involves itself in no political, ethnic, sectarian or ideological dispute. Our presence in a region is explained by need and by nothing else, and we protect that independence because it is what makes access and trust possible.",
+            "We work to be effective, not merely present. That means intervening in good time and in coordination with others, strengthening local capacity rather than displacing it, and thinking carefully about the unintended effects of aid — dependency, distorted local markets, or attention drawn to people who would rather not be seen. A project that would leave a community weaker than it found it is not a project we run.",
+          ],
+        },
+        {
+          key: "integrity",
+          label: "Integrity and conduct",
+          heading: "Integrity, conflicts of interest and confidentiality",
+          paragraphs: [
+            "No one acting for IHBA may accept discounts, gifts, hospitality or material advantages that could reasonably be expected to influence a decision, and no one may offer them. Any relationship — personal, commercial or institutional — that could place a colleague's judgement in question must be declared before a decision is taken rather than explained afterwards.",
+            "We respect the professional obligations of everyone we work with: partners, suppliers, contractors, consultants and volunteers. We do not ask anyone to act against the standards of their own profession, and we do not overstate the qualifications, capacity or track record of the people and organisations working with us.",
+            "Information reached through our work — about beneficiaries, staff, partners or donors — is held in confidence and is never used for personal advantage or passed to third parties for theirs. Personal data on the people we assist is treated as the most sensitive information we hold, because for many of them exposure carries a real risk.",
+            "We are accountable for all of it. Complaints and criticism are welcome and are answered rather than absorbed: beneficiaries, donors, volunteers and partners can raise a concern and expect a considered reply. What we learn from a mistake is shared internally so that it changes practice, and not only in the team where it happened.",
+          ],
+        },
+        {
+          key: "compliance",
+          label: "Compliance and risk",
+          heading: "Compliance and risk management",
+          paragraphs: [
+            "IHBA builds its operating processes around Turkish law and recognised international humanitarian standards, so that every donation and every hour of volunteer time is used for the purpose it was given for and produces the benefit it was meant to produce. Compliance is treated as part of programme design, not as a form filled in once the work is finished.",
+            "We maintain policies against money laundering, the financing of terrorism, bribery and corruption, and we apply them to partners, suppliers and transfer routes as well as to ourselves. Funds move through documented channels, partners are checked before an agreement is signed, and the movement of money and goods is traceable from donor to destination.",
+            "Risk is assessed before a programme begins and monitored while it runs — financial, legal, operational, reputational and security risk, including the safety of the people delivering the work. Controls are tested rather than assumed, weaknesses are recorded with a named owner and a deadline, and internal rules are revised whenever a gap appears between how we say we work and how we actually work.",
+          ],
+        },
+        {
+          key: "oversight",
+          label: "Audit and oversight",
+          heading: "Audit and oversight",
+          paragraphs: [
+            "IHBA's accounts and activities are subject to the oversight the law provides for associations in Türkiye, including annual reporting to the competent public authorities and audit of its financial statements. Registry, tax and MERSIS details are published on this page so that anyone can verify who we are before deciding to support us.",
+            "Alongside external oversight, the Board of Directors reviews the association's finances and programmes and reports to the general assembly. Expenditure is authorised against approved budgets, project spending is reconciled with the documents behind it, and financial and programme records are kept so that any single item of spending can be traced back to a decision.",
+            "Field work is checked in the field. Projects are visited and reviewed against what was planned — what was delivered, to whom, at what cost, and what changed as a result — and partner organisations are assessed on the same basis. Where a review finds something wrong, the finding is written down, the correction is followed up, and the lesson is carried into the next project rather than left in a report.",
+          ],
+        },
+      ],
     },
     boardPage: {
       title: "Board of Directors",
@@ -309,40 +381,133 @@ export const content: Record<Lang, Content> = {
     areasPage: {
       title: "Our areas of work",
       lede: "Seven fields, held together by one purpose: protecting and strengthening human dignity.",
+      intro: [
+        "IHBA works across seven fields, and they are deliberately connected. A family that needs food this month may need a school place for its children next year, and a way of earning a living after that. Treating those needs as separate programmes, handled by separate organisations, is what leaves people moving between forms of assistance without ever moving beyond them.",
+        "Each field below therefore describes both what IHBA does and how it tries to work: what it looks at before starting, what it refuses to do, and what it hands on to the next stage. Where a region's needs and reliable local partnerships allow, several of these fields run alongside one another rather than in sequence.",
+      ],
+      activitiesLabel: "In practice",
       items: [
         {
           title: "Humanitarian Assistance",
           blurb: "Food, shelter, health, essential needs, and in-kind or financial support.",
+          body: [
+            "Humanitarian assistance responds to urgent need: food, shelter, health care and the essential items that allow people to survive crisis while maintaining dignity. IHBA approaches this work not as temporary relief alone, but as a foundation that protects life and creates space for longer-term recovery. Each assistance programme is designed to enable people to begin rebuilding their capacity and independence.",
+            "IHBA coordinates humanitarian assistance through trusted local partners who understand regional needs and community conditions. Where possible, assistance is delivered alongside education, skills development or livelihood programmes, so that emergency response becomes part of a pathway towards stronger futures. This approach requires understanding local economies and social structures, ensuring that assistance strengthens rather than destabilises community resilience.",
+            "IHBA delivers humanitarian assistance on the basis of need alone, without condition or regard to background. The association remains alert to the consequences that aid can create: dependency, market distortion and the exposure of people seeking anonymity and safety. Assistance is therefore provided with restraint and in close coordination with other actors, so that relief is temporary and transitions into sustainable recovery.",
+          ],
+          activities: [
+            "Food distribution and emergency rations",
+            "Temporary shelter and accommodation support",
+            "Health care and medical assistance",
+            "Essential household supplies and survival kits",
+            "Cash assistance and in-kind support",
+            "Winter and seasonal emergency aid",
+          ],
         },
         {
           title: "Education",
           blurb:
             "Scholarships, student support programmes, education centres, guidance and awareness activities.",
+          body: [
+            "Education is a foundation for longer-term development and human dignity. IHBA recognises that quality education remains limited in many communities, at all levels from primary schooling to higher education. The association's education work aims to remove barriers and create pathways so that young people can gain knowledge and skills, participate in productive life, and build independent futures.",
+            "IHBA combines formal education provision with mentorship, skills training and guidance. It partners with schools, universities and community organisations to understand local education needs and design responsive programmes. Where possible, education is integrated with other support — sustainable livelihoods, health awareness — creating pathways for young people and women to develop their capacities and gain confidence.",
+            "Education activities include establishing learning centres, providing scholarships and supporting students in higher education. IHBA also delivers awareness and guidance programmes, particularly targeting young people, women and vulnerable groups, on rights, health, safety and economic opportunity. Throughout, the emphasis is on sustainable learning and building foundations for continued growth rather than temporary intervention.",
+          ],
+          activities: [
+            "Primary and secondary schooling programmes",
+            "Scholarships and student financial support",
+            "Higher education guidance and mentorship",
+            "Learning centres and education facilities",
+            "Skills development and vocational training",
+            "Awareness and guidance for young people",
+          ],
         },
         {
           title: "Sustainable Development",
           blurb:
             "Long-term programmes that strengthen productive capacity and economic independence.",
+          body: [
+            "Sustainable development is more than temporary assistance. IHBA designs programmes that help communities strengthen their own productive capacity, gain knowledge and skills, and build economic independence. Assistance is paired with training, market access and local ownership so that external support eventually becomes unnecessary.",
+            "Within these programmes, IHBA prioritises work that is planned with communities rather than imposed on them, builds local expertise so that skills remain after support ends, and respects existing resources and markets. Particular attention is given to identifying which knowledge, skills and equipment can be maintained and developed by people on the ground, and to ensuring that project outcomes are sustained by systems and structures that remain.",
+            "Projects are designed to leave communities stronger than they were found, not dependent on ongoing external resources. This means working closely with local partners, avoiding distortions to local markets or economies, and recognising that success is measured not by the visibility of aid but by the durability of change.",
+          ],
+          activities: [
+            "Skills and livelihoods training programmes",
+            "Market assessment and economic opportunity identification",
+            "Agricultural and productive capacity development",
+            "Equipment provision and technical support",
+            "Local trainer development and knowledge transfer",
+            "Savings and microfinance groups",
+          ],
         },
         {
           title: "Children, Youth and Women",
           blurb:
             "Protective, developmental and participatory education, social support and skills programmes.",
+          body: [
+            "Programmes that reach children, young people and women must be built around protection, safety and respect for human dignity. IHBA designs all work in this field with attention to safeguarding: consent, privacy, appropriate conduct, confidentiality, and the protection of those most at risk. These are not separate from the work — they are fundamental to how the work is done.",
+            "Rather than imposing solutions, IHBA develops programmes through consultation with families and communities, understanding what young people and women themselves identify as priorities. Activities range from protective education and awareness to skills development, social support and economic opportunity, always with the understanding that sustainable change comes through people's own participation and ownership.",
+            "Recognising that children, youth and women often occupy different positions within families and communities, IHBA ensures that programming addresses the particular circumstances and needs of each group. Support is tailored to age and circumstance, respects existing family structures and cultural contexts, and works toward outcomes that strengthen rather than fragment community bonds.",
+          ],
+          activities: [
+            "Protective and rights-based education",
+            "Skills development and economic opportunity",
+            "Youth leadership and participation programmes",
+            "Women's education and awareness activities",
+            "Family-based social support services",
+            "Community dialogue and consultation forums",
+          ],
         },
         {
           title: "Health and Social Support",
           blurb:
             "Assistance for people in need, disaster-affected communities, displaced persons, older people, persons with disabilities, orphans and those requiring care.",
+          body: [
+            "This field covers assistance for individuals and families facing health-related challenges or requiring ongoing support. IHBA recognises that effective support must be adapted to each person's circumstances, respecting their privacy and dignity throughout. The organisation works with qualified health and social-care professionals rather than attempting to substitute professional services, focusing instead on coordination, information and practical accompaniment.",
+            "Health and social support extends across different populations: older people, persons with disabilities, people affected by disaster, displaced persons, children requiring care, and those facing economic or social hardship. Assistance may include direct support, access to specialist services, provision of assistive equipment, or connection with qualified providers in the field. IHBA's role is to ensure that support reaches people who need it, follows their own priorities, and builds on existing local health and social systems rather than bypassing them.",
+          ],
+          activities: [
+            "Coordination with qualified health and care providers",
+            "Direct support for older people and persons with disabilities",
+            "Assistance to disaster-affected and displaced populations",
+            "Care support for children and orphans",
+            "Access to specialist health and social services",
+            "Accompaniment and information provision",
+          ],
         },
         {
           title: "Culture, Arts and Volunteering",
           blurb:
             "Activities that strengthen social solidarity, intercultural communication and volunteer participation.",
+          body: [
+            "This field encompasses activities that strengthen social cohesion and build connections within and between communities. Culture and the arts are understood not as display or entertainment, but as expressions of shared identity and vehicles for dialogue, learning and participation. IHBA uses cultural and artistic activities to deepen mutual understanding, support people's own voices and creativity, and create spaces where communities can gather and find common ground.",
+            "Volunteering is a core expression of solidarity within this work. IHBA welcomes volunteers with diverse skills and backgrounds, recognising that active participation by community members strengthens the work itself and builds a sense of shared responsibility. Whether through cultural projects, social activities, or events that bring people together, volunteering connects people to the organisation's mission while creating opportunities for intercultural exchange and learning.",
+          ],
+          activities: [
+            "Community cultural events and gatherings",
+            "Arts and creative expression projects",
+            "Cultural dialogue and intercultural communication",
+            "Volunteer mobilisation and participation",
+            "Performance, music and storytelling activities",
+            "Community-led social and cultural initiatives",
+          ],
         },
         {
           title: "Institutional Cooperation",
           blurb:
             "Joint initiatives with institutions, representative offices, universities and local partners in different countries.",
+          body: [
+            "This field addresses the practical reality that effective work in distant regions requires strong partnerships and institutional relationships. IHBA recognises that sustainable humanitarian assistance, education and development depend on collaboration with local institutions, partner organisations, universities, government bodies and community structures that already work in those regions. Partnerships are not entered into lightly; they are carefully assessed before any agreement is signed to ensure shared values, compatible approaches and genuine capacity.",
+            "Institutional cooperation extends beyond project delivery to knowledge exchange, skills development and the building of lasting bridges between institutions in different countries. Through these relationships, IHBA aims to mobilise expertise more effectively, support local institutional capacity rather than create parallel structures, and develop channels through which experience and learning can be shared in both directions. Cooperation is therefore central to how IHBA works sustainably in regions far from its home base.",
+          ],
+          activities: [
+            "Assessment and selection of institutional partners",
+            "Formal cooperation agreements with local organisations",
+            "University and research partnerships",
+            "Cross-border institutional networks and exchanges",
+            "Capacity development with partner organisations",
+            "Coordinated programme delivery with local institutions",
+          ],
         },
       ],
     },
@@ -362,6 +527,9 @@ export const content: Record<Lang, Content> = {
             "The centre is intended to be more than a place of classroom instruction. It will be a comprehensive educational campus where children can learn and develop in a safe, supportive environment. Planned facilities include classrooms, student accommodation, a mosque, a dining hall, play areas and a park.",
             "The land for the centre has been purchased, and official and technical preparations are under way. Construction has not yet begun, and completion is targeted for the end of 2027.",
             "In the longer term, the campus is expected to serve as a base for humanitarian assistance and sustainable development initiatives in the region, while also hosting education, skills development and social support programmes for women and girls.",
+            "Many children in the region have experienced displacement or poverty that affects their access to meals, a safe place to sleep and basic health care. A comprehensive campus, rather than classrooms alone, is intended to hold those foundations inside the centre itself, so that a child whose circumstances at home are unstable can still learn in a secure and continuous environment.",
+            "The preparation is designed to involve families, teachers and local authorities in decisions about the centre's design and its daily operation. Planning covers what a school needs in order to keep running — teaching staff, operating costs, maintenance and repair — rather than construction alone. The design is also intended to give girls and boys equal access to the centre's facilities and programmes, with particular attention to how daily operation will protect and sustain girls' participation.",
+            "The campus is intended to serve the wider region as well as its own students. It is planned as a base from which education, skills development and social support can extend to women and girls in the surrounding area. Above all, it is being prepared so that the community regards the centre as its own institution, grounded in local priorities rather than in decisions taken elsewhere.",
           ],
           facts: [
             { label: "Target group", value: "Girls and boys aged 7-18" },
@@ -382,6 +550,9 @@ export const content: Record<Lang, Content> = {
             "This programme aims to make the educational journey of students travelling from Türkiye to Pakistan for higher education safer, better organised and more sustainable. Students receive guidance from university research and selection through application and enrolment, as well as support with accommodation and adjustment to the country and its education system.",
             "The programme includes communication with universities across Pakistan, guidance towards suitable academic departments, follow-up of registration procedures, development of scholarship and accommodation opportunities, and access to social support throughout students' academic lives.",
             "IHBA regards this initiative not merely as a student placement service, but as a long-term bridge strengthening educational, cultural and youth relations between Türkiye and Pakistan.",
+            "Studying abroad involves more than the decision to go. A student needs to understand how a qualification will be recognised on return, work through unfamiliar application and enrolment procedures, choose a department that matches their own aims rather than accepting whatever place is available, and prepare for the practical reality of arriving in an unfamiliar city — language, accommodation, the cost of living and keeping in touch with family. Guidance is offered at each of these points rather than at the moment of application alone.",
+            "The programme works with students rather than for them. That means honest advice, including telling a student when a plan looks unrealistic instead of confirming what they hope to hear; making no promise about admission, scholarships or accommodation that is not IHBA's to give; and treating a student's personal and family circumstances as confidential. Contact is not intended to end at enrolment, since the first year in a new country is usually when support is needed most.",
+            "IHBA regards this work as a long-term educational and cultural bridge between Türkiye and Pakistan rather than a placement service. Students who complete their studies are well placed to guide those arriving after them, and the intention is that each group becomes part of the network supporting the next. Relationships built between students, universities and communities in this way outlast any single academic year.",
           ],
           facts: [
             {
@@ -407,6 +578,9 @@ export const content: Record<Lang, Content> = {
           body: [
             "During Ramadan and Qurban, IHBA delivers humanitarian assistance to families and communities in need. Activities include iftar programmes, food and essential-needs support, and Qurban organisation, particularly in Pakistan, Afghanistan, Palestine and different regions of Africa where needs are identified.",
             "Programmes are planned in coordination with trusted local partners and adapted to local conditions. IHBA seeks to ensure that assistance reaches people directly, consistently and with respect for human dignity. Wherever possible, seasonal support is also used as a foundation for longer-term social and development initiatives.",
+            "Households are identified through local knowledge and existing community relationships rather than by public registration or by whoever happens to arrive on the day. Field partners who live and work in an area know which families are in difficulty, what they already receive and who is likely to stay away — through caution, unfamiliarity with the process, or reluctance to be singled out in front of neighbours. Distribution is then arranged to be orderly and discreet: delivery to homes or through trusted community figures where that is more dignified than a queue, and coordination with other organisations working the same streets so that support is not duplicated while other households are missed.",
+            "Where local conditions allow, food and livestock are bought in the area rather than brought in from outside. Buying locally supports the producers, butchers and traders who serve the community all year, avoids undercutting the market that families depend on, and shortens the distance between a donation and the household receiving it. Qurban is organised so that the requirements of the sacrifice are observed properly and the meat reaches those who need it while it is still in good condition, working with suppliers and butchers who understand those obligations.",
+            "The season is treated as a beginning rather than a conclusion. What is recorded during Ramadan and Qurban work — which families were reached, in what circumstances, with which children and which longer-term needs — becomes the basis for following those households into education, health or livelihood support afterwards. IHBA is also open about the limit: seasonal assistance, however regular, cannot take the place of year-round programmes. Its value lies in identifying needs and building the relationships through which more sustained support can follow.",
           ],
           facts: [
             {
@@ -595,6 +769,54 @@ export const content: Record<Lang, Content> = {
       geographyLabel: "Faaliyet coğrafyamız",
       geographyText:
         "IHBA, başta Asya ve Afrika olmak üzere ihtiyaçların ve yerel iş birliklerinin bulunduğu farklı coğrafyalarda faaliyet yürütür. Çalışmalar, bölgenin şartları ve ihtiyaçları dikkate alınarak insani yardım, eğitim, sosyal destek ve sürdürülebilir kalkınma ekseninde planlanır.",
+      principlesTitle: "İlkelerimiz ve kurumsal işleyişimiz",
+      principlesLede:
+        "İnsani yardım, ancak arkasındaki standartlar kadar güvenilirdir. Aşağıdaki ilkeler; sahada nasıl hareket ettiğimizi, bize emanet edilen kaynakları nasıl yönettiğimizi ve çalışmalarımızın nasıl denetlendiğini belirler.",
+      principlesNavLabel: "Bir başlık seçin",
+      panels: [
+        {
+          key: "ethics",
+          label: "Etik değerlerimiz",
+          heading: "Etik değerlerimiz",
+          paragraphs: [
+            "IHBA; insanın canını, inancını, aklını, malını ve neslini korumayı temel bir hak olarak görür ve çalışmalarını bu anlayışla düzenler. Yaptığımız her iş, karşımızdaki insanın onurundan başlar: yardım, birinin ihtiyacı olduğu için yapılır; bir ödül, bir teşvik ya da başka bir şeye bağlanmış bir şart olarak asla yapılmaz. Onur ile kolaylık çatıştığında tercihimiz onurdur.",
+            "İnsani yardımı yalnızca ihtiyaç esasına göre ulaştırırız. Kime yardım edileceği belirlenirken uyruk, ırk, cinsiyet, dinî inanç, sosyal sınıf ve siyasi görüş hiçbir rol oynamaz. Bir toplulukta ihtiyacı dürüst ve şeffaf biçimde değerlendirir; en acil durumun her zaman en görünür durum olmadığını kabul ederiz.",
+            "Faaliyet yürüttüğümüz her yerde siyasi, ekonomik ve askerî hedeflerden bağımsız kalırız. Çatışma ve gerginlik bölgelerinde IHBA taraf tutmaz; siyasi, etnik, mezhepsel veya ideolojik hiçbir tartışmanın parçası olmaz. Bir bölgede bulunmamızın açıklaması ihtiyaçtır, başka bir şey değildir; bu bağımsızlığı erişimi ve güveni mümkün kıldığı için titizlikle koruruz.",
+            "Sadece sahada bulunmayı değil, etkili olmayı hedefleriz. Bu; zamanında ve diğer aktörlerle eşgüdüm içinde müdahale etmek, yerel kapasiteyi ikame etmek yerine güçlendirmek ve yardımın istenmeyen etkilerini — bağımlılık, yerel piyasaların bozulması ya da görünmek istemeyen insanların hedef hâline gelmesi — dikkatle düşünmek anlamına gelir. Bir topluluğu bulduğundan daha zayıf bırakacak bir projeyi yürütmeyiz.",
+          ],
+        },
+        {
+          key: "integrity",
+          label: "Dürüstlük ve çıkar çatışması",
+          heading: "Dürüstlük, çıkar çatışması ve gizlilik",
+          paragraphs: [
+            "IHBA adına hareket eden hiç kimse, bir kararı etkilemesi makul olarak beklenebilecek indirim, hediye, ağırlama veya maddi menfaat kabul edemez; kimse böyle bir teklifte de bulunamaz. Bir çalışanın kararını şüpheye düşürebilecek her ilişki — kişisel, ticari veya kurumsal — karar alındıktan sonra izah edilmek yerine karardan önce beyan edilmelidir.",
+            "Birlikte çalıştığımız herkesin mesleki yükümlülüklerine saygı gösteririz: paydaşlar, tedarikçiler, yükleniciler, danışmanlar ve gönüllüler. Hiç kimseden kendi mesleğinin standartlarına aykırı davranmasını istemeyiz; bizimle çalışan kişi ve kuruluşların yeterliliğini, kapasitesini veya geçmiş çalışmalarını olduğundan farklı göstermeyiz.",
+            "Çalışmalarımız sırasında öğrendiğimiz bilgiler — yardım alanlar, çalışanlar, paydaşlar veya bağışçılara dair — gizli tutulur; kişisel menfaat için kullanılmaz ve üçüncü kişilerin menfaati için paylaşılmaz. Yardım ulaştırdığımız insanların kişisel verilerini elimizdeki en hassas bilgi olarak ele alırız; çünkü çoğu için görünür olmak gerçek bir risk taşır.",
+            "Bunların tümünden hesap verebilir olduğumuzu kabul ederiz. Şikâyet ve eleştiriye açıktır, onları içimizde eritmek yerine cevaplarız: yardım alanlar, bağışçılar, gönüllüler ve paydaşlar bir sorunu iletebilir ve değerlendirilmiş bir yanıt bekleyebilir. Bir hatadan öğrendiklerimiz, yalnızca o hatanın yaşandığı ekipte kalmayacak biçimde kurum içinde paylaşılır ve uygulamayı değiştirir.",
+          ],
+        },
+        {
+          key: "compliance",
+          label: "Uyum ve risk",
+          heading: "Uyum ve risk yönetimi",
+          paragraphs: [
+            "IHBA, iş süreçlerini Türkiye mevzuatı ve kabul görmüş uluslararası insani yardım standartları çerçevesinde kurar; böylece her bağışın ve her gönüllü emeğinin verildiği amaç doğrultusunda kullanılmasını ve beklenen faydayı üretmesini gözetir. Uyum, iş bittikten sonra doldurulan bir evrak değil, proje tasarımının bir parçasıdır.",
+            "Kara para aklama, terörün finansmanı, rüşvet ve yolsuzlukla mücadele politikaları uygular; bunları yalnızca kendimize değil, paydaşlara, tedarikçilere ve transfer kanallarına da uygularız. Kaynaklar belgelenmiş kanallardan aktarılır, paydaşlar sözleşme imzalanmadan önce incelenir ve para ile malzemenin hareketi bağışçıdan varış noktasına kadar izlenebilir kalır.",
+            "Risk, bir program başlamadan önce değerlendirilir ve yürürken izlenir: malî, hukukî, operasyonel, itibar ve güvenlik riski — çalışmayı sahada yürüten insanların güvenliği dâhil. Kontroller varsayılmaz, test edilir; zayıflıklar sorumlusu ve süresi belirtilerek kayda geçer ve söylediğimiz işleyiş ile fiilî işleyiş arasında bir açık göründüğünde iç düzenlemelerimizi güncelleriz.",
+          ],
+        },
+        {
+          key: "oversight",
+          label: "Denetim",
+          heading: "Denetim ve gözetim",
+          paragraphs: [
+            "IHBA'nın hesapları ve faaliyetleri, Türkiye'de dernekler için öngörülen denetime tabidir; buna yetkili kamu kurumlarına yapılan yıllık bildirimler ve malî tabloların denetimi de dâhildir. Kütük, vergi ve MERSİS bilgileri bu sayfada yayımlanır; böylece destek vermeye karar vermeden önce kim olduğumuz doğrulanabilir.",
+            "Dış denetimin yanında Yönetim Kurulu, derneğin malî durumunu ve projelerini düzenli olarak gözden geçirir ve genel kurula hesap verir. Harcamalar onaylı bütçeler karşılığında yetkilendirilir, proje giderleri dayanak belgeleriyle karşılaştırılır ve kayıtlar herhangi bir harcamanın hangi karara dayandığı izlenebilecek şekilde tutulur.",
+            "Saha çalışması sahada denetlenir. Projeler yerinde ziyaret edilir ve planlananla karşılaştırılır: ne ulaştırıldı, kime, hangi maliyetle ve sonucunda ne değişti. Paydaş kuruluşlar aynı ölçütlerle değerlendirilir. Bir incelemede aksayan bir yön tespit edildiğinde bulgu yazılı hâle getirilir, düzeltme takip edilir ve çıkarılan ders bir raporda kalmayıp sonraki projeye taşınır.",
+          ],
+        },
+      ],
     },
     boardPage: {
       title: "Yönetim Kurulu",
@@ -623,42 +845,135 @@ export const content: Record<Lang, Content> = {
       ],
     },
     areasPage: {
+      intro: [
+        "IHBA yedi alanda çalışır ve bu alanlar bilinçli olarak birbirine bağlıdır. Bu ay gıdaya ihtiyaç duyan bir ailenin, gelecek yıl çocukları için okul sırasına, sonrasında ise geçimini sağlayacak bir imkâna ihtiyacı olabilir. Bu ihtiyaçları birbirinden kopuk programlar olarak ele almak, insanların yardım biçimleri arasında dolaşıp durmasına ve hiçbir zaman bunların ötesine geçememesine yol açar.",
+        "Bu nedenle aşağıdaki her alan, IHBA'nın ne yaptığını olduğu kadar nasıl çalıştığını da anlatır: işe başlamadan önce neye baktığını, neyi yapmaktan kaçındığını ve sonraki aşamaya neyi devrettiğini. Bölgenin ihtiyaçları ve güvenilir yerel iş birlikleri imkân verdiğinde bu alanların birkaçı sırayla değil, birlikte yürütülür.",
+      ],
+      activitiesLabel: "Uygulamada",
       title: "Faaliyet alanlarımız",
       lede: "Yedi alan, tek amaç: insan onurunu korumak ve güçlendirmek.",
       items: [
         {
           title: "İnsani Yardım",
           blurb: "Gıda, barınma, sağlık, temel ihtiyaç, ayni ve nakdî destek çalışmaları.",
+          body: [
+            "İnsani yardım, acil ihtiyaçlara cevap verir: gıda, barınma, sağlık hizmeti ve insanların kriz koşullarında onurunu koruyarak ayakta kalmasını sağlayan temel malzemeler. IHBA bu çalışmayı yalnızca geçici bir yardım olarak değil; hayatı koruyan ve uzun vadeli iyileşmeye alan açan bir zemin olarak ele alır. Her yardım programı, insanların kendi imkânlarını ve bağımsızlığını yeniden kurmaya başlayabilmesi gözetilerek tasarlanır.",
+            "IHBA insani yardımı, bölgenin ihtiyaçlarını ve toplumun koşullarını bilen güvenilir yerel paydaşlarla eşgüdüm içinde ulaştırır. Mümkün olduğu durumlarda yardım; eğitim, beceri geliştirme veya geçim programlarıyla birlikte sunulur, böylece acil müdahale daha güçlü bir geleceğe uzanan yolun parçası hâline gelir. Bu yaklaşım yerel ekonominin ve toplumsal yapının anlaşılmasını gerektirir; amaç, yardımın toplumsal dayanıklılığı zedelemesi değil güçlendirmesidir.",
+            "IHBA insani yardımı yalnızca ihtiyaç esasına göre, şart koşmadan ve kimsenin geçmişine bakmadan sunar. Dernek yardımın doğurabileceği sonuçlara karşı dikkatlidir: bağımlılık, yerel piyasaların bozulması ve görünmek istemeyen insanların hedef hâline gelmesi. Bu nedenle yardım ölçülü biçimde ve diğer aktörlerle eşgüdüm içinde ulaştırılır; acil destek geçici kalır ve sürdürülebilir iyileşmeye devredilir.",
+          ],
+          activities: [
+            "Gıda dağıtımı ve acil erzak desteği",
+            "Acil barınma ve konaklama desteği",
+            "Sağlık hizmeti ve tıbbî destek",
+            "Temel ihtiyaç ve barınma malzemeleri",
+            "Nakdî ve ayni yardım programları",
+            "Mevsimsel ve dönemsel acil destek",
+          ],
         },
         {
           title: "Eğitim",
           blurb:
             "Burs, öğrenci destek programları, eğitim merkezleri, rehberlik ve farkındalık faaliyetleri.",
+          body: [
+            "Eğitim, uzun vadeli kalkınmanın ve insan onurunun temelidir. IHBA, nitelikli eğitime erişimin birçok toplumda ilkokuldan yükseköğretime kadar her düzeyde sınırlı kaldığını bilir. Derneğin eğitim çalışmaları, bu erişimin önündeki engelleri azaltmayı; gençlerin bilgi ve beceri kazanmasını, üretken hayata katılmasını ve kendi ayakları üzerinde duran bir gelecek kurmasını sağlayacak yollar açmayı amaçlar.",
+            "IHBA örgün eğitime verdiği desteği rehberlik, danışmanlık ve beceri eğitimiyle birlikte ele alır. Okullarla, üniversitelerle ve yerel kuruluşlarla birlikte çalışarak bölgenin eğitim ihtiyacını anlar ve programlarını bu ihtiyaca göre tasarlar. Mümkün olduğu yerlerde eğitim; geçim kaynakları ve sağlık farkındalığı gibi diğer desteklerle birleştirilir, böylece gençler ve kadınlar hem kapasitelerini hem de özgüvenlerini geliştirebilir.",
+            "Eğitim çalışmaları; eğitim merkezleri kurmayı, burs sağlamayı ve yükseköğrenim gören öğrencilere destek vermeyi kapsar. IHBA ayrıca başta gençler, kadınlar ve dezavantajlı gruplar olmak üzere haklar, sağlık, güvenlik ve ekonomik fırsatlar konusunda farkındalık ve rehberlik faaliyetleri yürütür. Bütün bu çalışmalarda esas olan, geçici müdahaleler yerine öğrenmenin sürekliliğini sağlayan bir zemin kurmaktır.",
+          ],
+          activities: [
+            "Temel ve orta öğretim programları",
+            "Burs ve öğrencilere maddi destek",
+            "Yükseköğretim rehberliği ve danışmanlık",
+            "Eğitim merkezleri ve öğrenme alanları",
+            "Beceri geliştirme ve meslekî eğitim",
+            "Gençler için farkındalık ve rehberlik",
+          ],
         },
         {
           title: "Sürdürülebilir Kalkınma",
           blurb:
             "Bireylerin üretim kapasitesini ve ekonomik bağımsızlığını güçlendiren uzun vadeli projeler.",
+          body: [
+            "Sürdürülebilir kalkınma, geçici yardımın ötesine geçen bir anlayıştır. IHBA; toplulukların üretim kapasitesini güçlendirmesine, bilgi ve beceri kazanmasına ve ekonomik bağımsızlığını kurmasına destek olan programlar tasarlar. Destek, eğitimle, pazara erişimle ve yerel sahiplenmeyle birlikte sunulur; böylece dışarıdan gelen yardım zamanla gereksiz hâle gelir.",
+            "Bu çerçevede IHBA; topluluğa dayatılan değil topluluk tarafından sahiplenilen projelere, destek sona erdikten sonra da yerinde kalan bilgi ve beceriye, toplumun mevcut kaynaklarına ve yerel piyasalara saygılı çalışmalara ağırlık verir. Hangi bilgi, beceri ve donanımın yerel olarak sürdürülebileceği baştan belirlenir; proje sonuçlarının kalıcı yapılarla desteklenmesine özel önem verilir.",
+            "Projelerin hedefi, bir topluluğu bulduğundan daha güçlü bırakmak ve kalıcı bir değişim sağlamaktır; dışarıdan sürekli kaynak aktarılmasına bağlı bir düzen kurmak değildir. Bu; yerel paydaşlarla yakın çalışmayı, yerel ekonomiyi bozmamayı ve başarının yardımın görünürlüğüyle değil değişimin kalıcılığıyla ölçüldüğünü kabul etmeyi gerektirir.",
+          ],
+          activities: [
+            "Beceri ve geçim kaynağı geliştirme eğitimleri",
+            "Pazar analizi ve fırsat tespiti",
+            "Tarım ve üretim kapasitesi geliştirme",
+            "Ekipman sağlama ve teknik destek",
+            "Yerel eğitimci geliştirme ve bilgi aktarımı",
+            "Tasarruf ve küçük ölçekli finans grupları",
+          ],
         },
         {
           title: "Çocuk, Gençlik ve Kadın Çalışmaları",
           blurb:
             "Koruyucu, geliştirici ve katılımı artıran eğitim, sosyal destek ve beceri programları.",
+          body: [
+            "Çocuklara, gençlere ve kadınlara yönelik programlar koruma, güvenlik ve insan onuruna saygı esası üzerine kurulmalıdır. IHBA bu alandaki bütün çalışmalarını koruyucu bir yaklaşımla tasarlar: rıza, gizlilik, uygun davranış kuralları ve en savunmasız olanın korunması. Bunlar işin dışında kalan hususlar değil, işin nasıl yapıldığını belirleyen esaslardır.",
+            "IHBA çözümleri dayatmak yerine ailelerle ve topluluklarla istişare eder; gençlerin ve kadınların kendi ifade ettiği öncelikleri anlayarak program geliştirir. Çalışmalar koruyucu eğitim ve farkındalıktan beceri geliştirmeye, sosyal desteğe ve ekonomik fırsatlara uzanır. Bunun temelinde, kalıcı değişimin ancak insanların kendi sahiplendiği çalışmalarla mümkün olduğu anlayışı vardır.",
+            "Çocukların, gençlerin ve kadınların aile ve toplum içinde farklı konumlarda bulunduğunu kabul eden IHBA, her grubun kendine özgü koşullarını ve ihtiyaçlarını gözetir. Destek yaşa ve duruma göre uyarlanır, mevcut aile yapılarına ve kültürel bağlama saygı gösterir ve toplumsal bağları zayıflatmak yerine güçlendirmeyi hedefler.",
+          ],
+          activities: [
+            "Koruyucu ve hak temelli eğitim",
+            "Beceri geliştirme ve ekonomik fırsat",
+            "Gençlik liderliği ve katılım programları",
+            "Kadın eğitimi ve farkındalık çalışmaları",
+            "Aile temelli sosyal destek hizmetleri",
+            "Toplumsal diyalog ve istişare forumları",
+          ],
         },
         {
           title: "Sağlık ve Sosyal Destek",
           blurb:
             "İhtiyaç sahibi, afetzede, göçmen, yaşlı, engelli, yetim ve bakıma muhtaç bireylere yönelik destekler.",
+          body: [
+            "Bu alan, sağlık sorunu yaşayan veya sürekli bakıma ihtiyaç duyan bireylere ve ailelere yönelik desteği kapsar. IHBA, etkili desteğin kişinin kendi koşullarına göre şekillenmesi, gizliliğinin korunması ve onuruna saygı gösterilmesi gerektiğine inanır. Dernek sağlık ve sosyal hizmet alanında nitelikli uzmanlarla çalışır; bu hizmetlerin yerine geçmeye çalışmaz, eşgüdüm sağlamaya, doğru bilgiye ulaştırmaya ve süreç boyunca kişinin yanında olmaya odaklanır.",
+            "Sağlık ve sosyal destek farklı grupları kapsar: yaşlılar, engelliler, afetzedeler, göç etmek zorunda kalanlar, bakıma ihtiyaç duyan çocuklar ve ekonomik ya da sosyal güçlük yaşayan kişiler. Destek; doğrudan yardım, uzman hizmetlere erişim, uygun donanımın sağlanması veya nitelikli sağlayıcılarla irtibat kurulması biçiminde olabilir. IHBA'nın rolü, desteğin ihtiyaç sahiplerine ulaşmasını, kişinin kendi önceliklerine uygun olmasını ve yerel sağlık ve sosyal hizmet sistemlerini güçlendirmesini gözetmektir.",
+          ],
+          activities: [
+            "Nitelikli sağlık ve bakım sağlayıcılarıyla koordinasyon",
+            "Yaşlı ve engelli kişilere doğrudan destek",
+            "Afetzede ve göçmen nüfusa yardım",
+            "Çocuk ve yetim bakımı desteği",
+            "Uzman sağlık ve sosyal hizmetlere erişim",
+            "Rehberlik ve bilgi sağlama hizmetleri",
+          ],
         },
         {
           title: "Kültür, Sanat ve Gönüllülük",
           blurb:
             "Toplumsal dayanışmayı, kültürler arası iletişimi ve gönüllü katılımını güçlendiren çalışmalar.",
+          body: [
+            "Bu alan, toplumsal dayanışmayı güçlendiren ve topluluklar içinde ve arasında bağ kuran faaliyetleri kapsar. Kültür ve sanat burada gösteri veya eğlence olarak değil; ortak ifade, diyalog, öğrenme ve katılım aracı olarak ele alınır. IHBA kültür ve sanat faaliyetlerini; karşılıklı anlayışı derinleştirmek, insanların sesini ve üretkenliğini desteklemek ve toplulukların bir araya gelip ortak zemin bulabileceği alanlar açmak için yürütür.",
+            "Gönüllülük, bu dayanışmanın en somut ifadesidir. IHBA farklı beceri ve geçmişe sahip gönüllülere açıktır ve toplum üyelerinin etkin katılımının hem çalışmayı güçlendirdiğini hem de ortak sorumluluk duygusunu büyüttüğünü kabul eder. Kültürel projeler, sosyal etkinlikler ve toplumu bir araya getiren programlar; gönüllüleri derneğin çalışmasına bağlarken kültürler arası tanışma ve öğrenme imkânı da oluşturur.",
+          ],
+          activities: [
+            "Toplum kültür etkinlikleri ve buluşmaları",
+            "Sanat ve yaratıcı ifade projeleri",
+            "Kültürel diyalog ve kültürler arası iletişim",
+            "Gönüllü katılımı ve organizasyonu",
+            "Müzik, sahne sanatları ve hikâye anlatıcılığı",
+            "Toplum liderliğinde sosyal ve kültürel girişimler",
+          ],
         },
         {
           title: "Kurumsal İş Birlikleri",
           blurb:
             "Farklı ülkelerdeki kurumlar, temsilcilikler, üniversiteler ve yerel paydaşlarla ortak projeler.",
+          body: [
+            "Bu alan, uzak bölgelerde etkili çalışmanın güçlü ortaklıklar ve kurumsal ilişkiler gerektirdiği gerçeğini karşılar. IHBA; uzak coğrafyalarda insani yardım, eğitim ve kalkınma çalışmalarının sürdürülebilir olmasının, o bölgede hâlihazırda faaliyet yürüten yerel kuruluşlar, paydaş örgütler, üniversiteler, kamu kurumları ve toplum yapılarıyla iş birliğine bağlı olduğunu kabul eder. Ortaklıklar hafife alınmaz; herhangi bir sözleşme imzalanmadan önce ortak değerleri, uyumlu bir yaklaşımı ve gerçek bir kapasiteyi taşıyıp taşımadıkları dikkatle değerlendirilir.",
+            "Kurumsal iş birliği proje yürütmenin ötesine geçer; bilgi paylaşımını, beceri geliştirmeyi ve farklı ülkelerdeki kurumlar arasında kalıcı köprüler kurmayı kapsar. IHBA bu ilişkiler aracılığıyla uzmanlığı daha etkili biçimde harekete geçirmeyi, paralel yapılar kurmak yerine yerel kurumsal kapasiteyi desteklemeyi ve tecrübenin iki yönlü paylaşılabildiği kanallar geliştirmeyi amaçlar. Bu nedenle iş birliği, derneğin kendi merkezinden uzak bölgelerde sürdürülebilir biçimde çalışabilmesinin temel şartıdır.",
+          ],
+          activities: [
+            "Kurumsal paydaşların değerlendirilmesi ve seçimi",
+            "Yerel kuruluşlarla resmî iş birliği anlaşmaları",
+            "Üniversite ve araştırma ortaklıkları",
+            "Sınır ötesi kurumsal ağlar ve değişim programları",
+            "Paydaş kuruluşlarla kapasite geliştirme",
+            "Yerel kurumlarla eşgüdüm içinde program yürütümü",
+          ],
         },
       ],
     },
@@ -678,6 +993,9 @@ export const content: Record<Lang, Content> = {
             "Merkezin yalnızca ders verilen bir yapı değil, çocukların güvenli ve destekleyici bir ortamda gelişebileceği bütüncül bir eğitim yerleşkesi olması hedeflenmektedir. Proje kapsamında derslikler, öğrenci yurdu, mescit, yemekhane, oyun alanları ve park gibi bölümler planlanmaktadır.",
             "Eğitim merkezinin kurulacağı arsa satın alınmış, resmî ve teknik hazırlık süreçlerine başlanmıştır. İnşaat henüz başlamamış olup merkezin 2027 yılının sonuna kadar tamamlanması hedeflenmektedir.",
             "Yerleşkenin ilerleyen dönemlerde bölgedeki insani yardım ve sürdürülebilir kalkınma çalışmalarının yürütülebileceği bir merkez hâline gelmesi; ayrıca kadınlar ve kız çocuklarına yönelik eğitim, beceri geliştirme ve sosyal destek faaliyetlerine ev sahipliği yapması planlanmaktadır.",
+            "Bölgedeki birçok çocuk; beslenmeye, güvenli bir barınma imkânına ve temel sağlık hizmetlerine erişimini etkileyen göç veya yoksulluk tecrübesi yaşamıştır. Yalnızca sınıflardan oluşan bir okul yerine bütüncül bir yerleşke planlanmasının amacı, bu temel ihtiyaçları merkezin kendi bünyesinde karşılamaktır; böylece ev şartları istikrarsız olan bir çocuk da güvenli ve kesintisiz bir ortamda öğrenmeye devam edebilir.",
+            "Hazırlık süreci; merkezin tasarımına ve günlük işleyişine dair kararlarda ailelerin, öğretmenlerin ve yerel yetkililerin görüşünü içerecek şekilde kurgulanmıştır. Planlama yalnızca inşaatı değil, bir okulun ayakta kalabilmesi için gerekenleri de kapsar: öğretim kadrosu, işletme giderleri, bakım ve onarım. Tasarımda kız ve erkek öğrencilerin merkezin imkânlarına ve programlarına eşit erişimi hedeflenir; günlük işleyişin kız öğrencilerin katılımını koruyacak ve sürdürecek biçimde düzenlenmesine ayrıca önem verilir.",
+            "Yerleşkenin yalnızca kendi öğrencilerine değil, çevre bölgeye de hizmet etmesi amaçlanmaktadır. Eğitimin, beceri geliştirmenin ve sosyal desteğin bölgedeki kadınlara ve kız çocuklarına ulaşabileceği bir merkez olarak planlanmaktadır. Her şeyden önce merkez; toplumun onu başka yerlerde alınmış kararların değil, kendi önceliklerinin ürünü olan bir kurum olarak görmesi gözetilerek hazırlanmaktadır.",
           ],
           facts: [
             { label: "Hedef kitle", value: "7-18 yaş aralığındaki kız ve erkek öğrenciler" },
@@ -698,6 +1016,9 @@ export const content: Record<Lang, Content> = {
             "Bu program, Türkiye'den Pakistan'a yükseköğrenim amacıyla giden öğrencilerin eğitim yolculuğunu daha güvenli, planlı ve sürdürülebilir hâle getirmeyi amaçlar. Öğrencilere üniversite araştırması ve tercih sürecinden başvuru ve kayıt işlemlerine, barınma imkânlarından ülkeye ve eğitim sistemine uyum sürecine kadar rehberlik sağlanır.",
             "Program kapsamında Pakistan'daki farklı üniversitelerle iletişim kurulması, öğrencilerin uygun bölümlere yönlendirilmesi, kayıt süreçlerinin takip edilmesi, burs ve barınma imkânlarının geliştirilmesi ve öğrencilerin eğitim hayatları boyunca ihtiyaç duydukları sosyal desteğe erişmelerine katkı sunulması hedeflenmektedir.",
             "IHBA, bu çalışmayı yalnızca öğrenci yerleştirme faaliyeti olarak değil; Türkiye ile Pakistan arasında eğitim, kültür ve gençlik bağlarını güçlendiren uzun vadeli bir köprü olarak ele alır.",
+            "Yurt dışında okumak, gitme kararından çok daha fazlasını gerektirir. Öğrencinin; alacağı diplomanın dönüşte nasıl tanınacağını anlaması, alışık olmadığı başvuru ve kayıt işlemlerini yürütmesi, açık olan herhangi bir bölüme değil kendi hedeflerine uygun bir bölüme yönelmesi ve yeni bir şehre varmanın pratik gerçeğine hazırlanması gerekir: dil, barınma, yaşam maliyeti ve aileyle irtibatın sürdürülmesi. Rehberlik yalnızca başvuru anında değil, bu başlıkların her birinde sunulur.",
+            "Program, öğrenciler adına değil öğrencilerle birlikte yürütülür. Bu; bir planın gerçekçi görünmediği durumlarda öğrencinin duymak istediğini onaylamak yerine bunu açıkça söylemek, derneğin elinde olmayan kabul, burs veya barınma konularında söz vermemek ve öğrencinin kişisel ve ailevî durumunu gizli tutmak anlamına gelir. İrtibatın kayıt işlemiyle sona ermemesi esastır; çünkü yeni bir ülkedeki ilk yıl, desteğe en çok ihtiyaç duyulan dönemdir.",
+            "IHBA bu çalışmayı bir öğrenci yerleştirme hizmeti değil, Türkiye ile Pakistan arasında uzun vadeli bir eğitim ve kültür köprüsü olarak görür. Eğitimini tamamlayan öğrenciler, kendilerinden sonra gelenlere yol göstermek için en uygun konumdadır; amaç, her grubun bir sonrakini destekleyen ağın parçası hâline gelmesidir. Öğrenciler, üniversiteler ve topluluklar arasında bu yolla kurulan ilişkiler tek bir öğretim yılının ötesine geçer.",
           ],
           facts: [
             {
@@ -720,6 +1041,9 @@ export const content: Record<Lang, Content> = {
           body: [
             "IHBA, Ramazan ve Kurban dönemlerinde ihtiyaç sahibi ailelere ve topluluklara yönelik insani yardım faaliyetleri yürütmektedir. Pakistan, Afganistan, Filistin ve Afrika'daki farklı bölgeler başta olmak üzere ihtiyaç tespit edilen coğrafyalarda iftar programları, gıda ve temel ihtiyaç destekleri ile kurban organizasyonları gerçekleştirilmektedir.",
             "Faaliyetler, yerel ihtiyaçlar ve saha şartları dikkate alınarak güvenilir yerel paydaşlarla koordinasyon içinde planlanır. Yardımların insan onuruna uygun, düzenli ve doğrudan ihtiyaç sahiplerine ulaştırılması; mümkün olan durumlarda dönemsel desteklerin daha uzun vadeli sosyal ve kalkınma çalışmalarına zemin hazırlaması amaçlanır.",
+            "Yardım ulaştırılacak haneler; ilan edilmiş bir kayıt sistemiyle veya o gün kim gelirse ona göre değil, yerel bilgi ve mevcut topluluk ilişkileri üzerinden belirlenir. Bölgede yaşayan ve çalışan saha ortakları hangi ailelerin güçlük içinde olduğunu, hâlihazırda hangi destekleri aldığını ve kimlerin geri durma ihtimalinin yüksek olduğunu bilir; bu geri durma çekingenlikten, süreci tanımamaktan veya komşularının önünde işaret edilmek istememekten kaynaklanır. Dağıtım da düzenli ve göze batmayacak biçimde kurgulanır: sıraya girmekten daha onurlu olduğu durumlarda yardım eve teslim edilir veya toplumun güvendiği kişiler aracılığıyla ulaştırılır; aynı mahallede çalışan diğer kuruluşlarla eşgüdüm sağlanarak bazı hanelere iki kez ulaşılırken diğerlerinin atlanması önlenir.",
+            "Yerel şartlar imkân verdiğinde gıda ve kurbanlık hayvan, dışarıdan getirilmek yerine bölgeden temin edilir. Yerelden almak; topluluğa yıl boyunca hizmet eden üreticiyi, kasabı ve esnafı destekler, ailelerin geçimini bağladığı piyasayı zayıflatmaz ve bağış ile yardımı alan hane arasındaki mesafeyi kısaltır. Kurban organizasyonu; ibadetin gereklerinin usulüne uygun yerine getirilmesi ve etin bozulmadan ihtiyaç sahibine ulaşması gözetilerek, bu yükümlülükleri bilen tedarikçi ve kasaplarla yürütülür.",
+            "Dönem, bir bitiş değil bir başlangıç olarak ele alınır. Ramazan ve Kurban çalışmaları sırasında kaydedilenler — hangi ailelere ulaşıldığı, hangi şartlarda, hangi çocuklarla ve hangi uzun vadeli ihtiyaçlarla — bu hanelerin sonrasında eğitim, sağlık veya geçim desteğiyle takip edilmesinin temelini oluşturur. IHBA sınırı da açıkça ifade eder: dönemsel yardım, ne kadar düzenli olursa olsun yıl boyu süren programların yerini alamaz. Değeri, ihtiyaçları tespit etmesinde ve daha kalıcı desteğin gelişebileceği ilişkileri kurmasındadır.",
           ],
           facts: [
             {

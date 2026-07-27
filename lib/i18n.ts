@@ -20,9 +20,19 @@ export interface Signpost {
   cta: string;
 }
 
+/**
+ * A figure in the facts strip.
+ *
+ * `derive` makes the number read itself off the content it is describing, so a
+ * stat can never contradict the grid below it. Editing the programmes list used
+ * to leave "7 Areas of work" behind as a hand-typed string; now that string is
+ * only the fallback for figures nothing in the content can count — the founding
+ * year, the continent count.
+ */
 export interface StatItem {
   value: string;
   label: string;
+  derive?: "areas" | "projects";
 }
 
 export interface ApproachStep {
@@ -195,8 +205,8 @@ export const dict: Record<Lang, Dictionary> = {
     facts: {
       stats: [
         { value: "2025", label: "Founded in Istanbul" },
-        { value: "7", label: "Areas of work" },
-        { value: "3", label: "Ongoing programmes" },
+        { value: "7", label: "Areas of work", derive: "areas" },
+        { value: "3", label: "Ongoing programmes", derive: "projects" },
         { value: "2", label: "Continent focus" },
       ],
     },
@@ -443,8 +453,8 @@ export const dict: Record<Lang, Dictionary> = {
     facts: {
       stats: [
         { value: "2025", label: "İstanbul'da kuruldu" },
-        { value: "7", label: "Faaliyet alanı" },
-        { value: "3", label: "Devam eden program" },
+        { value: "7", label: "Faaliyet alanı", derive: "areas" },
+        { value: "3", label: "Devam eden program", derive: "projects" },
         { value: "2", label: "Kıta odağı" },
       ],
     },
