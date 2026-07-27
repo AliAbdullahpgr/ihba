@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Reveal } from "@/app/components/Reveal";
 import { ArrowLink } from "@/app/components/primitives";
@@ -20,23 +20,39 @@ export function AboutPage() {
     <>
       <PageHeader title={t.aboutPage.title} lede={t.aboutPage.lede} />
 
-      {/* Two banks: the narrative on the left, the arch-masked image opposite. */}
-      <section className="bg-white pb-16 lg:pb-20">
+      {/* Two banks: the narrative on the left, the photograph opposite. */}
+      <section
+        aria-labelledby="about-intro-title"
+        className="bg-white pb-16 lg:pb-20"
+      >
         <div className="container-site grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">
+            {/* Visually hidden: the section carries no visible heading of its
+                own, so it borrows the page title to stay addressable. */}
+            <h2 id="about-intro-title" className="sr-only">
+              {t.aboutPage.title}
+            </h2>
             <Prose paragraphs={t.aboutPage.intro} />
           </div>
           <div className="lg:col-span-4 lg:col-start-9">
-            <img
-              src={t.media.hero.url}
-              alt="Community volunteers crossing a bridge with notebooks and essential supplies"
-              className="arch aspect-[4/5] w-full object-cover"
-            />
+            {/* Square, the crop every image on the site now shares — the arch
+                mask and the taller 4/5 ratio both belonged to the old system. */}
+            <div className="relative aspect-square w-full">
+              <Image
+                src={t.media.hero.url}
+                alt="Community volunteers crossing a bridge with notebooks and essential supplies"
+                fill
+                sizes="(min-width: 1024px) 360px, 100vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Mission and vision, spanned by one deck line. */}
+      {/* Mission and vision, spanned by one deck line. The section's only
+          warm band on the page — it does not alternate with white further
+          down, so the ground never reads as busier than it is. */}
       <PageSection tone="warm">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           {[
@@ -44,23 +60,29 @@ export function AboutPage() {
             { label: t.about.visionLabel, text: t.about.visionText },
           ].map((block) => (
             <div key={block.label}>
-              <p className="eyebrow text-gold-deep">{block.label}</p>
-              <p className="mt-4 text-base leading-relaxed text-ink/75">
+              {/* A real heading, not a tracked-capital kicker: "Our Mission"
+                  titles the paragraph beneath it. */}
+              <h3 className="font-display text-base font-medium text-navy-ink">
+                {block.label}
+              </h3>
+              <p className="mt-4 text-base leading-relaxed text-ink/70">
                 {block.text}
               </p>
             </div>
           ))}
         </div>
 
-        <div className="mt-14 border-t border-navy-ink/15">
-          <p className="eyebrow pt-8 text-ink/50">{t.about.valuesLabel}</p>
+        <div className="mt-14">
+          <h3 className="border-t border-navy-ink/15 pt-8 font-display text-base font-medium text-navy-ink">
+            {t.about.valuesLabel}
+          </h3>
           <div className="mt-4">
             <NumberedList items={t.about.values} />
           </div>
         </div>
       </PageSection>
 
-      {/* Approach, who we serve, where we work. */}
+      {/* Approach, who we serve, where we work — a three-item cascade. */}
       <PageSection>
         <div className="grid gap-12 lg:grid-cols-3 lg:gap-8">
           {[
@@ -70,11 +92,11 @@ export function AboutPage() {
               label: t.aboutPage.geographyLabel,
               text: t.aboutPage.geographyText,
             },
-          ].map((block) => (
-            <Reveal key={block.label}>
-              <p className="eyebrow border-t border-navy-ink/15 pt-5 text-gold-deep">
+          ].map((block, index) => (
+            <Reveal key={block.label} delay={index * 90}>
+              <h3 className="border-t border-navy-ink/15 pt-5 font-display text-base font-medium text-navy-ink">
                 {block.label}
-              </p>
+              </h3>
               <p className="mt-3 text-sm leading-relaxed text-ink/70">
                 {block.text}
               </p>
@@ -84,14 +106,7 @@ export function AboutPage() {
       </PageSection>
 
       {/* The standards behind the work, one topic at a time. */}
-      <PageSection
-        id="principles"
-        title={t.aboutPage.principlesTitle}
-        tone="warm"
-      >
-        <p className="mb-12 max-w-2xl text-base leading-relaxed text-ink/70">
-          {t.aboutPage.principlesLede}
-        </p>
+      <PageSection id="principles" title={t.aboutPage.principlesTitle}>
         <PrinciplesTabs
           panels={t.aboutPage.panels}
           navLabel={t.aboutPage.principlesNavLabel}
@@ -100,9 +115,6 @@ export function AboutPage() {
 
       {/* Registry data — the association's official record. */}
       <PageSection title={t.identity.title}>
-        <p className="mb-10 max-w-2xl text-base leading-relaxed text-ink/70">
-          {t.identity.lede}
-        </p>
         <DataList rows={t.identity.rows} />
       </PageSection>
 

@@ -81,13 +81,13 @@ export function PrinciplesTabs({
               onKeyDown={onKeyDown}
               className={`flex w-full items-baseline gap-4 border-b border-navy-ink/12 py-4 pr-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure ${
                 isActive
-                  ? "border-l-2 border-l-gold-deep pl-4"
+                  ? "bg-white pl-4"
                   : "pl-4 hover:bg-white/60"
               }`}
             >
               <span
                 className={`font-display text-sm font-medium ${
-                  isActive ? "text-gold-deep" : "text-navy-ink/35"
+                  isActive ? "text-gold-ink" : "text-navy-ink/70"
                 }`}
               >
                 {String(index + 1).padStart(2, "0")}

@@ -43,7 +43,12 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
         backLabel={t.common.backToProjects}
       />
 
-      <section className="bg-white pb-16 lg:pb-20">
+      {/*
+        A plain wrapper, not a section: the page's own h1 (the project title)
+        already labels this content, so there is no separate heading here to
+        hang a landmark label on.
+      */}
+      <div className="bg-white pb-16 lg:pb-20">
         <div className="container-site">
           {/*
             No caption here on purpose: the only text available is the alt, and
@@ -53,7 +58,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           */}
           <Figure
             images={[{ src: image.src, alt: image.alt }]}
-            imageClassName="aspect-[16/9] w-full object-cover"
+            imageClassName="aspect-[16/9] w-full"
           />
 
           <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-8">
@@ -88,7 +93,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
                     key={fact.label}
                     className="border-b border-navy-ink/12 py-4"
                   >
-                    <dt className="eyebrow text-ink/50">{fact.label}</dt>
+                    <dt className="text-sm text-ink/70">{fact.label}</dt>
                     <dd className="mt-2 text-sm font-semibold text-navy-ink">
                       {fact.value}
                     </dd>
@@ -105,7 +110,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
             </aside>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* No dead end: the reader always leaves with somewhere else to go. */}
       <PageSection title={t.projectsPage.moreTitle} tone="warm">
@@ -118,14 +123,17 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
                   <CardMedia
                     src={otherImage.src}
                     alt={otherImage.alt}
-                    ratio="aspect-[16/9]"
+                    ratio="aspect-square"
                   />
-                  <p className="eyebrow mt-5 text-gold-deep">{other.region}</p>
+                  {/* Status and region, matching the meta row on every other
+                      project card on the site, rather than a lone eyebrow label. */}
+                  <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <Tag tone="gold">{other.status}</Tag>
+                    <span className="text-xs font-semibold text-ink/70">
+                      {other.region}
+                    </span>
+                  </div>
                   <CardTitle className="mt-3 text-xl">{other.title}</CardTitle>
-                  <span className="mt-5 inline-flex items-center gap-3 text-sm font-semibold text-navy-ink">
-                    <ArrowDisc />
-                    {t.common.readProject}
-                  </span>
                 </CardLink>
               </Reveal>
             );

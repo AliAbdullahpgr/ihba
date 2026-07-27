@@ -18,18 +18,24 @@ export function VolunteerPage() {
     <>
       <PageHeader title={t.volunteerPage.title} lede={t.volunteerPage.lede} />
 
-      <section className="bg-white pb-16 lg:pb-20">
+      {/* Nothing here needs a name beyond the page title above it, so this
+          band is a plain div rather than an unlabelled section. */}
+      <div className="bg-white pb-16 lg:pb-20">
         <div className="container-site grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">
             <Prose paragraphs={t.volunteerPage.body} />
 
-            <div className="mt-10 border-l-2 border-gold pl-5">
+            <div className="mt-10 border-t border-navy-ink/15 pt-5">
               <p className="text-sm leading-relaxed text-ink/70">
                 {t.volunteerPage.formNote}
               </p>
             </div>
           </div>
 
+          {/* Square, matching every other image in the rebuilt system — the
+              arch mask stays off. Figure (Lightbox.tsx) still renders a plain
+              <img> internally to drive its enlarge/zoom behaviour; that file
+              is shared and off-limits here, so that part is unchanged. */}
           <aside className="lg:col-span-4 lg:col-start-9">
             <Figure
               images={[
@@ -39,11 +45,11 @@ export function VolunteerPage() {
                   caption: t.volunteerPage.photoCaption,
                 },
               ]}
-              imageClassName="arch aspect-[4/5] w-full object-cover"
+              imageClassName="aspect-square w-full"
             />
           </aside>
         </div>
-      </section>
+      </div>
 
       {/* The application itself, on its own band so it cannot be scrolled past. */}
       <PageSection title={t.volunteerPage.formTitle} tone="warm" id="apply">

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Mail, Phone } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { ArrowLink, Button } from "@/app/components/primitives";
@@ -17,7 +18,9 @@ export function DonatePage() {
     <>
       <PageHeader title={t.donatePage.title} lede={t.donatePage.lede} />
 
-      <section className="bg-white pb-16 lg:pb-20">
+      {/* Nothing here needs a name beyond the page title above it, so this
+          band is a plain div rather than an unlabelled section. */}
+      <div className="bg-white pb-16 lg:pb-20">
         <div className="container-site grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">
             <Prose paragraphs={t.donatePage.body} />
@@ -26,7 +29,7 @@ export function DonatePage() {
               Bank details are not published yet, so the page states that plainly
               and gives the direct route instead of a dead form.
             */}
-            <div className="mt-10 border-l-2 border-gold pl-5">
+            <div className="mt-10 border-t border-navy-ink/15 pt-5">
               <p className="text-sm leading-relaxed text-ink/70">
                 {t.donatePage.accountsNote}
               </p>
@@ -47,15 +50,21 @@ export function DonatePage() {
             </div>
           </div>
 
+          {/* Square, like every other image in the rebuilt system — the arch
+              mask is gone from the inner pages it used to sit on. */}
           <aside className="lg:col-span-4 lg:col-start-9">
-            <img
-              src={t.media.fieldRamadanIftar.url}
-              alt="A large IHBA Ramadan iftar gathering in Pakistan"
-              className="arch aspect-[4/5] w-full object-cover"
-            />
+            <div className="relative aspect-square w-full">
+              <Image
+                src={t.media.fieldRamadanIftar.url}
+                alt="A large IHBA Ramadan iftar gathering in Pakistan"
+                fill
+                sizes="(min-width: 1024px) 320px, 100vw"
+                className="object-cover"
+              />
+            </div>
           </aside>
         </div>
-      </section>
+      </div>
 
       <PageSection title={t.donatePage.usesLabel} tone="warm">
         <NumberedList items={t.donatePage.uses} />
@@ -66,7 +75,7 @@ export function DonatePage() {
               <h3 className="font-display text-lg font-medium text-navy-ink">
                 {t.volunteerPage.title}
               </h3>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-ink/65">
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-ink/70">
                 {t.volunteerPage.lede}
               </p>
               <ArrowLink href="/volunteer" className="mt-5">
@@ -77,7 +86,7 @@ export function DonatePage() {
               <h3 className="font-display text-lg font-medium text-navy-ink">
                 {t.identity.title}
               </h3>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-ink/65">
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-ink/70">
                 {t.footer.transparency}
               </p>
               <ArrowLink href="/about" className="mt-5">

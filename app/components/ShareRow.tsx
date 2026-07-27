@@ -91,7 +91,7 @@ export function ShareRow({ title }: { title: string }) {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <p className="eyebrow mr-1 text-ink/50">{t.common.share}</p>
+      <p className="mr-1 text-sm font-semibold text-ink/70">{t.common.share}</p>
 
       {targets.map(({ key, label, href, Glyph }) => (
         <a

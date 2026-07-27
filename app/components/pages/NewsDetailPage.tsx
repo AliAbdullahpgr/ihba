@@ -23,11 +23,14 @@ export function NewsDetailPage({ slug }: { slug: string }) {
           {article.image && (
             <Figure
               images={[{ src: article.image.src, alt: article.image.alt }]}
-              imageClassName="aspect-[16/9] w-full object-cover"
+              imageClassName="aspect-[16/9] w-full"
             />
           )}
           <div className="mt-12 max-w-2xl">
-            <time className="text-xs font-semibold text-ink/45">
+            <time
+              dateTime={article.publishedAt}
+              className="text-xs font-semibold text-ink/70"
+            >
               {new Date(article.publishedAt).toLocaleDateString()}
             </time>
             <div className="mt-6 space-y-5">

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { ArrowLink } from "@/app/components/primitives";
 import { PageHeader, PageSection } from "@/app/components/PageShell";
@@ -18,16 +19,32 @@ export function PresidentPage() {
         backLabel={t.nav.about}
       />
 
-      <section className="bg-white pb-16 lg:pb-20">
+      <section
+        aria-labelledby="president-bio-title"
+        className="bg-white pb-16 lg:pb-20"
+      >
         <div className="container-site grid gap-12 lg:grid-cols-12 lg:gap-8">
+          {/* Visually hidden: the quote and portrait carry the section, so it
+              had no heading of its own to point aria-labelledby at. */}
+          <h2 id="president-bio-title" className="sr-only">
+            {presidentPage.title}
+          </h2>
+
           {/* Attribution rail: portrait (once uploaded) plus name and role. */}
           <aside className="lg:col-span-4">
             {portrait ? (
-              <img
-                src={portrait}
-                alt={`${presidentPage.name}, ${presidentPage.role}`}
-                className="arch aspect-[4/5] w-full object-cover"
-              />
+              /* Square, the site's one crop now — the arch mask is gone.
+                 Empty alt: the name and role sit directly beneath in text,
+                 so a screen reader would otherwise announce the name twice. */
+              <div className="relative aspect-square w-full max-w-sm">
+                <Image
+                  src={portrait}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 360px, 100vw"
+                  className="object-cover object-top"
+                />
+              </div>
             ) : null}
             <div
               className={`border-t border-navy-ink/15 pt-4 ${portrait ? "mt-5" : ""}`}
@@ -35,7 +52,7 @@ export function PresidentPage() {
               <p className="font-display text-lg font-medium text-navy-ink">
                 {presidentPage.name}
               </p>
-              <p className="mt-1 text-sm text-ink/60">{presidentPage.role}</p>
+              <p className="mt-1 text-sm text-ink/70">{presidentPage.role}</p>
             </div>
           </aside>
 
@@ -60,7 +77,7 @@ export function PresidentPage() {
               <p className="text-sm font-bold text-navy-ink">
                 {presidentPage.name}
               </p>
-              <p className="text-sm text-ink/60">{presidentPage.role}</p>
+              <p className="text-sm text-ink/70">{presidentPage.role}</p>
             </div>
           </div>
         </div>

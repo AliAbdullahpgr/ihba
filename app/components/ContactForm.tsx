@@ -140,7 +140,7 @@ export function ContactForm() {
 
       <div className="flex flex-wrap items-center gap-5 border-t border-navy-ink/15 pt-6">
         <SubmitButton>{f.send}</SubmitButton>
-        <p className="text-xs leading-relaxed text-ink/50">{f.privacy}</p>
+        <p className="text-xs leading-relaxed text-ink/70">{f.privacy}</p>
       </div>
     </form>
   );

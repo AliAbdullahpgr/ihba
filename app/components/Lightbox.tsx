@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
 
@@ -21,12 +22,16 @@ export function Figure({
   images,
   index = 0,
   className = "",
-  imageClassName = "aspect-[16/9] w-full object-cover",
+  // The ratio box, not the image itself: `next/image` fills its container, so
+  // the aspect has to live on the element that reserves the space.
+  imageClassName = "aspect-[16/9] w-full",
+  sizes = "(min-width: 1024px) 800px, 100vw",
 }: {
   images: LightboxImage[];
   index?: number;
   className?: string;
   imageClassName?: string;
+  sizes?: string;
 }) {
   const { t } = useI18n();
   const [openAt, setOpenAt] = useState<number | null>(null);
@@ -40,12 +45,14 @@ export function Figure({
         type="button"
         onClick={() => setOpenAt(index)}
         aria-label={`${t.common.enlarge} — ${image.alt}`}
-        className="group relative block w-full cursor-zoom-in overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure focus-visible:ring-offset-4"
+        className={`group relative block cursor-zoom-in overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure focus-visible:ring-offset-4 ${imageClassName}`}
       >
-        <img
+        <Image
           src={image.src}
           alt={image.alt}
-          className={`transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100 ${imageClassName}`}
+          fill
+          sizes={sizes}
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
         <span
           aria-hidden="true"
@@ -55,8 +62,11 @@ export function Figure({
         </span>
       </button>
 
+      {/* A hairline above the caption, not a 2px gold stripe down its side.
+          The side-stripe is template decoration and it was the one place on
+          the public pages still using it. */}
       {image.caption && (
-        <figcaption className="mt-3 border-l-2 border-gold pl-3 text-xs leading-relaxed text-ink/60">
+        <figcaption className="mt-3 border-t border-navy-ink/15 pt-2 text-xs leading-relaxed text-ink/70">
           {image.caption}
         </figcaption>
       )}
@@ -134,7 +144,7 @@ export function Lightbox({
       }}
     >
       <div className="flex items-center justify-between gap-4">
-        <p className="eyebrow text-white/60">
+        <p className="text-sm font-semibold text-white/75">
           {many ? `${at + 1} / ${images.length}` : ""}
         </p>
         <button
@@ -160,11 +170,20 @@ export function Lightbox({
           </button>
         )}
 
-        <img
-          src={image.src}
-          alt={image.alt}
-          className="max-h-full min-h-0 w-auto max-w-full object-contain"
-        />
+        {/*
+          `object-contain` inside a filled box rather than an intrinsically
+          sized element: the viewer must never crop, and the box is whatever
+          space the chevrons leave behind.
+        */}
+        <div className="relative h-full min-h-0 flex-1">
+          <Image
+            src={image.src}
+            alt={image.alt}
+            fill
+            sizes="100vw"
+            className="object-contain"
+          />
+        </div>
 
         {many && (
           <button

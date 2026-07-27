@@ -8,7 +8,6 @@ import { FocusMosaic } from "@/app/components/FocusMosaic";
 import { About } from "@/app/components/About";
 import { PresidentQuote } from "@/app/components/PresidentQuote";
 import { VolunteerCta } from "@/app/components/VolunteerCta";
-import { Newsletter } from "@/app/components/Newsletter";
 
 export function Landing() {
   return (
@@ -30,7 +29,6 @@ export function Landing() {
       <About />
       <PresidentQuote />
       <VolunteerCta />
-      <Newsletter />
     </>
   );
 }

@@ -173,6 +173,7 @@ export interface Content {
   areasPage: PageIntro & {
     intro: string[];
     activitiesLabel: string;
+    jumpLabel: string;
     items: AreaDetail[];
   };
   projectsPage: PageIntro & { details: ProjectDetail[]; moreTitle: string };
@@ -386,14 +387,13 @@ export const content: Record<Lang, Content> = {
         "Each field below therefore describes both what IHBA does and how it tries to work: what it looks at before starting, what it refuses to do, and what it hands on to the next stage. Where a region's needs and reliable local partnerships allow, several of these fields run alongside one another rather than in sequence.",
       ],
       activitiesLabel: "In practice",
+      jumpLabel: "Jump to a field",
       items: [
         {
           title: "Humanitarian Assistance",
           blurb: "Food, shelter, health, essential needs, and in-kind or financial support.",
           body: [
-            "Humanitarian assistance responds to urgent need: food, shelter, health care and the essential items that allow people to survive crisis while maintaining dignity. IHBA approaches this work not as temporary relief alone, but as a foundation that protects life and creates space for longer-term recovery. Each assistance programme is designed to enable people to begin rebuilding their capacity and independence.",
-            "IHBA coordinates humanitarian assistance through trusted local partners who understand regional needs and community conditions. Where possible, assistance is delivered alongside education, skills development or livelihood programmes, so that emergency response becomes part of a pathway towards stronger futures. This approach requires understanding local economies and social structures, ensuring that assistance strengthens rather than destabilises community resilience.",
-            "IHBA delivers humanitarian assistance on the basis of need alone, without condition or regard to background. The association remains alert to the consequences that aid can create: dependency, market distortion and the exposure of people seeking anonymity and safety. Assistance is therefore provided with restraint and in close coordination with other actors, so that relief is temporary and transitions into sustainable recovery.",
+            "Humanitarian assistance responds to urgent need: food, shelter, health care and the essentials that let people survive a crisis without losing their dignity. IHBA treats it as a foundation for recovery rather than a one-off handout — delivered through trusted local partners, on the basis of need alone, and paired with education or livelihood support wherever possible so that relief gives way to independence rather than dependency.",
           ],
           activities: [
             "Food distribution and emergency rations",
@@ -409,9 +409,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Scholarships, student support programmes, education centres, guidance and awareness activities.",
           body: [
-            "Education is a foundation for longer-term development and human dignity. IHBA recognises that quality education remains limited in many communities, at all levels from primary schooling to higher education. The association's education work aims to remove barriers and create pathways so that young people can gain knowledge and skills, participate in productive life, and build independent futures.",
-            "IHBA combines formal education provision with mentorship, skills training and guidance. It partners with schools, universities and community organisations to understand local education needs and design responsive programmes. Where possible, education is integrated with other support — sustainable livelihoods, health awareness — creating pathways for young people and women to develop their capacities and gain confidence.",
-            "Education activities include establishing learning centres, providing scholarships and supporting students in higher education. IHBA also delivers awareness and guidance programmes, particularly targeting young people, women and vulnerable groups, on rights, health, safety and economic opportunity. Throughout, the emphasis is on sustainable learning and building foundations for continued growth rather than temporary intervention.",
+            "Education removes the barriers that keep people from building an independent future, from primary schooling to higher education. IHBA combines direct provision with mentorship, scholarships and skills training, partnering with schools, universities and community organisations — and often pairing it with livelihood or health support so that learning translates into real opportunity.",
           ],
           activities: [
             "Primary and secondary schooling programmes",
@@ -427,9 +425,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Long-term programmes that strengthen productive capacity and economic independence.",
           body: [
-            "Sustainable development is more than temporary assistance. IHBA designs programmes that help communities strengthen their own productive capacity, gain knowledge and skills, and build economic independence. Assistance is paired with training, market access and local ownership so that external support eventually becomes unnecessary.",
-            "Within these programmes, IHBA prioritises work that is planned with communities rather than imposed on them, builds local expertise so that skills remain after support ends, and respects existing resources and markets. Particular attention is given to identifying which knowledge, skills and equipment can be maintained and developed by people on the ground, and to ensuring that project outcomes are sustained by systems and structures that remain.",
-            "Projects are designed to leave communities stronger than they were found, not dependent on ongoing external resources. This means working closely with local partners, avoiding distortions to local markets or economies, and recognising that success is measured not by the visibility of aid but by the durability of change.",
+            "Sustainable development goes beyond temporary assistance: IHBA pairs training, market access and equipment with local ownership so that communities build lasting productive capacity and economic independence. Programmes are planned with communities rather than imposed on them, and judged by the durability of the change they leave behind, not the visibility of the aid itself.",
           ],
           activities: [
             "Skills and livelihoods training programmes",
@@ -445,9 +441,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Protective, developmental and participatory education, social support and skills programmes.",
           body: [
-            "Programmes that reach children, young people and women must be built around protection, safety and respect for human dignity. IHBA designs all work in this field with attention to safeguarding: consent, privacy, appropriate conduct, confidentiality, and the protection of those most at risk. These are not separate from the work — they are fundamental to how the work is done.",
-            "Rather than imposing solutions, IHBA develops programmes through consultation with families and communities, understanding what young people and women themselves identify as priorities. Activities range from protective education and awareness to skills development, social support and economic opportunity, always with the understanding that sustainable change comes through people's own participation and ownership.",
-            "Recognising that children, youth and women often occupy different positions within families and communities, IHBA ensures that programming addresses the particular circumstances and needs of each group. Support is tailored to age and circumstance, respects existing family structures and cultural contexts, and works toward outcomes that strengthen rather than fragment community bonds.",
+            "Programmes reaching children, young people and women are built around protection, safety and dignity — consent, privacy and safeguarding are fundamental to how the work is done, not separate from it. Developed through consultation rather than imposed solutions, they combine protective education, skills development and social support tailored to each group's circumstances.",
           ],
           activities: [
             "Protective and rights-based education",
@@ -463,8 +457,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Assistance for people in need, disaster-affected communities, displaced persons, older people, persons with disabilities, orphans and those requiring care.",
           body: [
-            "This field covers assistance for individuals and families facing health-related challenges or requiring ongoing support. IHBA recognises that effective support must be adapted to each person's circumstances, respecting their privacy and dignity throughout. The organisation works with qualified health and social-care professionals rather than attempting to substitute professional services, focusing instead on coordination, information and practical accompaniment.",
-            "Health and social support extends across different populations: older people, persons with disabilities, people affected by disaster, displaced persons, children requiring care, and those facing economic or social hardship. Assistance may include direct support, access to specialist services, provision of assistive equipment, or connection with qualified providers in the field. IHBA's role is to ensure that support reaches people who need it, follows their own priorities, and builds on existing local health and social systems rather than bypassing them.",
+            "This field supports people facing health-related hardship — older people, persons with disabilities, the displaced and disaster-affected, orphans and those requiring care — always respecting their privacy and priorities. IHBA works alongside qualified health and social-care professionals rather than substituting for them, focusing on coordination, access to specialist services and practical accompaniment.",
           ],
           activities: [
             "Coordination with qualified health and care providers",
@@ -480,8 +473,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Activities that strengthen social solidarity, intercultural communication and volunteer participation.",
           body: [
-            "This field encompasses activities that strengthen social cohesion and build connections within and between communities. Culture and the arts are understood not as display or entertainment, but as expressions of shared identity and vehicles for dialogue, learning and participation. IHBA uses cultural and artistic activities to deepen mutual understanding, support people's own voices and creativity, and create spaces where communities can gather and find common ground.",
-            "Volunteering is a core expression of solidarity within this work. IHBA welcomes volunteers with diverse skills and backgrounds, recognising that active participation by community members strengthens the work itself and builds a sense of shared responsibility. Whether through cultural projects, social activities, or events that bring people together, volunteering connects people to the organisation's mission while creating opportunities for intercultural exchange and learning.",
+            "Culture and the arts here are vehicles for dialogue and shared identity, not entertainment — building connections within and between communities. Volunteering is the practical expression of that same solidarity: IHBA welcomes volunteers of every background, whose participation strengthens the work itself and opens space for intercultural exchange.",
           ],
           activities: [
             "Community cultural events and gatherings",
@@ -497,8 +489,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Joint initiatives with institutions, representative offices, universities and local partners in different countries.",
           body: [
-            "This field addresses the practical reality that effective work in distant regions requires strong partnerships and institutional relationships. IHBA recognises that sustainable humanitarian assistance, education and development depend on collaboration with local institutions, partner organisations, universities, government bodies and community structures that already work in those regions. Partnerships are not entered into lightly; they are carefully assessed before any agreement is signed to ensure shared values, compatible approaches and genuine capacity.",
-            "Institutional cooperation extends beyond project delivery to knowledge exchange, skills development and the building of lasting bridges between institutions in different countries. Through these relationships, IHBA aims to mobilise expertise more effectively, support local institutional capacity rather than create parallel structures, and develop channels through which experience and learning can be shared in both directions. Cooperation is therefore central to how IHBA works sustainably in regions far from its home base.",
+            "Effective work in distant regions depends on strong local partnerships — with institutions, universities, government bodies and community structures already working there. IHBA assesses each partnership carefully before committing, and treats cooperation as an exchange of knowledge and capacity rather than project delivery alone, building lasting bridges between institutions in different countries.",
           ],
           activities: [
             "Assessment and selection of institutional partners",
@@ -850,6 +841,7 @@ export const content: Record<Lang, Content> = {
         "Bu nedenle aşağıdaki her alan, IHBA'nın ne yaptığını olduğu kadar nasıl çalıştığını da anlatır: işe başlamadan önce neye baktığını, neyi yapmaktan kaçındığını ve sonraki aşamaya neyi devrettiğini. Bölgenin ihtiyaçları ve güvenilir yerel iş birlikleri imkân verdiğinde bu alanların birkaçı sırayla değil, birlikte yürütülür.",
       ],
       activitiesLabel: "Uygulamada",
+      jumpLabel: "Bir alana git",
       title: "Faaliyet alanlarımız",
       lede: "Yedi alan, tek amaç: insan onurunu korumak ve güçlendirmek.",
       items: [
@@ -857,9 +849,7 @@ export const content: Record<Lang, Content> = {
           title: "İnsani Yardım",
           blurb: "Gıda, barınma, sağlık, temel ihtiyaç, ayni ve nakdî destek çalışmaları.",
           body: [
-            "İnsani yardım, acil ihtiyaçlara cevap verir: gıda, barınma, sağlık hizmeti ve insanların kriz koşullarında onurunu koruyarak ayakta kalmasını sağlayan temel malzemeler. IHBA bu çalışmayı yalnızca geçici bir yardım olarak değil; hayatı koruyan ve uzun vadeli iyileşmeye alan açan bir zemin olarak ele alır. Her yardım programı, insanların kendi imkânlarını ve bağımsızlığını yeniden kurmaya başlayabilmesi gözetilerek tasarlanır.",
-            "IHBA insani yardımı, bölgenin ihtiyaçlarını ve toplumun koşullarını bilen güvenilir yerel paydaşlarla eşgüdüm içinde ulaştırır. Mümkün olduğu durumlarda yardım; eğitim, beceri geliştirme veya geçim programlarıyla birlikte sunulur, böylece acil müdahale daha güçlü bir geleceğe uzanan yolun parçası hâline gelir. Bu yaklaşım yerel ekonominin ve toplumsal yapının anlaşılmasını gerektirir; amaç, yardımın toplumsal dayanıklılığı zedelemesi değil güçlendirmesidir.",
-            "IHBA insani yardımı yalnızca ihtiyaç esasına göre, şart koşmadan ve kimsenin geçmişine bakmadan sunar. Dernek yardımın doğurabileceği sonuçlara karşı dikkatlidir: bağımlılık, yerel piyasaların bozulması ve görünmek istemeyen insanların hedef hâline gelmesi. Bu nedenle yardım ölçülü biçimde ve diğer aktörlerle eşgüdüm içinde ulaştırılır; acil destek geçici kalır ve sürdürülebilir iyileşmeye devredilir.",
+            "İnsani yardım, acil ihtiyaçlara cevap verir: gıda, barınma, sağlık hizmeti ve insanların onurunu koruyarak ayakta kalmasını sağlayan temel malzemeler. IHBA bunu geçici bir yardım değil, uzun vadeli iyileşmeye alan açan bir zemin olarak ele alır; güvenilir yerel paydaşlarla, yalnızca ihtiyaç esasına göre ve mümkün olduğunda eğitim veya geçim programlarıyla birlikte sunar — amaç bağımlılık değil, sürdürülebilir iyileşmedir.",
           ],
           activities: [
             "Gıda dağıtımı ve acil erzak desteği",
@@ -875,9 +865,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Burs, öğrenci destek programları, eğitim merkezleri, rehberlik ve farkındalık faaliyetleri.",
           body: [
-            "Eğitim, uzun vadeli kalkınmanın ve insan onurunun temelidir. IHBA, nitelikli eğitime erişimin birçok toplumda ilkokuldan yükseköğretime kadar her düzeyde sınırlı kaldığını bilir. Derneğin eğitim çalışmaları, bu erişimin önündeki engelleri azaltmayı; gençlerin bilgi ve beceri kazanmasını, üretken hayata katılmasını ve kendi ayakları üzerinde duran bir gelecek kurmasını sağlayacak yollar açmayı amaçlar.",
-            "IHBA örgün eğitime verdiği desteği rehberlik, danışmanlık ve beceri eğitimiyle birlikte ele alır. Okullarla, üniversitelerle ve yerel kuruluşlarla birlikte çalışarak bölgenin eğitim ihtiyacını anlar ve programlarını bu ihtiyaca göre tasarlar. Mümkün olduğu yerlerde eğitim; geçim kaynakları ve sağlık farkındalığı gibi diğer desteklerle birleştirilir, böylece gençler ve kadınlar hem kapasitelerini hem de özgüvenlerini geliştirebilir.",
-            "Eğitim çalışmaları; eğitim merkezleri kurmayı, burs sağlamayı ve yükseköğrenim gören öğrencilere destek vermeyi kapsar. IHBA ayrıca başta gençler, kadınlar ve dezavantajlı gruplar olmak üzere haklar, sağlık, güvenlik ve ekonomik fırsatlar konusunda farkındalık ve rehberlik faaliyetleri yürütür. Bütün bu çalışmalarda esas olan, geçici müdahaleler yerine öğrenmenin sürekliliğini sağlayan bir zemin kurmaktır.",
+            "Eğitim, uzun vadeli kalkınmanın ve insan onurunun temelidir; IHBA ilkokuldan yükseköğretime kadar erişimin önündeki engelleri azaltmayı hedefler. Okullar, üniversiteler ve yerel kuruluşlarla birlikte çalışarak eğitim merkezleri kurar, burs sağlar ve rehberlik sunar; mümkün olduğunda bunu geçim kaynakları ve sağlık farkındalığıyla birleştirerek gençlerin ve kadınların hem bilgisini hem özgüvenini geliştirir.",
           ],
           activities: [
             "Temel ve orta öğretim programları",
@@ -893,9 +881,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Bireylerin üretim kapasitesini ve ekonomik bağımsızlığını güçlendiren uzun vadeli projeler.",
           body: [
-            "Sürdürülebilir kalkınma, geçici yardımın ötesine geçen bir anlayıştır. IHBA; toplulukların üretim kapasitesini güçlendirmesine, bilgi ve beceri kazanmasına ve ekonomik bağımsızlığını kurmasına destek olan programlar tasarlar. Destek, eğitimle, pazara erişimle ve yerel sahiplenmeyle birlikte sunulur; böylece dışarıdan gelen yardım zamanla gereksiz hâle gelir.",
-            "Bu çerçevede IHBA; topluluğa dayatılan değil topluluk tarafından sahiplenilen projelere, destek sona erdikten sonra da yerinde kalan bilgi ve beceriye, toplumun mevcut kaynaklarına ve yerel piyasalara saygılı çalışmalara ağırlık verir. Hangi bilgi, beceri ve donanımın yerel olarak sürdürülebileceği baştan belirlenir; proje sonuçlarının kalıcı yapılarla desteklenmesine özel önem verilir.",
-            "Projelerin hedefi, bir topluluğu bulduğundan daha güçlü bırakmak ve kalıcı bir değişim sağlamaktır; dışarıdan sürekli kaynak aktarılmasına bağlı bir düzen kurmak değildir. Bu; yerel paydaşlarla yakın çalışmayı, yerel ekonomiyi bozmamayı ve başarının yardımın görünürlüğüyle değil değişimin kalıcılığıyla ölçüldüğünü kabul etmeyi gerektirir.",
+            "Sürdürülebilir kalkınma geçici yardımın ötesine geçer: IHBA eğitimi, pazara erişimi ve yerel sahiplenmeyi bir araya getirerek toplulukların üretim kapasitesini ve ekonomik bağımsızlığını güçlendirir. Projeler topluluğa dayatılmaz, onunla birlikte planlanır ve başarısı yardımın görünürlüğüyle değil, bıraktığı değişimin kalıcılığıyla ölçülür.",
           ],
           activities: [
             "Beceri ve geçim kaynağı geliştirme eğitimleri",
@@ -911,9 +897,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Koruyucu, geliştirici ve katılımı artıran eğitim, sosyal destek ve beceri programları.",
           body: [
-            "Çocuklara, gençlere ve kadınlara yönelik programlar koruma, güvenlik ve insan onuruna saygı esası üzerine kurulmalıdır. IHBA bu alandaki bütün çalışmalarını koruyucu bir yaklaşımla tasarlar: rıza, gizlilik, uygun davranış kuralları ve en savunmasız olanın korunması. Bunlar işin dışında kalan hususlar değil, işin nasıl yapıldığını belirleyen esaslardır.",
-            "IHBA çözümleri dayatmak yerine ailelerle ve topluluklarla istişare eder; gençlerin ve kadınların kendi ifade ettiği öncelikleri anlayarak program geliştirir. Çalışmalar koruyucu eğitim ve farkındalıktan beceri geliştirmeye, sosyal desteğe ve ekonomik fırsatlara uzanır. Bunun temelinde, kalıcı değişimin ancak insanların kendi sahiplendiği çalışmalarla mümkün olduğu anlayışı vardır.",
-            "Çocukların, gençlerin ve kadınların aile ve toplum içinde farklı konumlarda bulunduğunu kabul eden IHBA, her grubun kendine özgü koşullarını ve ihtiyaçlarını gözetir. Destek yaşa ve duruma göre uyarlanır, mevcut aile yapılarına ve kültürel bağlama saygı gösterir ve toplumsal bağları zayıflatmak yerine güçlendirmeyi hedefler.",
+            "Çocuklara, gençlere ve kadınlara yönelik programlar koruma, güvenlik ve insan onuruna saygı üzerine kurulur; rıza, gizlilik ve en savunmasız olanın korunması işin dışında değil, nasıl yapıldığının esasıdır. IHBA çözümleri dayatmak yerine ailelerle ve topluluklarla istişare eder, koruyucu eğitimi beceri geliştirme ve sosyal destekle birleştirerek her grubun kendine özgü ihtiyaçlarına göre çalışır.",
           ],
           activities: [
             "Koruyucu ve hak temelli eğitim",
@@ -929,8 +913,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "İhtiyaç sahibi, afetzede, göçmen, yaşlı, engelli, yetim ve bakıma muhtaç bireylere yönelik destekler.",
           body: [
-            "Bu alan, sağlık sorunu yaşayan veya sürekli bakıma ihtiyaç duyan bireylere ve ailelere yönelik desteği kapsar. IHBA, etkili desteğin kişinin kendi koşullarına göre şekillenmesi, gizliliğinin korunması ve onuruna saygı gösterilmesi gerektiğine inanır. Dernek sağlık ve sosyal hizmet alanında nitelikli uzmanlarla çalışır; bu hizmetlerin yerine geçmeye çalışmaz, eşgüdüm sağlamaya, doğru bilgiye ulaştırmaya ve süreç boyunca kişinin yanında olmaya odaklanır.",
-            "Sağlık ve sosyal destek farklı grupları kapsar: yaşlılar, engelliler, afetzedeler, göç etmek zorunda kalanlar, bakıma ihtiyaç duyan çocuklar ve ekonomik ya da sosyal güçlük yaşayan kişiler. Destek; doğrudan yardım, uzman hizmetlere erişim, uygun donanımın sağlanması veya nitelikli sağlayıcılarla irtibat kurulması biçiminde olabilir. IHBA'nın rolü, desteğin ihtiyaç sahiplerine ulaşmasını, kişinin kendi önceliklerine uygun olmasını ve yerel sağlık ve sosyal hizmet sistemlerini güçlendirmesini gözetmektir.",
+            "Bu alan, sağlık sorunu yaşayan veya sürekli bakıma ihtiyaç duyan bireylere — yaşlılara, engellilere, afetzedelere, göç etmek zorunda kalanlara, yetimlere ve ihtiyaç sahiplerine — yönelik desteği kapsar; her zaman kişinin gizliliğine ve önceliklerine saygı gösterilir. IHBA nitelikli uzmanların yerine geçmeye çalışmaz; eşgüdüm sağlamaya, doğru hizmete ulaştırmaya ve süreç boyunca yanında olmaya odaklanır.",
           ],
           activities: [
             "Nitelikli sağlık ve bakım sağlayıcılarıyla koordinasyon",
@@ -946,8 +929,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Toplumsal dayanışmayı, kültürler arası iletişimi ve gönüllü katılımını güçlendiren çalışmalar.",
           body: [
-            "Bu alan, toplumsal dayanışmayı güçlendiren ve topluluklar içinde ve arasında bağ kuran faaliyetleri kapsar. Kültür ve sanat burada gösteri veya eğlence olarak değil; ortak ifade, diyalog, öğrenme ve katılım aracı olarak ele alınır. IHBA kültür ve sanat faaliyetlerini; karşılıklı anlayışı derinleştirmek, insanların sesini ve üretkenliğini desteklemek ve toplulukların bir araya gelip ortak zemin bulabileceği alanlar açmak için yürütür.",
-            "Gönüllülük, bu dayanışmanın en somut ifadesidir. IHBA farklı beceri ve geçmişe sahip gönüllülere açıktır ve toplum üyelerinin etkin katılımının hem çalışmayı güçlendirdiğini hem de ortak sorumluluk duygusunu büyüttüğünü kabul eder. Kültürel projeler, sosyal etkinlikler ve toplumu bir araya getiren programlar; gönüllüleri derneğin çalışmasına bağlarken kültürler arası tanışma ve öğrenme imkânı da oluşturur.",
+            "Kültür ve sanat burada gösteri değil, ortak ifade, diyalog ve katılım aracıdır; topluluklar içinde ve arasında bağ kurar. Gönüllülük bu dayanışmanın en somut hâlidir — IHBA farklı beceri ve geçmişe sahip gönüllülere açıktır ve bu katılımın hem çalışmayı güçlendirdiğine hem de kültürler arası öğrenmeye alan açtığına inanır.",
           ],
           activities: [
             "Toplum kültür etkinlikleri ve buluşmaları",
@@ -963,8 +945,7 @@ export const content: Record<Lang, Content> = {
           blurb:
             "Farklı ülkelerdeki kurumlar, temsilcilikler, üniversiteler ve yerel paydaşlarla ortak projeler.",
           body: [
-            "Bu alan, uzak bölgelerde etkili çalışmanın güçlü ortaklıklar ve kurumsal ilişkiler gerektirdiği gerçeğini karşılar. IHBA; uzak coğrafyalarda insani yardım, eğitim ve kalkınma çalışmalarının sürdürülebilir olmasının, o bölgede hâlihazırda faaliyet yürüten yerel kuruluşlar, paydaş örgütler, üniversiteler, kamu kurumları ve toplum yapılarıyla iş birliğine bağlı olduğunu kabul eder. Ortaklıklar hafife alınmaz; herhangi bir sözleşme imzalanmadan önce ortak değerleri, uyumlu bir yaklaşımı ve gerçek bir kapasiteyi taşıyıp taşımadıkları dikkatle değerlendirilir.",
-            "Kurumsal iş birliği proje yürütmenin ötesine geçer; bilgi paylaşımını, beceri geliştirmeyi ve farklı ülkelerdeki kurumlar arasında kalıcı köprüler kurmayı kapsar. IHBA bu ilişkiler aracılığıyla uzmanlığı daha etkili biçimde harekete geçirmeyi, paralel yapılar kurmak yerine yerel kurumsal kapasiteyi desteklemeyi ve tecrübenin iki yönlü paylaşılabildiği kanallar geliştirmeyi amaçlar. Bu nedenle iş birliği, derneğin kendi merkezinden uzak bölgelerde sürdürülebilir biçimde çalışabilmesinin temel şartıdır.",
+            "Uzak bölgelerde etkili çalışmak güçlü ortaklıklar gerektirir — yerel kuruluşlar, üniversiteler, kamu kurumları ve zaten sahada olan toplum yapılarıyla. IHBA her ortaklığı imzadan önce dikkatle değerlendirir ve iş birliğini proje yürütmenin ötesinde, bilgi ve kapasitenin iki yönlü paylaşıldığı, kurumlar arasında kalıcı köprüler kuran bir ilişki olarak ele alır.",
           ],
           activities: [
             "Kurumsal paydaşların değerlendirilmesi ve seçimi",

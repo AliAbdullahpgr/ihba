@@ -2,13 +2,7 @@
 
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Reveal } from "@/app/components/Reveal";
-import {
-  ArrowDisc,
-  CardLink,
-  CardMedia,
-  CardTitle,
-  Tag,
-} from "@/app/components/primitives";
+import { CardLink, CardMedia, CardTitle, Tag } from "@/app/components/primitives";
 import { PageHeader } from "@/app/components/PageShell";
 import { resolveProjectImage } from "@/app/components/pages/projectImages";
 
@@ -21,60 +15,43 @@ export function ProjectsIndexPage() {
     <>
       <PageHeader title={t.projectsPage.title} lede={t.projectsPage.lede} />
 
-      <section className="bg-white pb-16 lg:pb-20">
+      {/*
+        A plain wrapper, not a section: the page's own h1 already labels this
+        content, and every card below carries its own heading, so there is no
+        single heading left to point a landmark label at.
+      */}
+      <div className="bg-white pb-20 lg:pb-28">
         <div className="container-site">
-          {t.projectsPage.details.map((project, index) => {
-            const image = resolveProjectImage(project);
-            return (
-              <Reveal key={project.slug}>
-                {/*
-                  One link per project covering image, title and summary, so the
-                  whole entry is a single target rather than three small ones.
-                */}
-                <CardLink
-                  href={`/projects/${project.slug}`}
-                  className="grid gap-8 border-b border-navy-ink/12 py-12 lg:grid-cols-12"
-                >
-                  <div className="lg:col-span-5">
-                    <CardMedia
-                      src={image.src}
-                      alt={image.alt}
-                      ratio="aspect-[4/3]"
-                    />
-                  </div>
+          {/* Same three-up card as the landing page's own projects grid, so a
+              visitor who lands here from either place sees one consistent card. */}
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {t.projectsPage.details.map((project, index) => {
+              const image = resolveProjectImage(project);
+              return (
+                <Reveal key={project.slug} delay={(index % 3) * 90}>
+                  <CardLink href={`/projects/${project.slug}`}>
+                    <CardMedia src={image.src} alt={image.alt} ratio="aspect-square" />
 
-                  <div className="lg:col-span-6 lg:col-start-7">
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                      <span className="font-display text-sm font-bold text-navy-ink/35">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <Tag tone={tones[index % tones.length]}>
-                        {project.status}
-                      </Tag>
-                      <span className="text-xs font-semibold text-ink/50">
+                    {/*
+                      Status and region, then the title. No station number and
+                      no summary paragraph: the project page one click away
+                      carries the detail, so the card only needs to identify it.
+                    */}
+                    <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+                      <Tag tone={tones[index % tones.length]}>{project.status}</Tag>
+                      <span className="text-xs font-semibold text-ink/70">
                         {project.region}
                       </span>
                     </div>
 
-                    <CardTitle className="mt-4 text-2xl">
-                      {project.title}
-                    </CardTitle>
-
-                    <p className="mt-3 max-w-xl text-base leading-relaxed text-ink/70">
-                      {project.body[0]}
-                    </p>
-
-                    <span className="mt-6 inline-flex items-center gap-3 text-sm font-semibold text-navy-ink">
-                      <ArrowDisc />
-                      {t.common.readProject}
-                    </span>
-                  </div>
-                </CardLink>
-              </Reveal>
-            );
-          })}
+                    <CardTitle className="mt-3 text-lg">{project.title}</CardTitle>
+                  </CardLink>
+                </Reveal>
+              );
+            })}
+          </div>
         </div>
-      </section>
+      </div>
     </>
   );
 }

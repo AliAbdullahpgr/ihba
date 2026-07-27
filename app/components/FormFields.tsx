@@ -31,7 +31,7 @@ export function Field({
     <div>
       <label
         htmlFor={id}
-        className="eyebrow mb-2 flex items-baseline gap-2 text-ink/60"
+        className="mb-2 flex items-baseline gap-2 text-sm font-semibold text-ink/70"
       >
         {label}
         {optionalLabel && (
@@ -49,7 +49,7 @@ export function Field({
         <p
           id={`${id}-error`}
           role="alert"
-          className="mt-2 flex items-start gap-1.5 text-xs font-semibold text-gold-deep"
+          className="mt-2 flex items-start gap-1.5 text-xs font-semibold text-gold-ink"
         >
           <AlertCircle className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           {error}
@@ -177,7 +177,7 @@ export function Consent({
         <p
           id={`${id}-error`}
           role="alert"
-          className="mt-2 flex items-start gap-1.5 text-xs font-semibold text-gold-deep"
+          className="mt-2 flex items-start gap-1.5 text-xs font-semibold text-gold-ink"
         >
           <AlertCircle className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           {error}
@@ -248,14 +248,17 @@ export function SentPanel({
   href?: string;
 }) {
   return (
-    <div role="status" className="border-l-2 border-azure-deep bg-azure-mist p-5">
+    // A bounded panel rather than a 2px stripe down one edge — the side-stripe
+    // callout is template decoration, and a success state should read as a
+    // closed object.
+    <div role="status" className="border border-azure-deep/40 bg-azure-mist p-5">
       <p className="flex items-center gap-2 font-display text-base font-medium text-navy-ink">
         <Check className="h-4 w-4 shrink-0 text-azure-deep" aria-hidden="true" />
         {title}
       </p>
       <p className="mt-2 text-sm leading-relaxed text-ink/70">{body}</p>
       {href && (
-        <p className="mt-4 border-t border-navy-ink/10 pt-4 text-xs leading-relaxed text-ink/55">
+        <p className="mt-4 border-t border-navy-ink/10 pt-4 text-xs leading-relaxed text-ink/70">
           {hint}{" "}
           <a
             href={href}

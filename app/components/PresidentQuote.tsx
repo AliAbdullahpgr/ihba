@@ -17,7 +17,7 @@ export function PresidentQuote() {
   return (
     <section
       aria-labelledby="president-title"
-      className="bg-white py-20 lg:py-28"
+      className="bg-white pt-20 pb-8 lg:pt-28 lg:pb-10"
     >
       <div className="container-site">
         {/* The section had no heading at all, so it was an unnamed region

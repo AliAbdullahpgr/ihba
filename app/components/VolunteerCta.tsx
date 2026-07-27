@@ -16,7 +16,7 @@ export function VolunteerCta() {
         against a 4:5 image left the heading floating well below the section's
         top edge. The text now sets the row height and the image fills it.
       */}
-      <div className="container-site grid gap-12 py-20 lg:grid-cols-12 lg:gap-8 lg:py-28">
+      <div className="container-site grid gap-12 pt-8 pb-20 lg:grid-cols-12 lg:gap-8 lg:pt-10 lg:pb-28">
         <div className="lg:col-span-7">
           <h2 id="donate-title" className="display-xl text-4xl text-navy-ink sm:text-5xl">
             {title.pre}

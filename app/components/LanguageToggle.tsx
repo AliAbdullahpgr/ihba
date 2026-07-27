@@ -12,7 +12,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
         onClick={() => setLang("en")}
         aria-pressed={lang === "en"}
         className={`px-1 transition-colors ${
-          lang === "en" ? "text-gold-deep" : "text-current hover:text-azure-deep"
+          lang === "en" ? "text-gold-ink" : "text-current hover:text-azure-deep"
         }`}
       >
         EN
@@ -25,7 +25,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
         onClick={() => setLang("tr")}
         aria-pressed={lang === "tr"}
         className={`px-1 transition-colors ${
-          lang === "tr" ? "text-gold-deep" : "text-current hover:text-azure-deep"
+          lang === "tr" ? "text-gold-ink" : "text-current hover:text-azure-deep"
         }`}
       >
         TR

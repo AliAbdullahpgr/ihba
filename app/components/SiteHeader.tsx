@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, X } from "lucide-react";
@@ -75,9 +76,15 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-navy-ink bg-white">
       <div className="container-site flex items-center gap-8 py-4">
         <Link href="/" className="shrink-0" aria-label="IHBA">
-          <img
+          {/* Explicit dimensions: the masthead logo is the first thing painted
+              on every route, and without them the nav row reflows once it
+              lands. */}
+          <Image
             src="/brand/logo-horizontal.png"
             alt="IHBA"
+            width={200}
+            height={40}
+            priority
             className="h-10 w-auto"
           />
         </Link>

@@ -15,56 +15,69 @@ export function ContactPage() {
     <>
       <PageHeader title={t.contactPage.title} lede={t.contactPage.lede} />
 
-      <section className="bg-white pb-16 lg:pb-20">
+      {/*
+        Neither route below is the section's name — the contact block and the
+        form each carry their own heading — so this band is a plain div rather
+        than a section with nothing to point aria-labelledby at.
+      */}
+      <div className="bg-white pb-16 lg:pb-20">
         <div className="container-site grid gap-12 lg:grid-cols-12 lg:gap-8">
           {/* The two direct routes, given weight rather than buried in a table. */}
           <div className="lg:col-span-5">
-            <div className="border-t border-navy-ink/40 pt-8 space-y-8">
+            {/* Term/value pairs are exactly what a contact block is, so this
+                is a dl rather than a stack of styled divs. */}
+            <dl className="border-t border-navy-ink/40 pt-8 space-y-8">
               <div>
-                <p className="eyebrow text-ink/50">
+                <dt className="text-sm font-semibold text-ink/70">
                   {t.contactPage.rows[1].label}
-                </p>
-                <a
-                  href={`mailto:${t.utility.email}`}
-                  className="group mt-3 flex min-h-11 items-center gap-3 font-display text-xl font-medium text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
-                >
-                  <Mail
-                    className="h-5 w-5 shrink-0 text-gold-deep"
-                    aria-hidden="true"
-                  />
-                  {t.utility.email}
-                </a>
+                </dt>
+                <dd className="mt-3">
+                  <a
+                    href={`mailto:${t.utility.email}`}
+                    className="group flex min-h-11 items-center gap-3 font-display text-xl font-medium text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+                  >
+                    <Mail
+                      className="h-5 w-5 shrink-0 text-gold-ink"
+                      aria-hidden="true"
+                    />
+                    {t.utility.email}
+                  </a>
+                </dd>
               </div>
 
               <div>
-                <p className="eyebrow text-ink/50">
+                <dt className="text-sm font-semibold text-ink/70">
                   {t.contactPage.rows[0].label}
-                </p>
-                <a
-                  href={`tel:${t.utility.phone.replace(/\s+/g, "")}`}
-                  className="mt-3 flex min-h-11 items-center gap-3 font-display text-xl font-medium text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
-                >
-                  <Phone
-                    className="h-5 w-5 shrink-0 text-gold-deep"
-                    aria-hidden="true"
-                  />
-                  {t.utility.phone}
-                </a>
+                </dt>
+                <dd className="mt-3">
+                  <a
+                    href={`tel:${t.utility.phone.replace(/\s+/g, "")}`}
+                    className="flex min-h-11 items-center gap-3 font-display text-xl font-medium text-navy-ink transition-colors hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+                  >
+                    <Phone
+                      className="h-5 w-5 shrink-0 text-gold-ink"
+                      aria-hidden="true"
+                    />
+                    {t.utility.phone}
+                  </a>
+                </dd>
               </div>
 
               <div>
-                <p className="eyebrow text-ink/50">
+                <dt className="text-sm font-semibold text-ink/70">
                   {t.contactPage.addressLabel}
-                </p>
-                <address className="mt-3 flex items-start gap-3 text-base not-italic leading-relaxed text-ink/75">
-                  <MapPin
-                    className="mt-1 h-5 w-5 shrink-0 text-gold-deep"
-                    aria-hidden="true"
-                  />
-                  {t.contactPage.address}
-                </address>
+                </dt>
+                <dd className="mt-3">
+                  <address className="flex items-start gap-3 text-base not-italic leading-relaxed text-ink/75">
+                    <MapPin
+                      className="mt-1 h-5 w-5 shrink-0 text-gold-ink"
+                      aria-hidden="true"
+                    />
+                    {t.contactPage.address}
+                  </address>
+                </dd>
               </div>
-            </div>
+            </dl>
 
             {socialLinks.length > 0 && (
               <div className="mt-10 border-t border-navy-ink/15 pt-5">
@@ -83,7 +96,7 @@ export function ContactPage() {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <PageSection title={t.identity.title} tone="warm">
         <DataList rows={t.identity.rows} />
