@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Reveal } from "@/app/components/Reveal";
 import { ArrowLink } from "@/app/components/primitives";
+import { PrinciplesTabs } from "@/app/components/PrinciplesTabs";
 import {
   DataList,
   NumberedList,
@@ -82,8 +83,23 @@ export function AboutPage() {
         </div>
       </PageSection>
 
+      {/* The standards behind the work, one topic at a time. */}
+      <PageSection
+        id="principles"
+        title={t.aboutPage.principlesTitle}
+        tone="warm"
+      >
+        <p className="mb-12 max-w-2xl text-base leading-relaxed text-ink/70">
+          {t.aboutPage.principlesLede}
+        </p>
+        <PrinciplesTabs
+          panels={t.aboutPage.panels}
+          navLabel={t.aboutPage.principlesNavLabel}
+        />
+      </PageSection>
+
       {/* Registry data — the association's official record. */}
-      <PageSection title={t.identity.title} tone="warm">
+      <PageSection title={t.identity.title}>
         <p className="mb-10 max-w-2xl text-base leading-relaxed text-ink/70">
           {t.identity.lede}
         </p>
