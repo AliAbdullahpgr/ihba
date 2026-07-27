@@ -97,6 +97,8 @@ export interface Dictionary {
     items: string[];
   };
   facts: {
+    /** Names the strip for assistive tech; the figures carry it visually. */
+    title: string;
     stats: StatItem[];
   };
   about: {
@@ -203,6 +205,7 @@ export const dict: Record<Lang, Dictionary> = {
       ],
     },
     facts: {
+      title: "IHBA at a glance",
       stats: [
         { value: "2025", label: "Founded in Istanbul" },
         { value: "7", label: "Areas of work", derive: "areas" },
@@ -451,6 +454,7 @@ export const dict: Record<Lang, Dictionary> = {
       ],
     },
     facts: {
+      title: "Bir bakışta IHBA",
       stats: [
         { value: "2025", label: "İstanbul'da kuruldu" },
         { value: "7", label: "Faaliyet alanı", derive: "areas" },

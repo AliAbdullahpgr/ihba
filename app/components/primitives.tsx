@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -51,7 +52,12 @@ export function Mark({
 
 /**
  * Status tag. Sits inline in the meta line beneath a card rather than floating
- * over the image — a rule-marked label, not a sticker.
+ * over the image.
+ *
+ * A bounded label, not a 2px coloured stripe down one side. The side-stripe is
+ * the most-copied callout decoration there is and it reads as a template part;
+ * a hairline box is the same information with an edge that closes. Colours are
+ * the ink-weight variants, since the previous `gold-deep` label was 3.3:1.
  */
 export function Tag({
   children,
@@ -61,14 +67,14 @@ export function Tag({
   tone?: "gold" | "azure" | "navy";
 }) {
   const tones = {
-    gold: "border-gold-deep text-gold-deep",
-    azure: "border-azure-deep text-azure-deep",
-    navy: "border-navy-ink text-navy-ink",
+    gold: "border-gold-ink/40 text-gold-ink",
+    azure: "border-azure-deep/40 text-azure-deep",
+    navy: "border-navy-ink/40 text-navy-ink",
   } as const;
 
   return (
     <span
-      className={`eyebrow inline-block border-l-2 pl-2 leading-none ${tones[tone]}`}
+      className={`inline-block border px-2 py-1 text-xs font-semibold leading-none ${tones[tone]}`}
     >
       {children}
     </span>
@@ -119,22 +125,33 @@ export function CardLink({
   );
 }
 
-/** Media slot for a CardLink: crops the image so it can lift on hover. */
+/**
+ * Media slot for a CardLink: crops the image so it can lift on hover.
+ *
+ * `next/image` with `fill`, so the ratio box reserves the space before the
+ * bytes arrive and nothing below it shifts. `sizes` describes the widest the
+ * card ever gets — a third of the 1240px column — which is what lets the
+ * optimiser stop serving 2000px originals for a 390px slot.
+ */
 export function CardMedia({
   src,
   alt,
   ratio = "aspect-[16/9]",
+  sizes = "(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw",
 }: {
   src: string;
   alt: string;
   ratio?: string;
+  sizes?: string;
 }) {
   return (
-    <div className="overflow-hidden">
-      <img
+    <div className={`relative overflow-hidden ${ratio}`}>
+      <Image
         src={src}
         alt={alt}
-        className={`w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100 ${ratio}`}
+        fill
+        sizes={sizes}
+        className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
       />
     </div>
   );

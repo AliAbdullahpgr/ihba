@@ -21,21 +21,17 @@ export function Projects() {
   const { t } = useI18n();
 
   return (
-    <section id="projects" className="bg-white pb-20 lg:pb-28">
+    <section id="projects" aria-labelledby="projects-title" className="bg-white pb-20 lg:pb-28">
       <div className="container-site">
         {/*
-          Heading and one link, no standfirst. Every section used to open with
-          title + lede + link before any content arrived; three of those down a
-          page is three paragraphs a visitor reads before seeing the work.
-        */}
-        {/*
-          Heading left, "browse all" hard right on the same line. The link is
-          the section's outlet, so it belongs at the end of the section's
-          header rather than stacked under the title where it reads as a
-          subtitle. `items-end` sits it on the heading's baseline.
+          Heading left, "browse all" hard right on the same line, and no
+          standfirst between them. Every section used to open with title + lede
+          + link before any content arrived; three of those down a page is three
+          paragraphs a visitor reads before seeing the work. `items-end` sits
+          the link on the heading's baseline.
         */}
         <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-          <h2 className="display-xl max-w-2xl text-3xl text-navy-ink sm:text-4xl">
+          <h2 id="projects-title" className="display-xl max-w-2xl text-3xl text-navy-ink sm:text-4xl">
             {t.projects.title}
           </h2>
           <ArrowLink href="/projects">{t.projects.browseAll}</ArrowLink>
@@ -65,7 +61,7 @@ export function Projects() {
                   */}
                   <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
                     <Tag tone={tagTones[card.badgeKey]}>{card.badge}</Tag>
-                    <span className="text-xs font-semibold text-ink/50">
+                    <span className="text-xs font-semibold text-ink/70">
                       {card.region}
                     </span>
                   </div>

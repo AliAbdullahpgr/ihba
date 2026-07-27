@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Button, Mark } from "@/app/components/primitives";
 
@@ -65,11 +66,18 @@ export function Hero() {
                 className="absolute inset-0 hidden translate-x-5 translate-y-5 bg-paper-warm lg:block"
                 aria-hidden="true"
               />
-              <img
-                src={t.media.hero.url}
-                alt="Community volunteers crossing a bridge with notebooks and essential supplies"
-                className="relative aspect-square w-full object-cover"
-              />
+              {/* The one image above the fold, so it loads eagerly and takes
+                  fetch priority; everything further down is lazy by default. */}
+              <div className="relative aspect-square w-full">
+                <Image
+                  src={t.media.hero.url}
+                  alt="Community volunteers crossing a bridge with notebooks and essential supplies"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 500px, 100vw"
+                  className="object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>

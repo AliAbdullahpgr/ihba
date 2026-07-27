@@ -1,9 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
+/*
+  Arming has to happen before the browser paints, or the reader sees the content
+  flash in and then get hidden again. `useLayoutEffect` does that but warns
+  during server rendering, where it is meaningless — so the server gets the
+  passive version and the browser gets the blocking one.
+*/
+const useBeforePaint =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 /**
- * Scroll-triggered fade-and-rise.
+ * Scroll-triggered fade-and-rise, layered over content that is already visible.
+ *
+ * The server renders the children at full opacity. The hidden state is applied
+ * on the client, before first paint, and only once we know an observer exists
+ * to take it back off again. Previously the `opacity-0` was in the server
+ * markup itself, so anything that never ran the effect — JavaScript disabled, a
+ * crawler, a headless renderer, a tab backgrounded before the observer fired —
+ * got a page whose every section below the hero was invisible.
  *
  * `delay` staggers a group: pass `delay={index * 80}` over a grid and the items
  * cascade instead of arriving as one block. It is a transition delay rather
@@ -19,21 +35,32 @@ export function Reveal({
   delay?: number;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [visible, setVisible] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
-  useEffect(() => {
+  useBeforePaint(() => {
     const node = ref.current;
     if (!node) return;
 
-    if (typeof IntersectionObserver === "undefined") {
-      setVisible(true);
+    // No observer, or the reader asked for less motion: leave the content
+    // exactly as the server rendered it and never arm the hidden state.
+    if (
+      typeof IntersectionObserver === "undefined" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       return;
     }
+
+    // Already on screen at first paint — arming it would hide something the
+    // reader is looking at, then fade it back in. Above-the-fold content is
+    // simply left alone.
+    if (node.getBoundingClientRect().top < window.innerHeight) return;
+
+    setHidden(true);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisible(true);
+          setHidden(false);
           observer.disconnect();
         }
       },
@@ -48,8 +75,10 @@ export function Reveal({
     <div
       ref={ref}
       style={delay ? { transitionDelay: `${delay}ms` } : undefined}
-      className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+      // Only opacity and transform — `transition-all` also watches the layout
+      // properties, which are the expensive ones to interpolate.
+      className={`transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none ${
+        hidden ? "translate-y-6 opacity-0" : "translate-y-0 opacity-100"
       } ${className}`}
     >
       {children}

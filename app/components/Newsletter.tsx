@@ -10,7 +10,10 @@ export function Newsletter() {
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <section className="bg-white pb-20 lg:pb-28">
+    <section
+      aria-labelledby="newsletter-title"
+      className="bg-white pb-20 lg:pb-28"
+    >
       <div className="container-site">
         {/*
           One block, not two columns. Dropping the social sentence left a
@@ -21,9 +24,14 @@ export function Newsletter() {
         */}
         <div className="max-w-xl border-t border-navy-ink/15 pt-14">
           <div>
-            <p className="display-xl text-xl text-navy-ink sm:text-2xl">
+            {/* A heading, not a paragraph that looks like one — this section
+                was missing from the document outline entirely. */}
+            <h2
+              id="newsletter-title"
+              className="display-xl text-xl text-navy-ink sm:text-2xl"
+            >
               {t.newsletter.title}
-            </p>
+            </h2>
 
             {submitted ? (
               <p className="mt-8 border-b border-azure-deep pb-3 text-sm font-semibold text-azure-deep">
@@ -64,7 +72,7 @@ export function Newsletter() {
               </form>
             )}
 
-            <p className="mt-4 text-sm text-ink/55">{t.newsletter.copy}</p>
+            <p className="mt-4 text-sm text-ink/70">{t.newsletter.copy}</p>
 
             <SocialRow className="mt-10" />
           </div>

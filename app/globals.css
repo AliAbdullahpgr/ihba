@@ -16,11 +16,24 @@
   --color-azure-soft: #BFDDF2;
   --color-gold: #C7A45F;
   --color-gold-deep: #A98843;
+  /*
+    Gold dark enough to set type in. `gold-deep` is 3.34:1 on white and worse on
+    the warm band, which fails AA at any size the labels actually use — it is a
+    rule-and-border colour, not a text colour. This is the same hue taken down
+    until it clears 4.5:1 on both grounds (5.7:1 on white, 5.3:1 on the band).
+  */
+  --color-gold-ink: #7E6229;
   --color-gold-mist: #FBF6EA;
   --color-gold-soft: #EBD9AF;
   --color-line: #E3ECF5;
   --color-paper: #FAF7F0;
   --color-paper-warm: #F3EDDF;
+  /*
+    Text opacity floor: /65 on white, /70 on the warm band. Below that this ink
+    drops under 4.5:1 — /55 measures 3.7:1 and /50 measures 3.2:1 — and every
+    contrast failure on the public pages came from reaching past the floor for
+    de-emphasis. Use a smaller size or a lighter weight instead.
+  */
   --color-ink: #1A1F36;
   --color-mist: #E9E6DE;
 
@@ -37,9 +50,6 @@
 
   /* Editorial grid: 1240px content column, 16px gutters (QF-style). */
   --container-site: 1240px;
-
-  /* Sharp-edge design system — the only curve in the system is the arrow disc. */
-  --radius-card: 0px;
 }
 
 @layer base {

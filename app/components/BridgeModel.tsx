@@ -13,15 +13,19 @@ export function BridgeModel() {
 
   return (
     /*
-      Charcoal rather than navy-deep. The blue band was the one saturated
-      surface on a page of white and warm cream, so it read as a different
-      site's section dropped in; `navy-ink` is the same ramp taken to a
-      near-neutral, which lets the band do its job — one dark pause between two
-      light halves — without introducing a second brand colour at full strength.
+      The logo navy at full strength, and the only place on the page where the
+      brand colour is the surface rather than a detail.
+
+      This band was briefly `navy-ink` — but that token is the body-type colour,
+      used as `text-navy-ink` in some forty places, so painting a surface in it
+      made the ground identical to the page's type and left the landing page as
+      white, cream and charcoal with the brand appearing only inside buttons.
+      One committed colour is what stops a light editorial page reading as
+      timid; `navy-deep` was the hedged version of the same idea.
     */
-    <section id="approach" className="bg-navy-ink py-20 text-white lg:py-28">
+    <section id="approach" aria-labelledby="approach-title" className="bg-navy py-20 text-white lg:py-28">
       <div className="container-site">
-        <h2 className="display-xl max-w-[24ch] text-3xl text-white sm:text-4xl">
+        <h2 id="approach-title" className="display-xl max-w-[24ch] text-3xl text-white sm:text-4xl">
           {t.approach.title}
         </h2>
 

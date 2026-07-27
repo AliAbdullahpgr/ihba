@@ -93,7 +93,14 @@ function MosaicCard({
       {/* The whole card is one link into the areas of work. */}
       <CardLink href="/areas-of-work">
         <CardMedia src={spec.image} alt={spec.alt} ratio={spec.ratio} />
-        <p className="eyebrow mt-5 text-gold-deep">{categoryLabel}</p>
+        {/*
+          Sentence case, not a tracked capital. Seven of these stacked in a
+          grid, plus one over every other section, is how the uppercase kicker
+          stops being a voice and becomes wallpaper.
+        */}
+        <p className="mt-5 text-xs font-semibold text-gold-ink">
+          {categoryLabel}
+        </p>
         <CardTitle className="mt-2 text-lg">{card.title}</CardTitle>
       </CardLink>
     </Reveal>
@@ -116,9 +123,9 @@ export function FocusMosaic() {
       the page — an interaction that cost a control strip and bought nothing.
       Filtering belongs on the destination.
     */
-    <section id="programs" className="bg-paper-warm/50 py-20 lg:py-28">
+    <section id="programs" aria-labelledby="programs-title" className="bg-paper-warm/50 py-20 lg:py-28">
       <div className="container-site">
-        <h2 className="display-xl max-w-[22ch] text-3xl text-navy-ink sm:text-4xl">
+        <h2 id="programs-title" className="display-xl max-w-[22ch] text-3xl text-navy-ink sm:text-4xl">
           {title.pre}
           <Mark tone="azure">{title.highlight}</Mark>
           {title.post}
