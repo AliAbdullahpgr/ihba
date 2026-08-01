@@ -8,7 +8,9 @@ import { PageHeader, PageSection } from "@/app/components/PageShell";
 export function PresidentPage() {
   const { t } = useI18n();
   const { presidentPage } = t;
-  const portrait = t.media.presidentPortrait?.url;
+  const portrait = t.presidentPage.photoEnabled
+    ? t.media.presidentPortrait?.url
+    : "";
 
   return (
     <>
@@ -34,12 +36,11 @@ export function PresidentPage() {
           <aside className="lg:col-span-4">
             {portrait ? (
               /* Square, the site's one crop now — the arch mask is gone.
-                 Empty alt: the name and role sit directly beneath in text,
-                 so a screen reader would otherwise announce the name twice. */
+                 Alternative text is managed alongside the portrait in admin. */
               <div className="relative aspect-square w-full max-w-sm">
                 <Image
                   src={portrait}
-                  alt=""
+                  alt={presidentPage.imageAlt}
                   fill
                   sizes="(min-width: 1024px) 360px, 100vw"
                   className="object-cover object-top"

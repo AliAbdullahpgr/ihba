@@ -163,7 +163,7 @@ export const dict: Record<Lang, Dictionary> = {
   en: {
     utility: {
       tagline: "A Bridge for Humanity",
-      email: "aserenli@hotmail.com",
+      email: "info@insanlikkoprusu.org",
       phone: "+90 533 620 63 74",
     },
     social: {
@@ -412,7 +412,7 @@ export const dict: Record<Lang, Dictionary> = {
   tr: {
     utility: {
       tagline: "İnsanlık İçin Bir Köprü",
-      email: "aserenli@hotmail.com",
+      email: "info@insanlikkoprusu.org",
       phone: "+90 533 620 63 74",
     },
     social: {

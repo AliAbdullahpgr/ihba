@@ -311,7 +311,7 @@ export const contactSubmissions = sqliteTable(
     subject: text("subject").notNull(),
     message: text("message").notNull(),
     locale: text("locale", { enum: ["en", "tr"] }).notNull(),
-    status: text("status", { enum: ["new", "read", "resolved"] })
+    status: text("status", { enum: ["new", "read", "replied", "archived"] })
       .default("new")
       .notNull(),
     createdAt: createdAt(),

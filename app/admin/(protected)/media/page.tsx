@@ -4,11 +4,11 @@ import { saveSiteMedia } from "@/app/admin/actions";
 import { AdminPageHeader } from "@/app/admin/components/AdminUi";
 import { ImageUpload } from "@/app/admin/components/ImageUpload";
 import { db } from "@/lib/db/client";
-import { newsArticles, projects, siteMedia } from "@/lib/db/schema";
-import { mediaLabels, type SiteMediaKey } from "@/lib/media";
+import { galleryItems, newsArticles, projects, siteMedia } from "@/lib/db/schema";
+import { mediaLabels, mediaUsage, type SiteMediaKey } from "@/lib/media";
 
 export default async function AdminMediaPage() {
-  const [siteMediaRows, projectMedia, newsMedia] = await Promise.all([
+  const [siteMediaRows, projectMedia, newsMedia, galleryMedia] = await Promise.all([
     db.select().from(siteMedia),
     db
       .select({
@@ -28,6 +28,14 @@ export default async function AdminMediaPage() {
       })
       .from(newsArticles)
       .where(isNotNull(newsArticles.imageUrl)),
+    db
+      .select({
+        id: galleryItems.id,
+        slug: galleryItems.id,
+        url: galleryItems.imageUrl,
+        publicId: galleryItems.imagePublicId,
+      })
+      .from(galleryItems),
   ]);
   const media = [
     ...projectMedia.map((item) => ({
@@ -40,13 +48,18 @@ export default async function AdminMediaPage() {
       type: "News",
       href: `/admin/news/${item.id}`,
     })),
+    ...galleryMedia.map((item) => ({
+      ...item,
+      type: "Gallery",
+      href: `/admin/gallery/${item.id}`,
+    })),
   ];
 
   return (
     <>
       <AdminPageHeader
         title="Media"
-        description="Replace shared website photography here. Project and news images are managed in their editors."
+        description="Replace or crop shared website photography here. Each entry names where the image appears; project, news and gallery photographs are managed in their editors."
       />
 
       <section>
@@ -56,17 +69,54 @@ export default async function AdminMediaPage() {
         <div className="grid gap-px bg-line sm:grid-cols-2 xl:grid-cols-3">
           {(Object.keys(mediaLabels) as SiteMediaKey[]).map((key) => {
             const item = siteMediaRows.find((row) => row.key === key);
+            if (key === "presidentPortrait") {
+              return (
+                <div key={key} className="bg-white">
+                  {item?.imageUrl ? (
+                    <img
+                      src={item.imageUrl}
+                      alt=""
+                      className="aspect-[16/9] w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex aspect-[16/9] items-center justify-center bg-mist px-5 text-center text-sm text-ink/55">
+                      No photograph uploaded
+                    </div>
+                  )}
+                  <div className="border-t border-line p-4">
+                    <p className="font-semibold text-navy-ink">
+                      {mediaLabels[key]}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-ink/55">
+                      {mediaUsage[key]}
+                    </p>
+                    <Link
+                      href="/admin/president"
+                      className="mt-3 inline-flex min-h-10 items-center text-sm font-semibold text-navy hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+                    >
+                      Edit president profile
+                    </Link>
+                  </div>
+                </div>
+              );
+            }
             return (
               <form key={key} action={saveSiteMedia} className="bg-white">
                 <input type="hidden" name="key" value={key} />
                 <ImageUpload
                   initialUrl={item?.imageUrl}
                   initialPublicId={item?.imagePublicId}
+                  allowRemove={false}
                 />
                 <div className="flex items-center justify-between gap-3 border-t border-line p-4">
-                  <p className="font-semibold text-navy-ink">
-                    {mediaLabels[key]}
-                  </p>
+                  <div>
+                    <p className="font-semibold text-navy-ink">
+                      {mediaLabels[key]}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-ink/55">
+                      {mediaUsage[key]}
+                    </p>
+                  </div>
                   <button
                     type="submit"
                     className="min-h-10 bg-navy-deep px-3 text-sm font-semibold text-white hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
@@ -82,7 +132,7 @@ export default async function AdminMediaPage() {
 
       <section className="mt-8 border-t border-navy-ink/25 pt-5">
         <h2 className="mb-3 text-sm font-semibold text-navy-ink">
-          Project and news images
+          Project, news and gallery images
         </h2>
       <div className="grid gap-px bg-line sm:grid-cols-2 xl:grid-cols-3">
         {media.map((item) => (
@@ -112,7 +162,7 @@ export default async function AdminMediaPage() {
         <div className="border border-line bg-white px-6 py-14 text-center">
           <p className="font-semibold text-navy-ink">No media attached</p>
           <p className="mt-1 text-sm text-ink/55">
-            Upload an image while editing a project or article.
+            Upload an image while editing a project, article or gallery item.
           </p>
         </div>
       )}

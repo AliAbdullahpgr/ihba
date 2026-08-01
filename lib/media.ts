@@ -61,3 +61,18 @@ export const mediaLabels: Record<SiteMediaKey, string> = {
   fieldTeamPakistan: "IHBA field team in Pakistan",
   presidentPortrait: "President portrait",
 };
+
+/** Where each shared image appears, so editors can choose the right asset. */
+export const mediaUsage: Record<SiteMediaKey, string> = {
+  hero: "Homepage hero and About page introduction",
+  educationCentre: "Areas of work: education",
+  ramadanProgramme: "Project and programme feature sections",
+  fieldRamadanIftar: "Homepage focus mosaic and Donate page",
+  ramadanProgrammeAlternate: "Programme detail alternate image",
+  solarWaterPump: "Homepage focus mosaic and water programme sections",
+  cleanWaterOpening: "Homepage focus mosaic and water programme sections",
+  studentSupport: "Homepage focus mosaic and education sections",
+  volunteerTeam: "Volunteer and programme sections",
+  fieldTeamPakistan: "Homepage call to action and Volunteer page",
+  presidentPortrait: "Homepage president message and President's Message page",
+};

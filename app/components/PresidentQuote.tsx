@@ -37,36 +37,39 @@ export function PresidentQuote() {
           motion applied because the section exists.
         */}
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-4">
-            {/*
-              Empty alt: the name and role sit in text directly beside this, so
-              describing the portrait as "Abdullah Serenli" made a screen reader
-              announce the same name twice in a row.
-            */}
-            <div className="relative aspect-square w-full max-w-sm">
-              <Image
-                src={t.media.presidentPortrait.url}
-                alt=""
-                fill
-                sizes="(min-width: 1024px) 384px, 100vw"
-                className="object-cover object-top"
-              />
+          {t.presidentPage.photoEnabled && t.media.presidentPortrait.url ? (
+            <div className="lg:col-span-4">
+              <div className="relative aspect-square w-full max-w-sm">
+                <Image
+                  src={t.media.presidentPortrait.url}
+                  alt={t.presidentPage.imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 384px, 100vw"
+                  className="object-cover object-top"
+                />
+              </div>
             </div>
-          </div>
+          ) : null}
 
-          <div className="lg:col-span-7 lg:col-start-6">
+          <div
+            className={
+              t.presidentPage.photoEnabled && t.media.presidentPortrait.url
+                ? "lg:col-span-7 lg:col-start-6"
+                : "lg:col-span-8"
+            }
+          >
             <blockquote className="display-xl text-balance text-xl text-navy-ink sm:text-2xl lg:text-[1.75rem]">
-              “{t.presidentQuote.quote}”
+              “{t.presidentPage.lede}”
             </blockquote>
 
             {/* Attribution on a hairline, the way a signature sits under a
                 letter rather than beside it. */}
             <div className="mt-8 border-t border-navy-ink/15 pt-5">
               <p className="text-sm font-bold text-navy-ink">
-                {t.presidentQuote.name}
+                {t.presidentPage.name}
               </p>
               <p className="mt-1 text-sm text-ink/70">
-                {t.presidentQuote.role}
+                {t.presidentPage.role}
               </p>
             </div>
           </div>

@@ -166,6 +166,7 @@ export function GalleryForm({ item }: { item: GalleryRecord | null }) {
             <ImageUpload
               initialUrl={item?.imageUrl}
               initialPublicId={item?.imagePublicId}
+              allowRemove={false}
             />
           </div>
         </aside>

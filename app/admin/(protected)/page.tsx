@@ -53,7 +53,7 @@ export default async function AdminOverviewPage() {
       label: "New messages",
       value: contactCount.value,
       note: "Contact enquiries",
-      href: "/admin/submissions",
+      href: "/admin/messages",
       icon: ContactRound,
     },
     {
@@ -113,6 +113,12 @@ export default async function AdminOverviewPage() {
             className="inline-flex min-h-11 items-center border border-navy-ink/20 bg-white px-4 text-sm font-semibold text-navy-ink hover:border-navy-ink/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
           >
             Edit site copy
+          </Link>
+          <Link
+            href="/admin/president"
+            className="inline-flex min-h-11 items-center border border-navy-ink/20 bg-white px-4 text-sm font-semibold text-navy-ink hover:border-navy-ink/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+          >
+            Edit president message
           </Link>
         </div>
       </section>

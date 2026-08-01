@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db/client";
 import { contactSubmissions } from "@/lib/db/schema";
+import { forwardContactMessage } from "@/lib/email";
 import { contactSchema } from "@/lib/forms";
 
 const requestSchema = contactSchema.extend({
@@ -16,14 +17,32 @@ export async function POST(request: Request) {
   }
   if (parsed.data.companyWebsite) return NextResponse.json({ ok: true });
 
+  const { fullName, email, phone, subject, message, locale } = parsed.data;
+  const now = new Date();
+
   await db.insert(contactSubmissions).values({
     id: randomUUID(),
-    fullName: parsed.data.fullName,
-    email: parsed.data.email,
-    phone: parsed.data.phone || null,
-    subject: parsed.data.subject,
-    message: parsed.data.message,
-    locale: parsed.data.locale,
+    fullName,
+    email,
+    phone: phone || null,
+    subject,
+    message,
+    locale,
   });
+
+  try {
+    await forwardContactMessage({
+      fullName,
+      email,
+      phone: phone || null,
+      subject,
+      message,
+      submittedAt: now,
+      locale,
+    });
+  } catch (error) {
+    console.error("[contact] Email forward failed:", error);
+  }
+
   return NextResponse.json({ ok: true }, { status: 201 });
 }

@@ -460,13 +460,94 @@ export async function saveSiteContent(form: FormData) {
   redirect(`/admin/content/${locale}?saved=1`);
 }
 
+export async function savePresidentProfile(form: FormData) {
+  const session = await requireAdmin();
+  const imageUrl = text(form, "imageUrl");
+  const imagePublicId = text(form, "imagePublicId");
+  if (Boolean(imageUrl) !== Boolean(imagePublicId)) {
+    throw new Error("The president photograph upload is incomplete");
+  }
+  const photoEnabled = Boolean(imageUrl && imagePublicId);
+
+  const documents = await Promise.all(
+    (["tr", "en"] as const).map(async (locale) => {
+      const row = await db.query.siteContent.findFirst({
+        where: eq(siteContent.locale, locale),
+      });
+      if (!row) throw new Error(`Site content has not been seeded for ${locale}`);
+
+      const document = mergeContentDefaults(
+        { ...dict[locale], ...content[locale] },
+        row.document
+      ) as unknown as Record<string, unknown> & {
+        presidentPage: Record<string, unknown>;
+      };
+      const message = paragraphs(text(form, `message_${locale}`));
+      const president = {
+        ...document.presidentPage,
+        title: z.string().min(2).max(160).parse(text(form, `title_${locale}`)),
+        lede: z.string().min(2).max(500).parse(text(form, `lede_${locale}`)),
+        name: z.string().min(2).max(120).parse(text(form, `name_${locale}`)),
+        role: z.string().min(2).max(160).parse(text(form, `role_${locale}`)),
+        imageAlt: z.string().max(300).parse(text(form, `imageAlt_${locale}`)),
+        photoEnabled,
+        message: z.array(z.string().min(1)).min(1).parse(message),
+      };
+      document.presidentPage = president;
+      return { locale, document };
+    })
+  );
+
+  await db.transaction(async (tx) => {
+    for (const { locale, document } of documents) {
+      await tx
+        .update(siteContent)
+        .set({
+          document,
+          updatedBy: session.user.id,
+          updatedAt: new Date(),
+        })
+        .where(eq(siteContent.locale, locale));
+    }
+
+    if (photoEnabled) {
+      await tx
+        .insert(siteMedia)
+        .values({
+          key: "presidentPortrait",
+          imageUrl,
+          imagePublicId,
+          updatedBy: session.user.id,
+        })
+        .onConflictDoUpdate({
+          target: siteMedia.key,
+          set: {
+            imageUrl,
+            imagePublicId,
+            updatedBy: session.user.id,
+            updatedAt: new Date(),
+          },
+        });
+    }
+  });
+
+  await audit(session.user.id, "save", "president_profile", "president");
+  if (photoEnabled) {
+    await audit(session.user.id, "save", "site_media", "presidentPortrait");
+  } else {
+    await audit(session.user.id, "remove", "site_media", "presidentPortrait");
+  }
+  refreshPublic("/", "/about", "/president", "/admin/media");
+  redirect("/admin/president?saved=1");
+}
+
 export async function updateSubmissionStatus(form: FormData) {
   const session = await requireAdmin();
   const type = z.enum(["contact", "volunteer"]).parse(text(form, "type"));
   const id = text(form, "id");
   if (type === "contact") {
     const status = z
-      .enum(["new", "read", "resolved"])
+      .enum(["new", "read", "replied", "archived"])
       .parse(text(form, "status"));
     await db
       .update(contactSubmissions)
@@ -483,6 +564,16 @@ export async function updateSubmissionStatus(form: FormData) {
   }
   await audit(session.user.id, "status", `${type}_submission`, id);
   revalidatePath("/admin/submissions");
+  revalidatePath("/admin/messages");
+}
+
+export async function deleteContactMessage(form: FormData) {
+  const session = await requireAdmin();
+  const id = text(form, "id");
+  await db.delete(contactSubmissions).where(eq(contactSubmissions.id, id));
+  await audit(session.user.id, "delete", "contact_submission", id);
+  revalidatePath("/admin/submissions");
+  revalidatePath("/admin/messages");
 }
 
 export async function saveSiteMedia(form: FormData) {
