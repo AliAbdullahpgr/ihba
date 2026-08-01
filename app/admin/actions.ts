@@ -452,7 +452,10 @@ export async function saveSiteContent(form: FormData) {
     "/gallery",
     "/donate",
     "/volunteer",
-    "/contact"
+    "/contact",
+    "/kvkk",
+    "/privacy-policy",
+    "/cookie-policy"
   );
   redirect(`/admin/content/${locale}?saved=1`);
 }

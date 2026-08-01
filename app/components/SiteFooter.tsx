@@ -149,14 +149,33 @@ export function SiteFooter() {
           <p className="leading-relaxed">{t.footer.transparency}</p>
         </div>
 
-        {/*
-          Legal row. The Terms / Privacy / Transparency / Media links that used
-          to sit here all pointed at /contact because no such pages exist — a
-          link that lands somewhere unrelated is worse than no link, so the row
-          carries the copyright and the registry line only.
-        */}
-        <div className="mt-10 flex flex-col gap-2 border-t border-navy-ink/15 py-6 text-xs text-navy-ink/70 md:flex-row md:items-center md:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-navy-ink/15 py-6 text-xs text-navy-ink/70 lg:flex-row lg:items-center lg:justify-between">
           <p>{t.footer.copyright}</p>
+          <nav aria-label={t.legalPages.privacy.title}>
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+              <li>
+                <Link className="transition-colors hover:text-azure-deep" href="/kvkk">
+                  {t.legalPages.kvkk.title}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="transition-colors hover:text-azure-deep"
+                  href="/privacy-policy"
+                >
+                  {t.legalPages.privacy.title}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="transition-colors hover:text-azure-deep"
+                  href="/cookie-policy"
+                >
+                  {t.legalPages.cookies.title}
+                </Link>
+              </li>
+            </ul>
+          </nav>
           <p>{t.utility.tagline}</p>
         </div>
       </div>

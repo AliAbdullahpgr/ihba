@@ -73,6 +73,15 @@ export interface PageIntro {
   lede: string;
 }
 
+export interface LegalPageContent extends PageIntro {
+  updatedLabel: string;
+  lastUpdated: string;
+  sections: {
+    heading: string;
+    paragraphs: string[];
+  }[];
+}
+
 /**
  * One switchable panel in the "principles and governance" band on the About
  * page. `key` is stable and language-independent so the open panel survives a
@@ -198,6 +207,11 @@ export interface Content {
     addressLabel: string;
     address: string;
     formTitle: string;
+  };
+  legalPages: {
+    kvkk: LegalPageContent;
+    privacy: LegalPageContent;
+    cookies: LegalPageContent;
   };
 }
 
@@ -655,6 +669,125 @@ export const content: Record<Lang, Content> = {
         { label: "Registry number", value: "34-291-110" },
       ],
     },
+    legalPages: {
+      kvkk: {
+        title: "KVKK Information Notice",
+        lede:
+          "Information about how IHBA processes and protects personal data under Türkiye's Personal Data Protection Law No. 6698.",
+        updatedLabel: "Last updated",
+        lastUpdated: "1 August 2026",
+        sections: [
+          {
+            heading: "Data controller",
+            paragraphs: [
+              "Uluslararası İnsanlık Köprüsü Derneği (IHBA) acts as the data controller for personal data collected through this website and its activities. You can contact us at info@insanlikkoprusu.org or at our registered address in Sultanbeyli, Istanbul.",
+            ],
+          },
+          {
+            heading: "Personal data and purposes of processing",
+            paragraphs: [
+              "Depending on how you contact or support us, we may process identity and contact details, correspondence, volunteer or donation information, and technical records needed to operate the website. We use this data to respond to requests, manage applications and institutional relationships, carry out association activities, meet legal obligations, and protect the security of our services.",
+            ],
+          },
+          {
+            heading: "Legal grounds and collection methods",
+            paragraphs: [
+              "Personal data may be collected electronically through forms, email, telephone and website records, or physically during our activities. It is processed where necessary to establish or perform an agreement, comply with a legal obligation, establish or protect a right, pursue our legitimate interests without harming fundamental rights, or where you have given explicit consent when required.",
+            ],
+          },
+          {
+            heading: "Transfers and retention",
+            paragraphs: [
+              "Data may be shared only where necessary with authorised public bodies, service providers and institutional partners, subject to applicable safeguards. It is retained only for the period required by the processing purpose and applicable law, then deleted, destroyed or anonymised.",
+            ],
+          },
+          {
+            heading: "Your rights",
+            paragraphs: [
+              "Under Article 11 of Law No. 6698, you may ask whether your personal data is processed, request information about processing, learn its purpose and recipients, request correction, deletion or destruction where conditions apply, object to certain automated outcomes, and request compensation for unlawful processing. Requests may be submitted to info@insanlikkoprusu.org with information sufficient to verify your identity and request.",
+            ],
+          },
+        ],
+      },
+      privacy: {
+        title: "Privacy Policy",
+        lede:
+          "This policy explains the information we collect when you use the IHBA website and how we handle it.",
+        updatedLabel: "Last updated",
+        lastUpdated: "1 August 2026",
+        sections: [
+          {
+            heading: "Information we collect",
+            paragraphs: [
+              "We collect information you choose to provide through contact, volunteer and other website forms, including your name, contact details, subject and message. Basic technical information may also be processed to keep the website secure and functioning correctly.",
+            ],
+          },
+          {
+            heading: "How we use information",
+            paragraphs: [
+              "We use personal information to reply to enquiries, manage applications and participation, provide requested information, maintain our records, improve and secure the website, and comply with legal obligations. We do not sell personal information.",
+            ],
+          },
+          {
+            heading: "Sharing and service providers",
+            paragraphs: [
+              "Information is shared only when required for these purposes, with authorised team members, trusted providers supporting our systems, institutional partners involved in a request, or public authorities where legally required. Providers may use information only for the service they deliver to us and under appropriate confidentiality and security duties.",
+            ],
+          },
+          {
+            heading: "Retention and security",
+            paragraphs: [
+              "We keep information only as long as needed for its purpose or applicable record-keeping requirements. We use reasonable organisational and technical measures to protect it, although no internet transmission or storage system can be guaranteed completely secure.",
+            ],
+          },
+          {
+            heading: "Your choices and contact",
+            paragraphs: [
+              "You may request access to, correction of or deletion of your personal information where applicable, or ask questions about this policy, by contacting info@insanlikkoprusu.org. Additional rights available under KVKK are described in our KVKK Information Notice.",
+            ],
+          },
+        ],
+      },
+      cookies: {
+        title: "Cookie Policy",
+        lede:
+          "This policy describes the limited browser storage used by the IHBA website and how future optional technologies will be handled.",
+        updatedLabel: "Last updated",
+        lastUpdated: "1 August 2026",
+        sections: [
+          {
+            heading: "What cookies are",
+            paragraphs: [
+              "Cookies are small text files placed on a device by a website. Similar browser technologies, such as local storage, can remember settings without placing a traditional cookie.",
+            ],
+          },
+          {
+            heading: "What this website uses",
+            paragraphs: [
+              "The website currently uses only storage necessary for core operation and visitor preferences, such as remembering the selected language. We do not currently use analytics, advertising or marketing cookies.",
+            ],
+          },
+          {
+            heading: "Future optional cookies",
+            paragraphs: [
+              "If analytics, advertising or marketing tools are introduced, they will be grouped by purpose and non-essential technologies will not be activated until the visitor has made the required consent choice. Visitors will be able to review and change that choice through a consent interface.",
+            ],
+          },
+          {
+            heading: "Managing browser storage",
+            paragraphs: [
+              "You can remove or block cookies and local storage through your browser settings. Blocking storage required for preferences may cause settings, such as the selected language, not to persist between visits.",
+            ],
+          },
+          {
+            heading: "Changes and contact",
+            paragraphs: [
+              "We may update this policy when the website's technologies or legal requirements change. Questions about browser storage and privacy can be sent to info@insanlikkoprusu.org.",
+            ],
+          },
+        ],
+      },
+    },
   },
 
   tr: {
@@ -1104,6 +1237,125 @@ export const content: Record<Lang, Content> = {
         { label: "Genel merkez", value: "İstanbul, Türkiye" },
         { label: "Kütük numarası", value: "34-291-110" },
       ],
+    },
+    legalPages: {
+      kvkk: {
+        title: "KVKK Aydınlatma Metni",
+        lede:
+          "IHBA'nın kişisel verileri 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında nasıl işlediğine ve koruduğuna ilişkin bilgilendirme.",
+        updatedLabel: "Son güncelleme",
+        lastUpdated: "1 Ağustos 2026",
+        sections: [
+          {
+            heading: "Veri sorumlusu",
+            paragraphs: [
+              "Uluslararası İnsanlık Köprüsü Derneği (IHBA), bu internet sitesi ve faaliyetleri kapsamında toplanan kişisel veriler bakımından veri sorumlusudur. Bize info@insanlikkoprusu.org adresinden veya Sultanbeyli, İstanbul'daki kayıtlı adresimizden ulaşabilirsiniz.",
+            ],
+          },
+          {
+            heading: "İşlenen veriler ve işleme amaçları",
+            paragraphs: [
+              "Bizimle kurduğunuz iletişime ve sunduğunuz desteğe göre kimlik ve iletişim bilgileri, yazışmalar, gönüllülük veya bağış bilgileri ile internet sitesinin çalışması için gereken teknik kayıtlar işlenebilir. Bu veriler; talepleri yanıtlamak, başvuruları ve kurumsal ilişkileri yönetmek, dernek faaliyetlerini yürütmek, hukuki yükümlülükleri yerine getirmek ve hizmetlerimizin güvenliğini sağlamak amacıyla kullanılır.",
+            ],
+          },
+          {
+            heading: "Hukuki sebepler ve toplama yöntemleri",
+            paragraphs: [
+              "Kişisel veriler; formlar, e-posta, telefon ve internet sitesi kayıtları üzerinden elektronik ortamda veya faaliyetlerimiz sırasında fiziksel ortamda toplanabilir. Veriler; bir sözleşmenin kurulması veya ifası, hukuki yükümlülüğün yerine getirilmesi, bir hakkın tesisi veya korunması, temel haklara zarar vermeyen meşru menfaatlerimiz ya da gerekli hâllerde açık rızanız hukuki sebeplerine dayanılarak işlenir.",
+            ],
+          },
+          {
+            heading: "Aktarım ve saklama",
+            paragraphs: [
+              "Veriler yalnızca gerekli olduğu ölçüde ve uygun güvenceler altında yetkili kamu kurumları, hizmet sağlayıcılar ve kurumsal paydaşlarla paylaşılabilir. İşleme amacı ve ilgili mevzuatın gerektirdiği süre boyunca saklanır; sürenin sonunda silinir, yok edilir veya anonim hâle getirilir.",
+            ],
+          },
+          {
+            heading: "Haklarınız",
+            paragraphs: [
+              "6698 sayılı Kanun'un 11. maddesi uyarınca kişisel verilerinizin işlenip işlenmediğini öğrenme, işleme hakkında bilgi talep etme, amacı ve aktarıldığı kişileri öğrenme, şartları oluştuğunda düzeltme, silme veya yok etme talep etme, belirli otomatik sonuçlara itiraz etme ve hukuka aykırı işleme nedeniyle zararın giderilmesini isteme haklarına sahipsiniz. Başvurularınızı kimliğinizi ve talebinizi doğrulamaya yeterli bilgilerle info@insanlikkoprusu.org adresine iletebilirsiniz.",
+            ],
+          },
+        ],
+      },
+      privacy: {
+        title: "Gizlilik Politikası",
+        lede:
+          "Bu politika, IHBA internet sitesini kullandığınızda hangi bilgileri topladığımızı ve bu bilgileri nasıl yönettiğimizi açıklar.",
+        updatedLabel: "Son güncelleme",
+        lastUpdated: "1 Ağustos 2026",
+        sections: [
+          {
+            heading: "Topladığımız bilgiler",
+            paragraphs: [
+              "İletişim, gönüllülük ve diğer internet sitesi formları üzerinden paylaşmayı tercih ettiğiniz ad, iletişim bilgileri, konu ve mesaj gibi bilgileri toplarız. İnternet sitesinin güvenli ve düzgün çalışmasını sağlamak için temel teknik bilgiler de işlenebilir.",
+            ],
+          },
+          {
+            heading: "Bilgileri nasıl kullanırız",
+            paragraphs: [
+              "Kişisel bilgileri taleplere yanıt vermek, başvuruları ve katılım süreçlerini yönetmek, istenen bilgileri sunmak, kayıtlarımızı tutmak, internet sitesini geliştirmek ve güvenliğini sağlamak ile hukuki yükümlülükleri yerine getirmek amacıyla kullanırız. Kişisel bilgileri satmayız.",
+            ],
+          },
+          {
+            heading: "Paylaşım ve hizmet sağlayıcılar",
+            paragraphs: [
+              "Bilgiler yalnızca bu amaçlar için gerektiğinde yetkili ekip üyeleri, sistemlerimizi destekleyen güvenilir hizmet sağlayıcılar, talebe dahil olan kurumsal paydaşlar veya hukuken zorunlu hâllerde kamu kurumlarıyla paylaşılır. Hizmet sağlayıcılar bilgileri yalnızca bize sundukları hizmet için ve uygun gizlilik ile güvenlik yükümlülükleri altında kullanabilir.",
+            ],
+          },
+          {
+            heading: "Saklama ve güvenlik",
+            paragraphs: [
+              "Bilgileri yalnızca amacı veya geçerli kayıt saklama yükümlülükleri için gereken süre boyunca tutarız. Korumak için makul idari ve teknik önlemler uygularız; ancak hiçbir internet iletimi veya depolama sisteminin tamamen güvenli olduğu garanti edilemez.",
+            ],
+          },
+          {
+            heading: "Tercihleriniz ve iletişim",
+            paragraphs: [
+              "Uygulanabildiği ölçüde kişisel bilgilerinize erişim, düzeltme veya silme talebinde bulunabilir ya da bu politikaya ilişkin sorularınızı info@insanlikkoprusu.org adresine iletebilirsiniz. KVKK kapsamındaki diğer haklarınız KVKK Aydınlatma Metnimizde açıklanmıştır.",
+            ],
+          },
+        ],
+      },
+      cookies: {
+        title: "Çerez Politikası",
+        lede:
+          "Bu politika, IHBA internet sitesinde kullanılan sınırlı tarayıcı depolamasını ve gelecekte isteğe bağlı teknolojilerin nasıl yönetileceğini açıklar.",
+        updatedLabel: "Son güncelleme",
+        lastUpdated: "1 Ağustos 2026",
+        sections: [
+          {
+            heading: "Çerez nedir?",
+            paragraphs: [
+              "Çerezler, bir internet sitesi tarafından cihazınıza yerleştirilen küçük metin dosyalarıdır. Yerel depolama gibi benzer tarayıcı teknolojileri de geleneksel bir çerez oluşturmadan tercihleri hatırlayabilir.",
+            ],
+          },
+          {
+            heading: "Bu internet sitesinde kullanılanlar",
+            paragraphs: [
+              "İnternet sitesi şu anda yalnızca temel işlevler ve ziyaretçi tercihleri için gereken depolamayı, örneğin seçilen dili hatırlamayı, kullanır. Şu anda analiz, reklam veya pazarlama çerezleri kullanmıyoruz.",
+            ],
+          },
+          {
+            heading: "Gelecekte kullanılabilecek isteğe bağlı çerezler",
+            paragraphs: [
+              "Analiz, reklam veya pazarlama araçları eklenirse bunlar amaçlarına göre gruplandırılacak ve zorunlu olmayan teknolojiler, ziyaretçi gerekli onay tercihini yapmadan etkinleştirilmeyecektir. Ziyaretçiler tercihlerini bir onay arayüzü üzerinden inceleyebilecek ve değiştirebilecektir.",
+            ],
+          },
+          {
+            heading: "Tarayıcı depolamasını yönetme",
+            paragraphs: [
+              "Çerezleri ve yerel depolamayı tarayıcı ayarlarınız üzerinden silebilir veya engelleyebilirsiniz. Tercihler için gerekli depolamayı engellemeniz, seçilen dil gibi ayarların ziyaretler arasında korunmamasına neden olabilir.",
+            ],
+          },
+          {
+            heading: "Değişiklikler ve iletişim",
+            paragraphs: [
+              "İnternet sitesinde kullanılan teknolojiler veya hukuki gereklilikler değiştiğinde bu politikayı güncelleyebiliriz. Tarayıcı depolaması ve gizlilik hakkındaki sorularınızı info@insanlikkoprusu.org adresine iletebilirsiniz.",
+            ],
+          },
+        ],
+      },
     },
   },
 };

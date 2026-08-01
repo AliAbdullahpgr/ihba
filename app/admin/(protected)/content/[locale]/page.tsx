@@ -100,6 +100,7 @@ export default async function EditContentPage({
         {groups.map((group, index) => (
           <details
             key={group.key}
+            id={group.key}
             open={index < 2}
             className="border border-line bg-white"
           >

@@ -1,7 +1,0 @@
-[    3010ms] SyntaxError: Failed to execute 'appendChild' on 'Node': Cannot use import statement outside a module
-    at https://ustaproduction.org/_next/static/chunks/6d9ecbfa.b09a8fdc91a02865.js:1:1306891
-    at https://ustaproduction.org/_next/static/chunks/6d9ecbfa.b09a8fdc91a02865.js:1:1306906
-[    3025ms] SyntaxError: Failed to execute 'appendChild' on 'Node': Unexpected token 'export'
-    at https://ustaproduction.org/_next/static/chunks/6d9ecbfa.b09a8fdc91a02865.js:1:1306891
-    at https://ustaproduction.org/_next/static/chunks/6d9ecbfa.b09a8fdc91a02865.js:1:1306906
-[    3911ms] [LOG] [raycast-bg] scene loaded 1036 x 655 @ https://ustaproduction.org/_next/static/chunks/7963.eccf62dbc54f5289.js:0
