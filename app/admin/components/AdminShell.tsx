@@ -269,10 +269,7 @@ export function AdminShell({
           className="admin-brand-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
         >
           <img src="/brand/logo-white.png" alt="IHBA" className="admin-brand-logo" />
-          <span className="admin-brand-copy">
-            <span className="admin-brand-name">IHBA</span>
-            <span className="admin-brand-caption">İçerik çalışma alanı</span>
-          </span>
+          <span className="admin-brand-tag">ADMIN</span>
         </Link>
         {mobile && (
           <button

@@ -16,10 +16,12 @@ import {
   Compass,
   FileQuestion,
   FileText,
+  Files,
   Flag,
   Footprints,
   HandHeart,
   Handshake,
+  Globe2,
   HeartHandshake,
   Home,
   Images,
@@ -33,6 +35,7 @@ import {
   MousePointerClick,
   Navigation,
   Newspaper,
+  PanelBottom,
   PanelTop,
   Quote,
   Share2,
@@ -53,29 +56,47 @@ export interface ContentSection {
   icon: LucideIcon;
   /** Where the copy shows up on the public site, for the "view" link. */
   preview?: string;
+  /**
+   * Keys suppressed globally by `hiddenKeys` that this screen should show
+   * anyway, because nothing else edits them.
+   */
+  reveal?: string[];
 }
 
+/**
+ * Each group is its own page too. Listing all thirty section cards on one
+ * index just moved the wall of choices up a level; the index now offers three
+ * cards and the sections appear once you have picked one.
+ */
 export const contentGroups: Array<{
   key: ContentSectionGroup;
   title: string;
   description: string;
+  icon: LucideIcon;
 }> = [
   {
     key: "homepage",
     title: "Anasayfa bölümleri",
     description: "Ziyaretçilerin ilk gördüğü sayfadaki bölümler, yukarıdan aşağıya.",
+    icon: Home,
   },
   {
     key: "pages",
     title: "İç sayfalar",
     description: "Menüden ulaşılan sayfaların başlık ve metinleri.",
+    icon: Files,
   },
   {
     key: "global",
     title: "Her sayfada görünenler",
     description: "Menü, footer, form etiketleri gibi website genelinde tekrarlanan metinler.",
+    icon: Globe2,
   },
 ];
+
+export const contentGroupByKey = new Map<string, (typeof contentGroups)[number]>(
+  contentGroups.map((group) => [group.key, group]),
+);
 
 export const contentSections: ContentSection[] = [
   // Anasayfa, yukarıdan aşağıya.
@@ -166,6 +187,9 @@ export const contentSections: ContentSection[] = [
     description: "Anasayfadaki açılır soru-cevap listesi.",
     icon: FileQuestion,
     preview: "/",
+    // The soru/cevap pairs live under `items`, hidden elsewhere because the
+    // same key names things that are not free text.
+    reveal: ["items"],
   },
   {
     key: "latestNews",
@@ -302,7 +326,7 @@ export const contentSections: ContentSection[] = [
     group: "global",
     title: "Footer",
     description: "Adres satırı, bağlantı sütunları, şeffaflık notu ve telif metni.",
-    icon: Home,
+    icon: PanelBottom,
   },
   {
     key: "social",

@@ -1,7 +1,6 @@
 "use client";
 
 import { Check } from "lucide-react";
-import Link from "next/link";
 import { saveContactSettings, saveDonationSettings } from "@/app/admin/actions";
 import { AdminCard, FormField, inputClass } from "@/app/admin/components/AdminUi";
 import { AdminSubmitButton, UnsavedChangesGuard } from "@/app/admin/components/FormActions";
@@ -57,17 +56,11 @@ export function DonationSettingsForm({
       {saved && <div className="admin-feedback admin-feedback-success" role="status"><Check className="size-4" aria-hidden="true" /> Bağış bilgileri güncellendi.</div>}
       <AdminCard eyebrow="Bağış sayfası" title="Bağış sayfası metinleri" description="Ziyaretçiler bu metinleri Bağış sayfasında görür.">
         {/*
-          Bank and IBAN details are edited under Kurum bilgileri, where they are
-          stored once for the whole site and pass through a confirmation step.
-          Duplicating them here would give the operator two places to change an
-          IBAN and no indication which one the website actually uses.
+          The bank accounts themselves are the card directly below this one, on
+          this same page — this form only owns the surrounding page copy.
         */}
         <p className="admin-field-hint" style={{ marginBottom: "16px" }}>
-          Banka ve IBAN bilgileri{" "}
-          <Link href="/admin/organisation" className="admin-inline-link">
-            Kurum bilgileri
-          </Link>{" "}
-          sayfasından yönetilir.
+          Banka ve IBAN bilgilerini bu sayfanın alt kısmındaki bölümden ekleyip düzenleyebilirsiniz.
         </p>
         <div className="admin-settings-locale-grid">
           {(["tr", "en"] as const).map((locale) => (

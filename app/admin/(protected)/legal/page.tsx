@@ -1,17 +1,8 @@
 import { eq } from "drizzle-orm";
-import { CheckCircle2, ExternalLink, Languages } from "lucide-react";
-import Link from "next/link";
+import { CheckCircle2, Languages } from "lucide-react";
 
-import { saveSiteContent } from "@/app/admin/actions";
-import {
-  AdminButton,
-  AdminCard,
-  AdminPageHeader,
-  FormField,
-  inputClass,
-} from "@/app/admin/components/AdminUi";
-import { AdminSubmitButton, UnsavedChangesGuard } from "@/app/admin/components/FormActions";
-import { RichTextEditor } from "@/app/admin/components/RichTextEditor";
+import { AdminButton, AdminPageHeader } from "@/app/admin/components/AdminUi";
+import { LegalPageForm } from "@/app/admin/components/LegalPageForm";
 import { content } from "@/lib/content";
 import { db } from "@/lib/db/client";
 import { siteContent } from "@/lib/db/schema";
@@ -57,10 +48,6 @@ type LegalDocument = {
   lastUpdated: string;
   sections: LegalSection[];
 };
-
-function fieldName(path: Array<string | number>) {
-  return encodeURIComponent(JSON.stringify(path));
-}
 
 export default async function AdminLegalPage({
   searchParams,
@@ -118,83 +105,21 @@ export default async function AdminLegalPage({
         {legalPages.map((page) => {
           const value = legal?.[page.key];
           if (!value) return null;
-          const base = ["legalPages", page.key];
-
           return (
-            <AdminCard
+            <LegalPageForm
               key={page.key}
+              locale={locale}
+              legalKey={page.key}
               title={page.title}
               description={page.description}
-              action={
-                <Link
-                  href={page.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="admin-button admin-button-secondary"
-                >
-                  Sayfayı görüntüle
-                  <ExternalLink className="size-4" aria-hidden="true" />
-                </Link>
-              }
-            >
-              <form action={saveSiteContent} className="admin-content-form">
-                <UnsavedChangesGuard />
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="returnTo" value="legal" />
-
-                <div className="admin-settings-grid">
-                  <FormField label="Sayfa başlığı">
-                    <input
-                      name={`field:${fieldName([...base, "title"])}`}
-                      defaultValue={value.title}
-                      className={inputClass}
-                    />
-                  </FormField>
-                  <FormField label="Son güncelleme tarihi">
-                    <input
-                      name={`field:${fieldName([...base, "lastUpdated"])}`}
-                      defaultValue={value.lastUpdated}
-                      className={inputClass}
-                    />
-                  </FormField>
-                </div>
-
-                <FormField label="Giriş cümlesi">
-                  <textarea
-                    name={`field:${fieldName([...base, "lede"])}`}
-                    defaultValue={value.lede}
-                    rows={3}
-                    className={inputClass}
-                  />
-                </FormField>
-
-                <div className="admin-legal-sections">
-                  {value.sections.map((section, index) => (
-                    <div key={`${page.key}-${index}`} className="admin-legal-section">
-                      <FormField label={`${index + 1}. bölüm başlığı`}>
-                        <input
-                          name={`field:${fieldName([...base, "sections", index, "heading"])}`}
-                          defaultValue={section.heading}
-                          className={inputClass}
-                        />
-                      </FormField>
-                      <FormField label="Bölüm metni">
-                        <RichTextEditor
-                          name={`rich:${fieldName([...base, "sections", index, "paragraphs"])}`}
-                          initialBlocks={section.paragraphs}
-                          placeholder="Bu bölümün metnini buraya yazın…"
-                        />
-                      </FormField>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="admin-content-form-actions">
-                  <span>Bu metnin değişiklikleri ayrı kaydedilir.</span>
-                  <AdminSubmitButton>{page.title} kaydet</AdminSubmitButton>
-                </div>
-              </form>
-            </AdminCard>
+              href={page.href}
+              value={{
+                title: value.title,
+                lede: value.lede,
+                lastUpdated: value.lastUpdated,
+                sections: value.sections ?? [],
+              }}
+            />
           );
         })}
       </div>

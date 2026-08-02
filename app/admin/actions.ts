@@ -664,6 +664,71 @@ function setAtPath(
   (current as Record<string | number, unknown>)[path.at(-1)!] = value;
 }
 
+const legalPageKeySchema = z.enum(["kvkk", "privacy", "cookies"]);
+
+/**
+ * One legal document, saved whole.
+ *
+ * `saveSiteContent` writes field by field at a fixed path, which can change a
+ * section but never add or remove one — the array it writes into keeps its
+ * original length. The legal screen needs both, so it posts the sections it
+ * currently has and this replaces the list outright.
+ */
+export async function saveLegalPage(form: FormData) {
+  const session = await requireAdmin();
+  const locale = z.enum(["en", "tr"]).parse(text(form, "locale"));
+  const key = legalPageKeySchema.parse(text(form, "legalKey"));
+
+  const count = z.coerce.number().int().min(0).max(60).parse(text(form, "sectionCount") || "0");
+  const sections = Array.from({ length: count }, (_, index) => ({
+    heading: z.string().trim().max(300).parse(text(form, `sectionHeading:${index}`)),
+    paragraphs: parseRichTextBlocks(text(form, `sectionBody:${index}`)),
+  }))
+    // A section with neither a heading nor any text is a row the operator added
+    // and left blank; publishing an empty block helps nobody.
+    .filter((section) => section.heading || section.paragraphs.length);
+
+  const row = await db.query.siteContent.findFirst({
+    where: eq(siteContent.locale, locale),
+  });
+  if (!row) throw new Error("Site content has not been seeded");
+
+  const document = mergeContentDefaults(
+    { ...dict[locale], ...content[locale] },
+    row.document
+  ) as Record<string, unknown>;
+  const legal = (document.legalPages ?? {}) as Record<string, Record<string, unknown>>;
+  const before = (legal[key] ?? {}) as Record<string, unknown>;
+
+  legal[key] = {
+    ...before,
+    title: z.string().trim().max(300).parse(text(form, "title")),
+    lede: z.string().trim().max(2000).parse(text(form, "lede")),
+    lastUpdated: z.string().trim().max(120).parse(text(form, "lastUpdated")),
+    sections,
+  };
+  document.legalPages = legal;
+
+  await db
+    .update(siteContent)
+    .set({ document, updatedBy: session.user.id, updatedAt: new Date() })
+    .where(eq(siteContent.locale, locale));
+
+  const previousCount = Array.isArray(before.sections) ? before.sections.length : 0;
+  await audit(session.user.id, "save", "legal_page", `${locale}:${key}`, {
+    changes: [
+      {
+        field: "sections",
+        label: "Bölüm sayısı",
+        from: String(previousCount),
+        to: String(sections.length),
+      },
+    ],
+  });
+  refreshPublic("/kvkk", "/privacy-policy", "/cookie-policy");
+  redirect(`/admin/legal?locale=${locale}&saved=1`);
+}
+
 export async function saveSiteContent(form: FormData) {
   const session = await requireAdmin();
   const locale = z.enum(["en", "tr"]).parse(text(form, "locale"));
@@ -724,14 +789,24 @@ export async function saveSiteContent(form: FormData) {
     "/privacy-policy",
     "/cookie-policy"
   );
-  // The legal-texts and homepage screens post to this same action, so they
-  // say where to return; anything else falls back to the content editor.
+  // The homepage screen posts to this same action, so it says where to
+  // return; anything else falls back to the content editor. (Legal texts have
+  // their own action now — they need to add and remove sections, which writing
+  // one field at a time cannot do.)
   const returnTo = text(form, "returnTo");
   const destinations: Record<string, string> = {
-    legal: `/admin/legal?locale=${locale}&saved=1`,
     homepage: `/admin/homepage?locale=${locale}&saved=1`,
   };
-  redirect(destinations[returnTo] ?? `/admin/content/${locale}?saved=1`);
+  // Each content area has its own page now, so land back on the one just
+  // edited rather than bouncing the operator out to the section index.
+  if (returnTo === "section") {
+    const section = z
+      .string()
+      .regex(/^[A-Za-z][A-Za-z0-9]*$/)
+      .parse(text(form, "section"));
+    redirect(`/admin/content/${locale}/${section}?saved=1`);
+  }
+  redirect(destinations[returnTo] ?? `/admin/content?locale=${locale}`);
 }
 
 const campaignSchema = z.object({
@@ -1045,51 +1120,34 @@ const bankAccountSchema = z.object({
   active: z.boolean().optional().default(true),
 });
 
-/** Reads the settings row, creating the singleton on first use. */
-export async function readOrgSettings() {
-  const row = await db.query.orgSettings.findFirst({
-    where: eq(orgSettings.id, ORG_SETTINGS_ID),
-  });
-  return row ?? null;
-}
-
-export async function saveOrganisationSettings(form: FormData) {
+/**
+ * Bank accounts, edited on the donation screen — the page an operator reaches
+ * for when they want to publish an IBAN. They live in their own table and
+ * their own action rather than riding along with another form: two screens
+ * submitting the whole list would let a stale snapshot delete an account added
+ * elsewhere, which is not a mistake to risk with the account bağış money
+ * arrives in.
+ */
+export async function saveBankAccounts(form: FormData) {
   const session = await requireAdmin();
 
-  const values: Record<string, string> = {};
-  for (const definition of orgFieldDefs) {
-    values[definition.field] = text(form, definition.field);
-  }
-  if (values.email) {
-    z.string().email("Geçerli bir e-posta adresi yazın.").parse(values.email);
-  }
-  if (values.mapsUrl) {
-    z.string().url("Geçerli bir bağlantı yazın.").parse(values.mapsUrl);
-  }
-  const rawAccounts = text(form, "bankAccounts");
-  const submittedAccounts = z
+  const submitted = z
     .array(bankAccountSchema)
     .max(24)
-    .parse(rawAccounts ? JSON.parse(rawAccounts) : [])
+    .parse(JSON.parse(text(form, "bankAccounts") || "[]"))
     .map((account, index) => ({
       ...account,
       iban: normaliseIban(account.iban),
       sortOrder: index,
     }));
 
-  const existing = await readOrgSettings();
-  const existingAccounts = await db.select().from(bankAccounts);
+  const existing = await db.select().from(bankAccounts);
 
-  const changes: AuditFieldChange[] = diffRecords(
-    orgFieldDefs.map(({ field, label }) => ({ field, label })),
-    { ...(existing ?? {}) },
-    values
-  );
-
-  // Bank accounts diff by identity, so a removed or added account reads as
-  // such instead of as a cascade of field edits.
-  for (const account of submittedAccounts) {
-    const before = existingAccounts.find((candidate) => candidate.id === account.id);
+  // Diff by identity so an added or removed account reads as such rather than
+  // as a cascade of field edits.
+  const changes: AuditFieldChange[] = [];
+  for (const account of submitted) {
+    const before = existing.find((candidate) => candidate.id === account.id);
     if (!before) {
       changes.push({
         field: `bank:${account.currency}`,
@@ -1113,8 +1171,8 @@ export async function saveOrganisationSettings(form: FormData) {
       });
     }
   }
-  for (const before of existingAccounts) {
-    if (submittedAccounts.some((account) => account.id === before.id)) continue;
+  for (const before of existing) {
+    if (submitted.some((account) => account.id === before.id)) continue;
     changes.push({
       field: `bank:${before.currency}`,
       label: `Banka hesabı (${before.currency})`,
@@ -1125,19 +1183,8 @@ export async function saveOrganisationSettings(form: FormData) {
   }
 
   await db.transaction(async (tx) => {
-    const record = {
-      ...values,
-      updatedBy: session.user.id,
-      updatedAt: new Date(),
-    };
-    if (existing) {
-      await tx.update(orgSettings).set(record).where(eq(orgSettings.id, ORG_SETTINGS_ID));
-    } else {
-      await tx.insert(orgSettings).values({ id: ORG_SETTINGS_ID, ...record });
-    }
-
     const keptIds = new Set<string>();
-    for (const account of submittedAccounts) {
+    for (const account of submitted) {
       const id = account.id || randomUUID();
       keptIds.add(id);
       const row = {
@@ -1149,18 +1196,69 @@ export async function saveOrganisationSettings(form: FormData) {
         sortOrder: account.sortOrder,
         updatedAt: new Date(),
       };
-      if (account.id && existingAccounts.some((candidate) => candidate.id === account.id)) {
+      if (account.id && existing.some((candidate) => candidate.id === account.id)) {
         await tx.update(bankAccounts).set(row).where(eq(bankAccounts.id, id));
       } else {
         await tx.insert(bankAccounts).values({ id, ...row });
       }
     }
-    for (const before of existingAccounts) {
+    for (const before of existing) {
       if (!keptIds.has(before.id)) {
         await tx.delete(bankAccounts).where(eq(bankAccounts.id, before.id));
       }
     }
   });
+
+  await audit(session.user.id, "save", "bank_accounts", "all", { changes });
+  // The donate page reads active accounts through lib/site-data, so revalidating
+  // it is what makes a newly added IBAN visible to visitors.
+  refreshPublic("/", "/donate", "/contact");
+  redirect("/admin/donation?accounts=1");
+}
+
+/** Reads the settings row, creating the singleton on first use. */
+export async function readOrgSettings() {
+  const row = await db.query.orgSettings.findFirst({
+    where: eq(orgSettings.id, ORG_SETTINGS_ID),
+  });
+  return row ?? null;
+}
+
+export async function saveOrganisationSettings(form: FormData) {
+  const session = await requireAdmin();
+
+  const values: Record<string, string> = {};
+  for (const definition of orgFieldDefs) {
+    values[definition.field] = text(form, definition.field);
+  }
+  if (values.email) {
+    z.string().email("Geçerli bir e-posta adresi yazın.").parse(values.email);
+  }
+  if (values.mapsUrl) {
+    z.string().url("Geçerli bir bağlantı yazın.").parse(values.mapsUrl);
+  }
+  const existing = await readOrgSettings();
+
+  const changes: AuditFieldChange[] = diffRecords(
+    orgFieldDefs.map(({ field, label }) => ({ field, label })),
+    { ...(existing ?? {}) },
+    values
+  );
+
+  // Bank accounts used to be part of this form. They are edited on the
+  // donation screen now, through `saveBankAccounts`, so nothing here touches
+  // that table — this action receiving no account list must not be read as
+  // "delete them all".
+  const record = {
+    ...values,
+    updatedBy: session.user.id,
+    updatedAt: new Date(),
+  };
+  if (existing) {
+    await db.update(orgSettings).set(record).where(eq(orgSettings.id, ORG_SETTINGS_ID));
+  } else {
+    await db.insert(orgSettings).values({ id: ORG_SETTINGS_ID, ...record });
+  }
 
   await audit(session.user.id, "save", "organisation_settings", ORG_SETTINGS_ID, {
     changes,

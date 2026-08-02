@@ -291,9 +291,9 @@
   .admin-shell.is-collapsed .admin-sidebar-desktop { width: 82px; }
   .admin-main { min-width: 0; margin-left: 272px; transition: margin-left 180ms ease; }
   .admin-shell.is-collapsed .admin-main { margin-left: 82px; }
-  .admin-brand { display: flex; min-height: 82px; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid rgb(255 255 255 / 0.12); padding: 16px 20px; }
-  .admin-brand-link { display: flex; min-width: 0; align-items: center; gap: 12px; }
-  .admin-brand-logo { width: 38px; height: 38px; flex: 0 0 auto; object-fit: contain; }
+  .admin-brand { display: flex; min-height: 108px; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid rgb(255 255 255 / 0.12); padding: 16px 20px; }
+  .admin-brand-link { display: flex; min-width: 0; flex: 1; align-items: center; justify-content: center; gap: 10px; }
+  .admin-brand-logo { width: 76px; height: 76px; flex: 0 0 auto; object-fit: contain; }
   .admin-brand-copy, .admin-user-copy { display: flex; min-width: 0; flex-direction: column; }
   .admin-brand-name { color: #fff; font-family: var(--font-display); font-size: 1.08rem; font-weight: 600; letter-spacing: -0.02em; }
   .admin-brand-caption { margin-top: 2px; color: rgb(255 255 255 / 0.62); font-size: 0.68rem; }
@@ -314,8 +314,9 @@
   .admin-signout { width: 100%; text-align: left; }
   .admin-sidebar-collapse { display: flex; min-height: 38px; align-items: center; justify-content: center; gap: 8px; margin: 0 12px 14px; border: 1px solid rgb(255 255 255 / 0.15); border-radius: 5px; color: rgb(255 255 255 / 0.64); font-size: 0.7rem; font-weight: 600; }
   .admin-sidebar-collapse:hover { background: rgb(255 255 255 / 0.1); color: #fff; }
-  .admin-shell.is-collapsed .admin-brand { justify-content: center; padding-inline: 12px; }
-  .admin-shell.is-collapsed .admin-brand-copy, .admin-shell.is-collapsed .admin-nav-label, .admin-shell.is-collapsed .admin-nav-text, .admin-shell.is-collapsed .admin-user-copy, .admin-shell.is-collapsed .admin-sidebar-collapse span { display: none; }
+  .admin-shell.is-collapsed .admin-brand { min-height: 82px; justify-content: center; padding-inline: 12px; }
+  .admin-shell.is-collapsed .admin-brand-logo { width: 46px; height: 46px; }
+  .admin-shell.is-collapsed .admin-brand-tag, .admin-shell.is-collapsed .admin-brand-copy, .admin-shell.is-collapsed .admin-nav-label, .admin-shell.is-collapsed .admin-nav-text, .admin-shell.is-collapsed .admin-user-copy, .admin-shell.is-collapsed .admin-sidebar-collapse span { display: none; }
   .admin-shell.is-collapsed .admin-nav-link, .admin-shell.is-collapsed .admin-user-card { justify-content: center; }
   .admin-shell.is-collapsed .admin-nav-link { padding-inline: 8px; }
   .admin-shell.is-collapsed .admin-sidebar-footer { padding-inline: 10px; }
@@ -421,7 +422,7 @@
   .admin-toast-info { border-left-color: var(--admin-azure); }
   .admin-toast-info > svg { color: var(--admin-azure); }
   .admin-toast button { margin-left: auto; color: var(--admin-muted); }
-  @media (max-width: 1180px) { .admin-sidebar-desktop { width: 82px; } .admin-main { margin-left: 82px; } .admin-brand { justify-content: center; padding-inline: 12px; } .admin-brand-copy, .admin-nav-label, .admin-nav-text, .admin-user-copy, .admin-sidebar-collapse span { display: none; } .admin-nav-link, .admin-user-card { justify-content: center; } .admin-nav-link { padding-inline: 8px; } .admin-sidebar-footer { padding-inline: 10px; } }
+  @media (max-width: 1180px) { .admin-sidebar-desktop { width: 82px; } .admin-main { margin-left: 82px; } .admin-brand { min-height: 82px; justify-content: center; padding-inline: 12px; } .admin-brand-logo { width: 46px; height: 46px; } .admin-brand-tag, .admin-brand-copy, .admin-nav-label, .admin-nav-text, .admin-user-copy, .admin-sidebar-collapse span { display: none; } .admin-nav-link, .admin-user-card { justify-content: center; } .admin-nav-link { padding-inline: 8px; } .admin-sidebar-footer { padding-inline: 10px; } }
   @media (max-width: 900px) { .admin-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-topbar { padding-inline: 22px; } .admin-content { padding-inline: 24px; } }
   @media (max-width: 720px) { .admin-sidebar-desktop { display: none; } .admin-main, .admin-shell.is-collapsed .admin-main { margin-left: 0; } .admin-menu-button { display: grid; } .admin-topbar { min-height: 62px; padding: 10px 14px; } .admin-topbar-left, .admin-topbar-actions { gap: 8px; } .admin-topbar-link { font-size: 0.7rem; } .admin-help { display: none; } .admin-breadcrumbs { font-size: 0.7rem; } .admin-breadcrumbs > span { display: none; } .admin-content { padding: 24px 16px 48px; } .admin-page-header { align-items: stretch; flex-direction: column; gap: 17px; margin-bottom: 22px; } .admin-page-actions { justify-content: flex-start; } .admin-page-actions .admin-button { flex: 1 1 auto; } .admin-stat-grid { grid-template-columns: 1fr; } .admin-card { padding: 17px; } .admin-card-header { flex-direction: column; gap: 12px; } .admin-card-action { width: 100%; } .admin-dialog-actions { align-items: stretch; flex-direction: column-reverse; } .admin-dialog-actions .admin-button { width: 100%; } .admin-toast { right: 16px; bottom: 16px; left: 16px; max-width: none; } }
   @media (prefers-reduced-motion: reduce) { .admin-shell *, .admin-shell *::before, .admin-shell *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
@@ -487,7 +488,7 @@
 
   .admin-brand {
     display: flex;
-    min-height: 82px;
+    min-height: 108px;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
@@ -498,15 +499,29 @@
   .admin-brand-link {
     display: flex;
     min-width: 0;
+    /* Takes the free space so the mark centres, with the mobile close button
+       still pinned to the right of the row. */
+    flex: 1;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    gap: 10px;
   }
 
   .admin-brand-logo {
-    width: 38px;
-    height: 38px;
+    width: 76px;
+    height: 76px;
     flex: 0 0 auto;
     object-fit: contain;
+  }
+
+  /* Names the workspace next to the mark, in place of the old two-line copy. */
+  .admin-brand-tag {
+    flex: 0 0 auto;
+    color: rgb(255 255 255 / 0.7);
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
   }
 
   .admin-brand-copy,
@@ -670,11 +685,17 @@
   }
 
   .admin-shell.is-collapsed .admin-brand {
+    min-height: 82px;
     justify-content: center;
     padding-inline: 12px;
   }
 
-  .admin-shell.is-collapsed .admin-brand-copy,
+  .admin-shell.is-collapsed .admin-brand-logo {
+    width: 46px;
+    height: 46px;
+  }
+
+  .admin-shell.is-collapsed .admin-brand-tag, .admin-shell.is-collapsed .admin-brand-copy,
   .admin-shell.is-collapsed .admin-nav-label,
   .admin-shell.is-collapsed .admin-nav-text,
   .admin-shell.is-collapsed .admin-user-copy,
@@ -1214,7 +1235,9 @@
     .admin-sidebar-desktop { width: 82px; }
     .admin-main { margin-left: 82px; }
     .admin-shell.is-collapsed .admin-main { margin-left: 82px; }
-    .admin-brand { justify-content: center; padding-inline: 12px; }
+    .admin-brand { min-height: 82px; justify-content: center; padding-inline: 12px; }
+    .admin-brand-logo { width: 46px; height: 46px; }
+    .admin-brand-tag,
     .admin-brand-copy,
     .admin-nav-label,
     .admin-nav-text,
@@ -1523,6 +1546,19 @@
     font-weight: 800;
   }
 
+  /* The same pill, as a link out to where the copy appears on the website. */
+  a.admin-content-section-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+  }
+
+  a.admin-content-section-status:hover {
+    background: var(--admin-azure);
+    color: #fff;
+  }
+
   .admin-content-disclosure {
     border-top: 1px solid var(--admin-line);
   }
@@ -1659,6 +1695,15 @@
   }
 
   .admin-content-language-note p { margin: 0; }
+
+  .admin-content-language-note a {
+    color: var(--admin-azure);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .admin-content-language-note a:hover { color: var(--admin-navy); }
 
   @media (max-width: 720px) {
     .admin-language-switcher { align-self: flex-start; }
@@ -2676,6 +2721,20 @@
   }
 
   .admin-legal-section > * + * { margin-top: 14px; }
+
+  .admin-legal-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .admin-legal-section-tools { display: flex; flex: 0 0 auto; gap: 6px; }
+
+  .admin-legal-section-tools .admin-button {
+    min-height: 30px;
+    padding: 5px 8px;
+  }
 
   .admin-inline-link { color: var(--admin-azure); font-weight: 600; text-decoration: underline; }
   .admin-inline-link:hover { color: var(--admin-navy-2); }

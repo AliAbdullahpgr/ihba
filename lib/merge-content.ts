@@ -2,7 +2,39 @@
  * Adds newly bundled fields to an older saved CMS document while preserving
  * every value the editor has already changed.
  */
-export function mergeContentDefaults<T>(defaults: T, saved: unknown): T {
+
+/**
+ * Lists whose length is the operator's to decide.
+ *
+ * Everywhere else, a saved array shorter than the bundled one is read as an
+ * older document that predates a newly shipped item, and the bundled entry
+ * fills the gap. For these lists that rule is wrong in the other direction:
+ * the admin can delete an entry, and topping the list back up from the
+ * bundled copy would undo the deletion on the very next read.
+ *
+ * Paths are matched against the dotted key path with array indices written as
+ * `*` — `legalPages.kvkk.sections`, `heroSlides`.
+ */
+const authoritativeArrays = [
+  /^heroSlides$/,
+  /^heroSlidesTrash$/,
+  /^legalPages\.[^.]+\.sections$/,
+  // Rich text bodies, wherever they appear. The editor posts the whole block
+  // list every time, so shortening a passage from five paragraphs to two must
+  // not read back as five.
+  /(^|\.)(paragraphs|body|message|intro|answer)$/,
+];
+
+function isAuthoritative(path: Array<string | number>) {
+  const key = path.map((step) => (typeof step === "number" ? "*" : step)).join(".");
+  return authoritativeArrays.some((pattern) => pattern.test(key));
+}
+
+export function mergeContentDefaults<T>(
+  defaults: T,
+  saved: unknown,
+  path: Array<string | number> = [],
+): T {
   /*
     Merge item by item rather than taking the saved array wholesale. The
     bundled array supplies defaults for known positions, while saved items
@@ -12,9 +44,16 @@ export function mergeContentDefaults<T>(defaults: T, saved: unknown): T {
   */
   if (Array.isArray(defaults)) {
     const savedItems = Array.isArray(saved) ? saved : [];
-    return Array.from({ length: Math.max(defaults.length, savedItems.length) }, (_, index) =>
+    // A deletable list keeps exactly what was saved — but only once something
+    // has been saved at all, so an untouched document still shows the bundled
+    // copy rather than an empty list.
+    const length =
+      Array.isArray(saved) && isAuthoritative(path)
+        ? savedItems.length
+        : Math.max(defaults.length, savedItems.length);
+    return Array.from({ length }, (_, index) =>
       index < defaults.length
-        ? mergeContentDefaults(defaults[index], savedItems[index])
+        ? mergeContentDefaults(defaults[index], savedItems[index], [...path, index])
         : savedItems[index]
     ) as T;
   }
@@ -28,7 +67,7 @@ export function mergeContentDefaults<T>(defaults: T, saved: unknown): T {
     return Object.fromEntries(
       Object.entries(defaults as Record<string, unknown>).map(([key, value]) => [
         key,
-        mergeContentDefaults(value, savedRecord[key]),
+        mergeContentDefaults(value, savedRecord[key], [...path, key]),
       ])
     ) as T;
   }

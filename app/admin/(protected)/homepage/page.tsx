@@ -1,5 +1,5 @@
 import { asc, desc, eq } from "drizzle-orm";
-import { ArrowUpRight, CheckCircle2, Languages } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Languages, ListTree } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminButton, AdminPageHeader } from "@/app/admin/components/AdminUi";
@@ -184,7 +184,7 @@ export default async function AdminHomepagePage({
       selected: selection.areas.map(String),
       automaticHint: "listedeki ilk üç alan gösterilir.",
       emptyHint: "Faaliyet alanı tanımlı değil.",
-      manageHref: "/admin/content/tr#programs",
+      manageHref: "/admin/content/tr/programs",
       manageLabel: "Alan metinlerini düzenleyin",
     },
     {
@@ -281,6 +281,24 @@ export default async function AdminHomepagePage({
       )}
 
       <HomepageSectionEditor locale={locale} sections={sections} />
+
+      {/*
+        This screen curates the homepage — which items appear, in what order —
+        and exposes only the handful of fields that belong to that decision.
+        Everything else the homepage says lives in the content editor, so point
+        there rather than leaving people to guess where a stray line is set.
+      */}
+      <div className="admin-content-language-note">
+        <ListTree className="size-4" aria-hidden="true" />
+        <p>
+          <strong>Aradığınız metin burada yok mu?</strong> Anasayfadaki tüm bölümlerin metinleri —
+          kayan şerit, istatistikler, bülten, iletişim çağrısı ve diğerleri —{" "}
+          <Link href={`/admin/content/${locale}/group/homepage`}>
+            Anasayfa bölümleri sayfasında
+          </Link>{" "}
+          tek tek düzenlenir.
+        </p>
+      </div>
     </>
   );
 }
