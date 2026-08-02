@@ -292,7 +292,7 @@
   .admin-main { min-width: 0; margin-left: 272px; transition: margin-left 180ms ease; }
   .admin-shell.is-collapsed .admin-main { margin-left: 82px; }
   .admin-brand { display: flex; min-height: 108px; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid rgb(255 255 255 / 0.12); padding: 16px 20px; }
-  .admin-brand-link { display: flex; min-width: 0; flex: 1; align-items: center; justify-content: center; gap: 10px; }
+  .admin-brand-link { display: flex; min-width: 0; flex: 1; align-items: center; justify-content: flex-start; gap: 10px; }
   .admin-brand-logo { width: 76px; height: 76px; flex: 0 0 auto; object-fit: contain; }
   .admin-brand-copy, .admin-user-copy { display: flex; min-width: 0; flex-direction: column; }
   .admin-brand-name { color: #fff; font-family: var(--font-display); font-size: 1.08rem; font-weight: 600; letter-spacing: -0.02em; }
@@ -499,11 +499,11 @@
   .admin-brand-link {
     display: flex;
     min-width: 0;
-    /* Takes the free space so the mark centres, with the mobile close button
-       still pinned to the right of the row. */
+    /* Takes the free space so the mark sits flush left, with the mobile close
+       button still pinned to the right of the row. */
     flex: 1;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 10px;
   }
 
