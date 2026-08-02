@@ -6,6 +6,7 @@ import { Reveal } from "@/app/components/Reveal";
 import { ArrowLink } from "@/app/components/primitives";
 import { BridgeModel } from "@/app/components/BridgeModel";
 import { PrinciplesTabs } from "@/app/components/PrinciplesTabs";
+import { FaqAccordion } from "@/app/components/FaqAccordion";
 import {
   DataList,
   NumberedList,
@@ -126,6 +127,11 @@ export function AboutPage() {
       <PageSection title={t.identity.title}>
         <DataList rows={t.identity.rows} />
       </PageSection>
+
+      {/* Moved off the homepage: the questions are all about the organisation,
+          so they answer the page they now sit on. Last section before the
+          cross-links, which are the page's exit rather than its content. */}
+      <FaqAccordion />
 
       <PageSection>
         <div className="grid gap-10 md:grid-cols-2 md:gap-16">

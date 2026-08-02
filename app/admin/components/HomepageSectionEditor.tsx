@@ -5,21 +5,17 @@ import {
   FolderKanban,
   GalleryHorizontalEnd,
   HeartHandshake,
-  HelpCircle,
   ImagePlus,
   Layers,
   Newspaper,
   Pencil,
   Quote,
   Save,
-  Target,
-  Users,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
-  saveHomepageAreas,
   saveHomepageCampaign,
   saveHomepageSelection,
   saveSiteContent,
@@ -37,11 +33,8 @@ const icons = {
   intro: Layers,
   news: Newspaper,
   projects: FolderKanban,
-  areas: Target,
   president: Quote,
   campaign: HeartHandshake,
-  mission: Users,
-  faq: HelpCircle,
 } as const;
 
 export type SelectOption = {
@@ -58,13 +51,6 @@ export type SelectOption = {
   editableImage?: boolean;
   imagePublicId?: string;
   imageAlt?: string;
-};
-
-type AreaImageDraft = {
-  index: number;
-  imageUrl: string;
-  imagePublicId: string;
-  imageAlt: string;
 };
 
 export type CampaignData = {
@@ -181,173 +167,6 @@ function LinkPicker({
         />
       )}
     </div>
-  );
-}
-
-/**
- * Activity areas: choose up to three, and give each its own photograph.
- *
- * One panel and one Save button, because picking a card and giving it a
- * picture is a single job. The homepage previously drew these three images
- * from a hardcoded list keyed by slot, so changing which areas appeared kept
- * showing the same photographs.
- */
-function AreasPanel({
-  section,
-  locale,
-  onCancel,
-}: {
-  section: Extract<HomepageSection, { kind: "select" }>;
-  locale: "tr" | "en";
-  onCancel: () => void;
-}) {
-  const [selected, setSelected] = useState<string[]>(() =>
-    section.selected.filter((id) => section.options.some((option) => option.id === id)),
-  );
-  const [images, setImages] = useState<AreaImageDraft[]>(() =>
-    section.options.map((option, index) => ({
-      index,
-      imageUrl: option.image ?? "",
-      imagePublicId: option.imagePublicId ?? "",
-      imageAlt: option.imageAlt ?? "",
-    })),
-  );
-  const [expanded, setExpanded] = useState<string | null>(null);
-  const full = selected.length >= HOMEPAGE_SECTION_LIMIT;
-
-  function toggle(id: string) {
-    setSelected((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : current.length >= HOMEPAGE_SECTION_LIMIT
-          ? current
-          : [...current, id],
-    );
-  }
-
-  function patchImage(index: number, patch: Partial<AreaImageDraft>) {
-    setImages((current) =>
-      current.map((image) => (image.index === index ? { ...image, ...patch } : image)),
-    );
-  }
-
-  return (
-    <form action={saveHomepageAreas} className="admin-drawer-form">
-      <input type="hidden" name="locale" value={locale} />
-      <input
-        type="hidden"
-        name="values"
-        value={JSON.stringify(selected.map((id) => Number(id)))}
-        readOnly
-      />
-      <input type="hidden" name="images" value={JSON.stringify(images)} readOnly />
-      <div className="admin-drawer-body">
-        <p className="admin-field-hint">
-          En fazla {HOMEPAGE_SECTION_LIMIT} tanesini seçin. Seçtiğiniz sıra, anasayfadaki
-          sıradır. Hiçbirini seçmezseniz {section.automaticHint}
-        </p>
-
-        {section.options.length === 0 ? (
-          <p className="admin-empty-note">{section.emptyHint}</p>
-        ) : (
-          <ul className="admin-pick-list">
-            {section.options.map((option, index) => {
-              const order = selected.indexOf(option.id);
-              const checked = order >= 0;
-              const image = images[index];
-              const isOpen = expanded === option.id;
-              return (
-                <li key={option.id}>
-                  <div
-                    className={`admin-pick-item ${checked ? "is-selected" : ""} ${
-                      !checked && full ? "is-disabled" : ""
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      disabled={!checked && full}
-                      onChange={() => toggle(option.id)}
-                      aria-label={`${option.title} alanını anasayfada göster`}
-                    />
-                    {image?.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={image.imageUrl} alt="" className="admin-pick-image" />
-                    ) : (
-                      <span className="admin-pick-image admin-pick-image-empty">
-                        <ImagePlus className="size-5" aria-hidden="true" />
-                      </span>
-                    )}
-                    <span className="admin-pick-copy">
-                      <strong>{option.title}</strong>
-                      {option.meta && <small>{option.meta}</small>}
-                    </span>
-                    {checked && <span className="admin-pick-order">{order + 1}</span>}
-                    <button
-                      type="button"
-                      className="admin-table-action"
-                      onClick={() => setExpanded(isOpen ? null : option.id)}
-                      aria-expanded={isOpen}
-                    >
-                      <ImagePlus className="size-3.5" aria-hidden="true" />
-                      {image?.imageUrl ? "Görseli değiştir" : "Görsel ekle"}
-                    </button>
-                  </div>
-
-                  {isOpen && (
-                    <div className="admin-pick-image-editor">
-                      <ImageUpload
-                        key={option.id}
-                        initialUrl={image?.imageUrl}
-                        initialPublicId={image?.imagePublicId}
-                        emitHiddenFields={false}
-                        cropAspectRatio={4 / 3}
-                        recommendedDimensions="1200 × 900 px"
-                        onValueChange={(value) =>
-                          patchImage(index, {
-                            imageUrl: value.url,
-                            imagePublicId: value.publicId,
-                          })
-                        }
-                      />
-                      <label className="admin-field">
-                        <span className="admin-field-label">Görsel açıklaması</span>
-                        <input
-                          className={inputClass}
-                          value={image?.imageAlt ?? ""}
-                          onChange={(event) =>
-                            patchImage(index, { imageAlt: event.target.value })
-                          }
-                          placeholder="Fotoğrafta ne görünüyor?"
-                        />
-                        <span className="admin-field-hint">
-                          Görme engelli ziyaretçiler ve arama motorları bu metni okur.
-                        </span>
-                      </label>
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
-        {section.manageHref && (
-          <p className="admin-field-hint">
-            Alan başlıklarını değiştirmek için{" "}
-            <Link href={section.manageHref} className="admin-inline-link">
-              {section.manageLabel} <ExternalLink className="size-3" aria-hidden="true" />
-            </Link>
-          </p>
-        )}
-      </div>
-      <div className="admin-drawer-footer">
-        <button type="button" className="admin-button admin-button-secondary" onClick={onCancel}>
-          Vazgeç
-        </button>
-        <AdminSubmitButton>Faaliyet alanlarını kaydet</AdminSubmitButton>
-      </div>
-    </form>
   );
 }
 
@@ -771,12 +590,9 @@ export function HomepageSectionEditor({
             {open.kind === "fields" && (
               <FieldsPanel section={open} locale={locale} onCancel={close} />
             )}
-            {open.kind === "select" &&
-              (open.section === "areas" ? (
-                <AreasPanel section={open} locale={locale} onCancel={close} />
-              ) : (
-                <SelectionPanel section={open} locale={locale} onCancel={close} />
-              ))}
+            {open.kind === "select" && (
+              <SelectionPanel section={open} locale={locale} onCancel={close} />
+            )}
             {open.kind === "campaign" && (
               <CampaignPanel section={open} locale={locale} onCancel={close} />
             )}

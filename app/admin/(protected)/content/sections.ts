@@ -13,7 +13,6 @@ import {
   BookOpen,
   Building2,
   CalendarDays,
-  Compass,
   FileQuestion,
   FileText,
   Files,
@@ -128,17 +127,14 @@ export const contentSections: ContentSection[] = [
     key: "about",
     group: "homepage",
     title: "Hakkımızda önizlemesi",
-    description: "Anasayfada kurumu kısaca anlatan bölüm; misyon, vizyon ve değerler.",
+    // Split across two pages: the short intro still opens the homepage, while
+    // mission, vision and values now appear only on the About page. Naming
+    // both keeps the operator from editing a field and hunting for it on the
+    // wrong page.
+    description:
+      "Anasayfadaki kısa tanıtım metni. Misyon, vizyon ve değerler artık Hakkımızda sayfasında görünür.",
     icon: Info,
-    preview: "/",
-  },
-  {
-    key: "programs",
-    group: "homepage",
-    title: "Çalışma alanları bölümü",
-    description: "Anasayfadaki çalışma alanı kartları, filtre etiketleri ve yönlendirmeler.",
-    icon: Compass,
-    preview: "/",
+    preview: "/about",
   },
   {
     key: "projects",
@@ -181,17 +177,6 @@ export const contentSections: ContentSection[] = [
     preview: "/",
   },
   {
-    key: "faq",
-    group: "homepage",
-    title: "Sıkça sorulan sorular",
-    description: "Anasayfadaki açılır soru-cevap listesi.",
-    icon: FileQuestion,
-    preview: "/",
-    // The soru/cevap pairs live under `items`, hidden elsewhere because the
-    // same key names things that are not free text.
-    reveal: ["items"],
-  },
-  {
     key: "latestNews",
     group: "homepage",
     title: "Son haberler başlığı",
@@ -224,6 +209,20 @@ export const contentSections: ContentSection[] = [
     description: "Kurumun hikâyesi, yaklaşımı ve çalışma ilkeleri panelleri.",
     icon: Building2,
     preview: "/about",
+  },
+  {
+    key: "faq",
+    group: "pages",
+    // Moved out of the homepage group with the section itself: the questions
+    // now sit at the foot of the About page, so this is where an operator
+    // looking at that page would expect to find them.
+    title: "Sıkça sorulan sorular",
+    description: "Hakkımızda sayfasının sonundaki açılır soru-cevap listesi.",
+    icon: FileQuestion,
+    preview: "/about",
+    // The soru/cevap pairs live under `items`, hidden elsewhere because the
+    // same key names things that are not free text.
+    reveal: ["items"],
   },
   {
     key: "boardPage",

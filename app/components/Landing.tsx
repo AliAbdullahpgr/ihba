@@ -4,20 +4,25 @@ import { HeroSlider } from "@/app/components/HeroSlider";
 import { IntroSection } from "@/app/components/IntroSection";
 import { LatestNews } from "@/app/components/LatestNews";
 import { Projects } from "@/app/components/Projects";
-import { AreasAccordion } from "@/app/components/AreasAccordion";
 import { PresidentQuote } from "@/app/components/PresidentQuote";
 import { CampaignCta } from "@/app/components/CampaignCta";
-import { MissionAccordion } from "@/app/components/MissionAccordion";
-import { FaqAccordion } from "@/app/components/FaqAccordion";
 
 export function Landing() {
   /*
-    Mixed structure: short summaries for projects, news and the campaign
-    (each opening detail pages), and expandable sections for the areas of
-    activity, the mission/vision/values, and the FAQ.
+    Short summaries for news, projects and the campaign, each opening a detail
+    page: hero, intro, news, projects, president, campaign.
 
-    Order follows the homepage spec: hero, intro, news, projects, areas,
-    president, campaign, mission/values, FAQ.
+    Three institutional sections have left this page. Mission/vision/values and
+    the FAQ moved to the About page — About already carried mission, vision and
+    values in full, laid open in two columns rather than folded into an
+    accordion, so the homepage copy was the same text a second time, and the
+    FAQ answers questions about the organisation rather than about anything the
+    homepage offers. The activity-areas accordion went too: /areas-of-work
+    covers the same seven fields at length, and the homepage now hands visitors
+    to it rather than restating it.
+
+    Keep this list in step with the admin homepage layout editor, which lists
+    the same sections in the same order for staff to edit.
   */
   return (
     <>
@@ -25,11 +30,8 @@ export function Landing() {
       <IntroSection />
       <LatestNews />
       <Projects />
-      <AreasAccordion />
       <PresidentQuote />
       <CampaignCta />
-      <MissionAccordion />
-      <FaqAccordion />
     </>
   );
 }

@@ -99,18 +99,6 @@ export default async function AdminHomepagePage({
     };
   });
 
-  // Programme cards have no stable identifier, so their position in the list
-  // is the identifier. Both languages keep the same card order.
-  const areaOptions: SelectOption[] = document.programs.cards.map((card, index) => ({
-    id: String(index),
-    title: card.title,
-    meta: document.programs.filters.find((filter) => filter.key === card.categoryKey)?.label,
-    image: card.imageUrl,
-    imagePublicId: card.imagePublicId,
-    imageAlt: card.imageAlt,
-    editableImage: true,
-  }));
-
   const mediaOptions = (Object.keys(mediaLabels) as Array<keyof typeof mediaLabels>).map(
     (key) => ({
       key,
@@ -174,20 +162,6 @@ export default async function AdminHomepagePage({
       manageLabel: "Projeler sayfasına gidin",
     },
     {
-      id: "areas",
-      title: "Faaliyet alanları",
-      description: "Anasayfada gösterilecek üç faaliyet alanını seçin ve görsellerini yükleyin.",
-      icon: "areas",
-      kind: "select",
-      section: "areas",
-      options: areaOptions,
-      selected: selection.areas.map(String),
-      automaticHint: "listedeki ilk üç alan gösterilir.",
-      emptyHint: "Faaliyet alanı tanımlı değil.",
-      manageHref: "/admin/content/tr/programs",
-      manageLabel: "Alan metinlerini düzenleyin",
-    },
-    {
       id: "president",
       title: "Başkanın mesajı",
       description: "Anasayfadaki başkan bölümünün başlığı, alıntısı ve isim bilgisi.",
@@ -210,31 +184,6 @@ export default async function AdminHomepagePage({
       kind: "campaign",
       campaign: document.campaign as CampaignData,
       mediaOptions,
-    },
-    {
-      id: "mission",
-      title: "Misyon, vizyon ve değerler",
-      description: "Kurumun misyonunu, vizyonunu ve değerlerini anlatan açılır bölüm.",
-      icon: "mission",
-      kind: "fields",
-      fields: fieldsAtPaths(document, [
-        ["about", "missionLabel"],
-        ["about", "missionText"],
-        ["about", "visionLabel"],
-        ["about", "visionText"],
-        ["about", "valuesLabel"],
-        ["about", "values"],
-      ]),
-    },
-    {
-      id: "faq",
-      title: "Sık sorulan sorular",
-      description: "Ziyaretçilerin en çok sorduğu soruların yanıtları.",
-      icon: "faq",
-      kind: "fields",
-      // `items` is hidden on the generic content screen because it also names
-      // lists that are not free text; here it is exactly what needs editing.
-      fields: fieldsAtPaths(document, [["faq"]], new Set(["items"])),
     },
   ];
 
@@ -297,6 +246,31 @@ export default async function AdminHomepagePage({
             Anasayfa bölümleri sayfasında
           </Link>{" "}
           tek tek düzenlenir.
+        </p>
+      </div>
+
+      {/*
+        Three sections used to be edited on this screen and are no longer on the
+        homepage at all. Staff who knew them by name would otherwise scroll this
+        list looking for something that has quietly gone, so say where each one
+        went rather than let the absence speak for itself.
+      */}
+      <div className="admin-content-language-note">
+        <ListTree className="size-4" aria-hidden="true" />
+        <p>
+          <strong>Misyon, vizyon, değerler ve sık sorulan sorular anasayfadan kaldırıldı.</strong>{" "}
+          Bu bölümler artık{" "}
+          <Link href="/about" target="_blank" rel="noreferrer">
+            Hakkımızda sayfasında
+          </Link>{" "}
+          görünüyor; metinlerini{" "}
+          <Link href={`/admin/content/${locale}/about`}>Hakkımızda önizlemesi</Link> ve{" "}
+          <Link href={`/admin/content/${locale}/faq`}>Sıkça sorulan sorular</Link> sayfalarından
+          düzenleyebilirsiniz. Faaliyet alanları bölümü de kaldırıldı; alanlar yalnızca{" "}
+          <Link href="/areas-of-work" target="_blank" rel="noreferrer">
+            Faaliyet Alanlarımız sayfasında
+          </Link>{" "}
+          yer alıyor.
         </p>
       </div>
     </>

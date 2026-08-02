@@ -2,6 +2,7 @@
 
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Disclosure } from "@/app/components/Disclosure";
+import { PageSection } from "@/app/components/PageShell";
 
 /**
  * Frequently asked questions, as an expandable summary.
@@ -10,6 +11,13 @@ import { Disclosure } from "@/app/components/Disclosure";
  * only the answer they need. The first question opens by default so the
  * section is not empty on first paint. The content lives in `content.ts`
  * alongside the other deeper page copy.
+ *
+ * Lives on the About page rather than the homepage: the questions are about
+ * the organisation, so they belong with the institutional story, and the
+ * homepage no longer has to carry them. Wrapped in `PageSection` so the
+ * heading scale, rule and vertical rhythm match the sections either side —
+ * the old markup was set to homepage scale and had no top padding, both of
+ * which read as a seam on a subpage.
  */
 export function FaqAccordion() {
   const { t } = useI18n();
@@ -18,46 +26,37 @@ export function FaqAccordion() {
   if (items.length === 0) return null;
 
   return (
-    <section
-      aria-labelledby="faq-title"
-      className="bg-white pb-20 lg:pb-28"
-    >
-      <div className="container-site">
-        <h2
-          id="faq-title"
-          className="display-xl max-w-[24ch] text-3xl text-navy-ink sm:text-4xl"
-        >
-          {t.faq.title}
-        </h2>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink/70">
-          {t.faq.lede}
-        </p>
+    <PageSection title={t.faq.title}>
+      {/* Sits above the rows rather than under the heading rule, so the rule
+          stays attached to the title the way it is elsewhere on the page. */}
+      <p className="-mt-2 max-w-2xl text-base leading-relaxed text-ink/70">
+        {t.faq.lede}
+      </p>
 
-        <div className="mt-12 border-t border-navy-ink/15">
-          {items.map((item, index) => (
-            <Disclosure
-              key={item.question}
-              defaultOpen={index === 0}
-              summary={
-                <span className="text-base font-semibold text-navy-ink">
-                  {item.question}
-                </span>
-              }
-            >
-              <div className="max-w-2xl space-y-4">
-                {item.answer.map((paragraph) => (
-                  <p
-                    key={paragraph}
-                    className="text-base leading-relaxed text-ink/70"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </Disclosure>
-          ))}
-        </div>
+      <div className="mt-10 border-t border-navy-ink/15">
+        {items.map((item, index) => (
+          <Disclosure
+            key={item.question}
+            defaultOpen={index === 0}
+            summary={
+              <span className="text-base font-semibold text-navy-ink">
+                {item.question}
+              </span>
+            }
+          >
+            <div className="max-w-2xl space-y-4">
+              {item.answer.map((paragraph) => (
+                <p
+                  key={paragraph}
+                  className="text-base leading-relaxed text-ink/70"
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </Disclosure>
+        ))}
       </div>
-    </section>
+    </PageSection>
   );
 }
