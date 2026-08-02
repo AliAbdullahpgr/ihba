@@ -1,5 +1,5 @@
-import { asc } from "drizzle-orm";
-import { Save, Trash2 } from "lucide-react";
+import { asc, eq } from "drizzle-orm";
+import { Save } from "lucide-react";
 import {
   removeBoardMember,
   saveBoardMember,
@@ -9,6 +9,7 @@ import {
   FormField,
   inputClass,
 } from "@/app/admin/components/AdminUi";
+import { TrashActionButton } from "@/app/admin/components/TrashActionButton";
 import { db } from "@/lib/db/client";
 import { boardMembers } from "@/lib/db/schema";
 
@@ -29,7 +30,7 @@ function MemberForm({
       <form action={saveBoardMember} className="p-5">
         <input type="hidden" name="id" value={member?.id ?? ""} />
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          <FormField label="Name">
+          <FormField label="İsim" required>
             <input
               name="name"
               required
@@ -37,14 +38,14 @@ function MemberForm({
               className={inputClass}
             />
           </FormField>
-          <FormField label="Role in English (optional)">
+          <FormField label="Görev (İngilizce, isteğe bağlı)">
             <input
               name="roleEn"
               defaultValue={member?.roleEn}
               className={inputClass}
             />
           </FormField>
-          <FormField label="Role in Turkish">
+          <FormField label="Görev (Türkçe)" required>
             <input
               name="roleTr"
               required
@@ -52,7 +53,7 @@ function MemberForm({
               className={inputClass}
             />
           </FormField>
-          <FormField label="Display order">
+          <FormField label="Website sırası">
             <input
               name="sortOrder"
               type="number"
@@ -71,28 +72,21 @@ function MemberForm({
               defaultChecked={member?.visible ?? true}
               className="size-5 accent-navy"
             />
-            Visible on public board page
+            Yönetim kurulu sayfasında göster
           </label>
           <button
             type="submit"
             className="inline-flex min-h-11 items-center gap-2 bg-navy-deep px-4 text-sm font-semibold text-white hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
           >
             <Save className="size-4" />
-            {member ? "Save member" : "Add member"}
+            {member ? "Üyeyi kaydet" : "Üye ekle"}
           </button>
         </div>
       </form>
       {member && (
-        <form action={removeBoardMember} className="border-t border-line px-5 py-3">
-          <input type="hidden" name="id" value={member.id} />
-          <button
-            type="submit"
-            className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-[#8f3029] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a33b32]"
-          >
-            <Trash2 className="size-4" />
-            Remove
-          </button>
-        </form>
+        <div className="border-t border-line px-5 py-3">
+          <TrashActionButton action={removeBoardMember} id={member.id} itemName={member.name} kind="trash" />
+        </div>
       )}
     </div>
   );
@@ -102,12 +96,14 @@ export default async function AdminBoardPage() {
   const members = await db
     .select()
     .from(boardMembers)
+    .where(eq(boardMembers.visible, true))
     .orderBy(asc(boardMembers.sortOrder));
   return (
     <>
       <AdminPageHeader
-        title="Board members"
-        description="Names are shared across languages; roles can be translated independently."
+        eyebrow="Kurum"
+        title="Yönetim kurulu"
+        description="Üyelerin isimleri ortak kullanılır; görevleri Türkçe ve İngilizce ayrı düzenlenebilir."
       />
       <div className="space-y-4">
         {members.map((member) => (
@@ -115,7 +111,7 @@ export default async function AdminBoardPage() {
         ))}
         <div className="pt-3">
           <h2 className="mb-3 text-sm font-semibold text-navy-ink">
-            Add board member
+            Yeni üye ekle
           </h2>
           <MemberForm />
         </div>

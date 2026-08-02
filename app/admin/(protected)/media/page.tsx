@@ -58,13 +58,14 @@ export default async function AdminMediaPage() {
   return (
     <>
       <AdminPageHeader
-        title="Media"
-        description="Replace or crop shared website photography here. Each entry names where the image appears; project, news and gallery photographs are managed in their editors."
+        eyebrow="Sistem"
+        title="Medya kütüphanesi"
+        description="Tekrar kullanılan website görsellerini burada değiştirin veya kırpın. Her kart görselin nerede kullanıldığını açıklar; proje, haber ve galeri görselleri kendi düzenleme ekranından yönetilir."
       />
 
       <section>
         <h2 className="mb-3 text-sm font-semibold text-navy-ink">
-          Shared website images
+          Website görselleri
         </h2>
         <div className="grid gap-px bg-line sm:grid-cols-2 xl:grid-cols-3">
           {(Object.keys(mediaLabels) as SiteMediaKey[]).map((key) => {
@@ -80,7 +81,7 @@ export default async function AdminMediaPage() {
                     />
                   ) : (
                     <div className="flex aspect-[16/9] items-center justify-center bg-mist px-5 text-center text-sm text-ink/55">
-                      No photograph uploaded
+                      Henüz fotoğraf yüklenmedi
                     </div>
                   )}
                   <div className="border-t border-line p-4">
@@ -94,7 +95,7 @@ export default async function AdminMediaPage() {
                       href="/admin/president"
                       className="mt-3 inline-flex min-h-10 items-center text-sm font-semibold text-navy hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
                     >
-                      Edit president profile
+                      Başkan profilini düzenle
                     </Link>
                   </div>
                 </div>
@@ -121,7 +122,7 @@ export default async function AdminMediaPage() {
                     type="submit"
                     className="min-h-10 bg-navy-deep px-3 text-sm font-semibold text-white hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
                   >
-                    Save
+                    Kaydet
                   </button>
                 </div>
               </form>
@@ -132,7 +133,7 @@ export default async function AdminMediaPage() {
 
       <section className="mt-8 border-t border-navy-ink/25 pt-5">
         <h2 className="mb-3 text-sm font-semibold text-navy-ink">
-          Project, news and gallery images
+          Proje, haber ve galeri görselleri
         </h2>
       <div className="grid gap-px bg-line sm:grid-cols-2 xl:grid-cols-3">
         {media.map((item) => (
@@ -149,10 +150,10 @@ export default async function AdminMediaPage() {
             <div className="border-t border-line p-4">
               <div className="flex items-center justify-between gap-3">
                 <p className="truncate font-semibold text-navy-ink">{item.slug}</p>
-                <span className="text-xs font-semibold text-ink/45">{item.type}</span>
+                <span className="text-xs font-semibold text-ink/45">{item.type === "Project" ? "Proje" : item.type === "News" ? "Haber" : "Galeri"}</span>
               </div>
               <p className="mt-1 truncate text-xs text-ink/45">
-                {item.publicId ?? "Bundled website image"}
+                {item.publicId ?? "Website paket görseli"}
               </p>
             </div>
           </Link>
@@ -160,9 +161,9 @@ export default async function AdminMediaPage() {
       </div>
       {!media.length && (
         <div className="border border-line bg-white px-6 py-14 text-center">
-          <p className="font-semibold text-navy-ink">No media attached</p>
+          <p className="font-semibold text-navy-ink">Henüz medya yok</p>
           <p className="mt-1 text-sm text-ink/55">
-            Upload an image while editing a project, article or gallery item.
+            Proje, haber veya galeri düzenlerken görsel yükleyebilirsiniz.
           </p>
         </div>
       )}

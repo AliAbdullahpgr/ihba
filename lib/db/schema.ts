@@ -123,11 +123,24 @@ export const projects = sqliteTable(
   {
     id: text("id").primaryKey(),
     slug: text("slug").notNull(),
+    /**
+     * Publication state — whether the project is visible on the site at all.
+     * Deliberately separate from `lifecycle` below: a finished project should
+     * still be published, so "completed" is not a reason to hide it.
+     */
     state: text("state", {
       enum: ["draft", "published", "archived"],
     })
       .default("draft")
       .notNull(),
+    /** How the work itself is going, independent of whether it is published. */
+    lifecycle: text("lifecycle", {
+      enum: ["ongoing", "completed", "inactive"],
+    })
+      .default("ongoing")
+      .notNull(),
+    /** Whether the project is promoted onto the homepage. */
+    featured: integer("featured", { mode: "boolean" }).default(false).notNull(),
     imageUrl: text("image_url"),
     imagePublicId: text("image_public_id"),
     sortOrder: integer("sort_order").default(0).notNull(),
@@ -138,7 +151,40 @@ export const projects = sqliteTable(
   (table) => [
     uniqueIndex("project_slug_idx").on(table.slug),
     index("project_state_order_idx").on(table.state, table.sortOrder),
+    index("project_featured_idx").on(table.featured, table.sortOrder),
   ]
+);
+
+/**
+ * Additional photographs for a single project.
+ *
+ * Kept separate from `galleryItems`, which is the site-wide gallery and has no
+ * project relation — the two answer different questions ("show me this
+ * project's photos" vs "show me the organisation's gallery"), and conflating
+ * them would mean every project photo also appearing in the public gallery.
+ *
+ * Captions and alt text sit in flat per-language columns rather than a
+ * translations table, matching `boardMembers` — two short strings per language
+ * does not warrant the extra join.
+ */
+export const projectImages = sqliteTable(
+  "project_images",
+  {
+    id: text("id").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    imageUrl: text("image_url").notNull(),
+    imagePublicId: text("image_public_id"),
+    captionTr: text("caption_tr").default("").notNull(),
+    captionEn: text("caption_en").default("").notNull(),
+    altTr: text("alt_tr").default("").notNull(),
+    altEn: text("alt_en").default("").notNull(),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [index("project_image_order_idx").on(table.projectId, table.sortOrder)]
 );
 
 export const projectTranslations = sqliteTable(
@@ -167,6 +213,14 @@ export const projectTranslations = sqliteTable(
 
 export const projectRelations = relations(projects, ({ many }) => ({
   projectTranslations: many(projectTranslations),
+  projectImages: many(projectImages),
+}));
+
+export const projectImageRelations = relations(projectImages, ({ one }) => ({
+  project: one(projects, {
+    fields: [projectImages.projectId],
+    references: [projects.id],
+  }),
 }));
 
 export const projectTranslationRelations = relations(
@@ -352,6 +406,79 @@ export const newsletterSubscribers = sqliteTable(
   (table) => [uniqueIndex("newsletter_email_idx").on(table.email)]
 );
 
+/**
+ * Organisation-level facts and site-wide switches.
+ *
+ * A single row, keyed by `ORG_SETTINGS_ID`. These values are language
+ * independent — an IBAN and a MERSİS number do not have a Turkish and an
+ * English version — which is why they live here rather than inside the
+ * per-locale `siteContent` document.
+ */
+export const orgSettings = sqliteTable("org_settings", {
+  id: text("id").primaryKey(),
+  phone: text("phone").default("").notNull(),
+  whatsapp: text("whatsapp").default("").notNull(),
+  email: text("email").default("").notNull(),
+  address: text("address").default("").notNull(),
+  mapsUrl: text("maps_url").default("").notNull(),
+  workingHours: text("working_hours").default("").notNull(),
+  registryNumber: text("registry_number").default("").notNull(),
+  taxNumber: text("tax_number").default("").notNull(),
+  mersisNumber: text("mersis_number").default("").notNull(),
+  establishedOn: text("established_on").default("").notNull(),
+  orgStatus: text("org_status").default("").notNull(),
+  updatedBy: text("updated_by").references(() => user.id, {
+    onDelete: "set null",
+  }),
+  updatedAt: updatedAt(),
+});
+
+export const ORG_SETTINGS_ID = "default";
+
+/**
+ * Bank accounts, one row per currency. A table rather than fixed TRY/USD/EUR
+ * columns so a new currency is data entry rather than a migration.
+ */
+export const bankAccounts = sqliteTable(
+  "bank_accounts",
+  {
+    id: text("id").primaryKey(),
+    currency: text("currency").notNull(),
+    bankName: text("bank_name").default("").notNull(),
+    accountHolder: text("account_holder").default("").notNull(),
+    iban: text("iban").default("").notNull(),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    active: integer("active", { mode: "boolean" }).default(true).notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [index("bank_account_order_idx").on(table.sortOrder)]
+);
+
+/**
+ * Social profiles. Moved out of the per-locale content document so that the
+ * platform list is open-ended and the display order is editable — neither was
+ * possible against a fixed five-key union.
+ */
+export const socialAccounts = sqliteTable(
+  "social_accounts",
+  {
+    id: text("id").primaryKey(),
+    /** Chooses the icon; unrecognised values fall back to a generic link icon. */
+    platform: text("platform").notNull(),
+    label: text("label").default("").notNull(),
+    url: text("url").default("").notNull(),
+    active: integer("active", { mode: "boolean" }).default(true).notNull(),
+    openInNewTab: integer("open_in_new_tab", { mode: "boolean" })
+      .default(true)
+      .notNull(),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [index("social_account_order_idx").on(table.sortOrder)]
+);
+
 export const auditLogs = sqliteTable(
   "audit_logs",
   {
@@ -360,11 +487,33 @@ export const auditLogs = sqliteTable(
     action: text("action").notNull(),
     entityType: text("entity_type").notNull(),
     entityId: text("entity_id"),
-    metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>(),
+    /**
+     * What actually changed. `changes` carries the before/after pair for each
+     * touched field so the activity log can answer "what was the IBAN before?"
+     * rather than only "someone saved the donation settings".
+     */
+    metadata: text("metadata", { mode: "json" }).$type<AuditMetadata>(),
     createdAt: createdAt(),
   },
-  (table) => [index("audit_entity_idx").on(table.entityType, table.entityId)]
+  (table) => [
+    index("audit_entity_idx").on(table.entityType, table.entityId),
+    index("audit_created_idx").on(table.createdAt),
+  ]
 );
+
+export type AuditFieldChange = {
+  field: string;
+  label: string;
+  from: string;
+  to: string;
+  /** Marks bank/IBAN changes so the log can surface them more prominently. */
+  sensitive?: boolean;
+};
+
+export type AuditMetadata = {
+  changes?: AuditFieldChange[];
+  summary?: string;
+};
 
 export const schema = {
   user,
@@ -375,8 +524,10 @@ export const schema = {
   siteMedia,
   projects,
   projectTranslations,
+  projectImages,
   projectRelations,
   projectTranslationRelations,
+  projectImageRelations,
   newsArticles,
   newsTranslations,
   newsRelations,
@@ -389,5 +540,8 @@ export const schema = {
   contactSubmissions,
   volunteerApplications,
   newsletterSubscribers,
+  orgSettings,
+  bankAccounts,
+  socialAccounts,
   auditLogs,
 };

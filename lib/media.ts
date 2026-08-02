@@ -43,6 +43,18 @@ export const bundledMedia = {
     url: "/images/president-abdullah-serenli.webp",
     publicId: "",
   },
+  campaignImage: {
+    url: "/images/generated/project-education-centre.webp",
+    publicId: "",
+  },
+  heroSlide2: {
+    url: "/images/field-ramadan-iftar-wide.webp",
+    publicId: "",
+  },
+  heroSlide3: {
+    url: "/images/field-team-pakistan.webp",
+    publicId: "",
+  },
 };
 
 export type SiteMedia = typeof bundledMedia;
@@ -58,8 +70,11 @@ export const mediaLabels: Record<SiteMediaKey, string> = {
   cleanWaterOpening: "Clean-water opening",
   studentSupport: "Student support",
   volunteerTeam: "Volunteer team",
-  fieldTeamPakistan: "IHBA field team in Pakistan",
+fieldTeamPakistan: "IHBA field team in Pakistan",
   presidentPortrait: "President portrait",
+  campaignImage: "Current campaign image",
+  heroSlide2: "Hero carousel slide 2",
+  heroSlide3: "Hero carousel slide 3",
 };
 
 /** Where each shared image appears, so editors can choose the right asset. */
@@ -75,4 +90,7 @@ export const mediaUsage: Record<SiteMediaKey, string> = {
   volunteerTeam: "Volunteer and programme sections",
   fieldTeamPakistan: "Homepage call to action and Volunteer page",
   presidentPortrait: "Homepage president message and President's Message page",
+  campaignImage: "Homepage current donation appeal",
+  heroSlide2: "Homepage hero carousel slide 2",
+  heroSlide3: "Homepage hero carousel slide 3",
 };

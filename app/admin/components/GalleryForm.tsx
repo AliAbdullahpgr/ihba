@@ -1,10 +1,11 @@
-import { Archive, Save } from "lucide-react";
 import {
   archiveGalleryItem,
   saveGalleryItem,
 } from "@/app/admin/actions";
 import { FormField, inputClass } from "@/app/admin/components/AdminUi";
 import { ImageUpload } from "@/app/admin/components/ImageUpload";
+import { TrashActionButton } from "@/app/admin/components/TrashActionButton";
+import { AdminSubmitButton, UnsavedChangesGuard } from "@/app/admin/components/FormActions";
 
 type GalleryTranslation = {
   locale: "en" | "tr";
@@ -32,16 +33,17 @@ export function GalleryForm({ item }: { item: GalleryRecord | null }) {
         className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]"
       >
         <input type="hidden" name="id" value={item?.id ?? ""} />
+        <UnsavedChangesGuard />
 
         <div className="space-y-6">
           <section className="border border-line bg-white p-5 sm:p-6">
             <h2 className="text-base font-semibold text-navy-ink">
-              Gallery placement
+              Galeri yerleşimi
             </h2>
             <div className="mt-5 grid gap-5 sm:grid-cols-2">
               <FormField
-                label="Display order"
-                hint="Lower numbers appear first."
+                label="Website sırası"
+                hint="Küçük numaralar önce görünür."
               >
                 <input
                   name="sortOrder"
@@ -53,17 +55,17 @@ export function GalleryForm({ item }: { item: GalleryRecord | null }) {
                 />
               </FormField>
               <FormField
-                label="Image layout"
-                hint="Controls the photograph's gallery composition."
+                label="Görsel yerleşimi"
+                hint="Fotoğrafın galeri içindeki görünümünü belirler."
               >
                 <select
                   name="layout"
                   defaultValue={item?.layout ?? "landscape"}
                   className={inputClass}
                 >
-                  <option value="portrait">Portrait</option>
-                  <option value="landscape">Landscape</option>
-                  <option value="wide">Full width</option>
+                  <option value="portrait">Dikey</option>
+                  <option value="landscape">Yatay</option>
+                  <option value="wide">Tam genişlik</option>
                 </select>
               </FormField>
             </div>
@@ -81,14 +83,14 @@ export function GalleryForm({ item }: { item: GalleryRecord | null }) {
               >
                 <div className="flex items-baseline justify-between border-b border-line pb-4">
                   <h2 className="text-base font-semibold text-navy-ink">
-                    {locale === "en" ? "English (optional)" : "Turkish"}
+                    {locale === "en" ? "English (isteğe bağlı)" : "Türkçe"}
                   </h2>
                   <span className="text-xs font-bold uppercase text-ink/45">
                     {locale}
                   </span>
                 </div>
                 <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                  <FormField label="Category">
+                  <FormField label="Kategori veya başlık">
                     <input
                       name={`category_${locale}`}
                       required={locale === "tr"}
@@ -96,7 +98,7 @@ export function GalleryForm({ item }: { item: GalleryRecord | null }) {
                       className={inputClass}
                     />
                   </FormField>
-                  <FormField label="Place and date">
+                  <FormField label="Konum ve tarih">
                     <input
                       name={`place_${locale}`}
                       required={locale === "tr"}
@@ -105,7 +107,7 @@ export function GalleryForm({ item }: { item: GalleryRecord | null }) {
                     />
                   </FormField>
                   <div className="sm:col-span-2">
-                    <FormField label="Caption">
+                    <FormField label="Açıklama">
                       <textarea
                         name={`caption_${locale}`}
                         required={locale === "tr"}
@@ -117,8 +119,8 @@ export function GalleryForm({ item }: { item: GalleryRecord | null }) {
                   </div>
                   <div className="sm:col-span-2">
                     <FormField
-                      label="Image alt text"
-                      hint="Describe what is visible for visitors using screen readers."
+                      label="Görsel alternatif metni"
+                      hint="Ekran okuyucu kullanan ziyaretçiler için görseli tarif edin."
                     >
                       <input
                         name={`imageAlt_${locale}`}
@@ -135,33 +137,27 @@ export function GalleryForm({ item }: { item: GalleryRecord | null }) {
 
           <div className="sticky bottom-0 flex flex-wrap items-center justify-between gap-4 border border-line bg-white p-4">
             <p className="text-xs text-ink/55">
-              Published changes appear in the gallery immediately.
+              Yayında seçtiğiniz değişiklikler kaydettiğinizde galeride görünür.
             </p>
-            <button
-              type="submit"
-              className="inline-flex min-h-11 items-center gap-2 bg-navy-deep px-5 text-sm font-semibold text-white hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
-            >
-              <Save className="size-4" />
-              Save gallery item
-            </button>
+            <AdminSubmitButton>Galeri görselini kaydet</AdminSubmitButton>
           </div>
         </div>
 
         <aside className="h-fit space-y-5 border border-line bg-white p-5 xl:sticky xl:top-24">
-          <FormField label="Publication state">
+          <FormField label="Yayın durumu">
             <select
               name="state"
               defaultValue={item?.state ?? "draft"}
               className={inputClass}
             >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="archived">Archived</option>
+              <option value="draft">Taslak</option>
+              <option value="published">Yayında</option>
+              <option value="archived">Çöp kutusunda</option>
             </select>
           </FormField>
           <div>
             <p className="mb-2 text-sm font-semibold text-navy-ink">
-              Gallery image
+              Galeri görseli
             </p>
             <ImageUpload
               initialUrl={item?.imageUrl}
@@ -173,16 +169,9 @@ export function GalleryForm({ item }: { item: GalleryRecord | null }) {
       </form>
 
       {item && (
-        <form action={archiveGalleryItem} className="mt-6 max-w-xs">
-          <input type="hidden" name="id" value={item.id} />
-          <button
-            type="submit"
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-[#a33b32]/30 bg-white px-4 text-sm font-semibold text-[#8f3029] hover:border-[#a33b32] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a33b32]"
-          >
-            <Archive className="size-4" />
-            Archive gallery item
-          </button>
-        </form>
+        <div className="mt-6 max-w-xs">
+          <TrashActionButton action={archiveGalleryItem} id={item.id} itemName={item.galleryTranslations.find((candidate) => candidate.locale === "tr")?.category ?? "Galeri görseli"} kind="trash" />
+        </div>
       )}
     </>
   );

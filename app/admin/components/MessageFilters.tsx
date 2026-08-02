@@ -46,17 +46,17 @@ export function MessageFilters({
   }, [search, status, from, to, push]);
 
   const statusButtons: { value: StatusFilter; label: string }[] = [
-    { value: "all", label: "All" },
-    { value: "new", label: "New" },
-    { value: "read", label: "Read" },
-    { value: "replied", label: "Replied" },
-    { value: "archived", label: "Archived" },
+    { value: "all", label: "Tümü" },
+    { value: "new", label: "Yeni" },
+    { value: "read", label: "Okundu" },
+    { value: "replied", label: "Yanıtlandı" },
+    { value: "archived", label: "Arşivlendi" },
   ];
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 rounded-sm border border-azure/30 bg-azure-mist/30 px-4 py-3 text-sm">
-        <span className="font-semibold text-navy-ink">Forwarding to:</span>
+        <span className="font-semibold text-navy-ink">Bildirim adresi:</span>
         <a
           href={`mailto:${forwardingEmail}`}
           className="font-semibold text-navy hover:text-azure-deep hover:underline"
@@ -69,7 +69,7 @@ export function MessageFilters({
         <div className="flex-1">
           <input
             type="search"
-            placeholder="Search name, email, subject, message…"
+            placeholder="İsim, e-posta, konu veya mesajda ara…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={inputClass}
@@ -77,7 +77,7 @@ export function MessageFilters({
         </div>
         <div className="flex gap-3">
           <label className="block">
-            <span className="mb-1.5 block text-xs font-semibold text-ink/60">From</span>
+            <span className="mb-1.5 block text-xs font-semibold text-ink/60">Başlangıç</span>
             <input
               type="date"
               value={from}
@@ -86,7 +86,7 @@ export function MessageFilters({
             />
           </label>
           <label className="block">
-            <span className="mb-1.5 block text-xs font-semibold text-ink/60">To</span>
+            <span className="mb-1.5 block text-xs font-semibold text-ink/60">Bitiş</span>
             <input
               type="date"
               value={to}

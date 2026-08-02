@@ -1,10 +1,16 @@
-import { Archive, Save } from "lucide-react";
 import { archiveProject, saveProject } from "@/app/admin/actions";
 import {
   FormField,
   inputClass,
 } from "@/app/admin/components/AdminUi";
 import { ImageUpload } from "@/app/admin/components/ImageUpload";
+import {
+  ProjectGalleryManager,
+  type AdminProjectImage,
+} from "@/app/admin/components/ProjectGalleryManager";
+import { RichTextEditor } from "@/app/admin/components/RichTextEditor";
+import { TrashActionButton } from "@/app/admin/components/TrashActionButton";
+import { AdminSubmitButton, UnsavedChangesGuard } from "@/app/admin/components/FormActions";
 
 type Translation = {
   locale: "en" | "tr";
@@ -22,10 +28,13 @@ type ProjectRecord = {
   id: string;
   slug: string;
   state: "draft" | "published" | "archived";
+  lifecycle: "ongoing" | "completed" | "inactive";
+  featured: boolean;
   imageUrl: string | null;
   imagePublicId: string | null;
   sortOrder: number;
   projectTranslations: Translation[];
+  projectImages?: AdminProjectImage[];
 };
 
 function translation(project: ProjectRecord | null, locale: "en" | "tr") {
@@ -37,15 +46,16 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
       <form action={saveProject} className="space-y-6">
         <input type="hidden" name="id" value={project?.id ?? ""} />
+        <UnsavedChangesGuard />
 
         <section className="border border-line bg-white p-5 sm:p-6">
           <h2 className="text-base font-semibold text-navy-ink">
-            Project details
+            Proje bilgileri
           </h2>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <FormField
-              label="Slug"
-              hint="Lowercase letters, numbers and hyphens. Changing it changes the public URL."
+              label="Website adresi"
+              hint="Küçük harf, rakam ve tire kullanın. Değiştirirseniz projenin website adresi de değişir."
             >
               <input
                 name="slug"
@@ -55,7 +65,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 className={inputClass}
               />
             </FormField>
-            <FormField label="Display order">
+            <FormField label="Website sırası">
               <input
                 name="sortOrder"
                 type="number"
@@ -71,7 +81,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
         {(["en", "tr"] as const).map((locale) => {
           const item = translation(project, locale);
           const language =
-            locale === "en" ? "English (optional)" : "Turkish";
+            locale === "en" ? "English (isteğe bağlı)" : "Türkçe";
           return (
             <section
               key={locale}
@@ -86,7 +96,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 </span>
               </div>
               <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                <FormField label="Title">
+                <FormField label="Başlık">
                   <input
                     name={`title_${locale}`}
                     required={locale === "tr"}
@@ -94,7 +104,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                     className={inputClass}
                   />
                 </FormField>
-                <FormField label="Region">
+                <FormField label="Bölge">
                   <input
                     name={`region_${locale}`}
                     required={locale === "tr"}
@@ -102,7 +112,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                     className={inputClass}
                   />
                 </FormField>
-                <FormField label="Public status label">
+                <FormField label="Website durum etiketi">
                   <input
                     name={`statusLabel_${locale}`}
                     required={locale === "tr"}
@@ -110,7 +120,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                     className={inputClass}
                   />
                 </FormField>
-                <FormField label="Image alt text">
+                <FormField label="Görsel alternatif metni">
                   <input
                     name={`imageAlt_${locale}`}
                     required={locale === "tr"}
@@ -120,7 +130,7 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 </FormField>
               </div>
               <div className="mt-5 space-y-5">
-                <FormField label="Summary">
+                <FormField label="Kısa özet">
                   <textarea
                     name={`summary_${locale}`}
                     required={locale === "tr"}
@@ -130,21 +140,25 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                   />
                 </FormField>
                 <FormField
-                  label="Body"
-                  hint="Separate paragraphs with a blank line."
+                  label="Proje açıklaması"
+                  hint="İlk paragraf proje sayfasının girişinde öne çıkar. Biçimlendirme için üstteki düğmeleri kullanın."
                 >
-                  <textarea
+                  <RichTextEditor
                     name={`body_${locale}`}
+                    initialBlocks={item?.body ?? []}
                     required={locale === "tr"}
-                    rows={9}
-                    defaultValue={item?.body.join("\n\n")}
-                    className={inputClass}
+                    requiredMessage="Proje açıklaması boş bırakılamaz."
+                    placeholder={
+                      locale === "tr"
+                        ? "Projeyi buraya anlatın…"
+                        : "İngilizce açıklama (isteğe bağlı) — boş bırakılırsa Türkçe metin kullanılır."
+                    }
                   />
                 </FormField>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <FormField
-                    label="Facts"
-                    hint="One per line: Label | Value"
+                    label="Etki bilgileri"
+                    hint="Her satıra bir bilgi yazın: Etiket | Değer"
                   >
                     <textarea
                       name={`facts_${locale}`}
@@ -156,8 +170,8 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                     />
                   </FormField>
                   <FormField
-                    label="Tags"
-                    hint="Separate tags with commas."
+                    label="Etiketler"
+                    hint="Etiketleri virgülle ayırın."
                   >
                     <textarea
                       name={`chips_${locale}`}
@@ -172,54 +186,85 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
           );
         })}
 
+        <ProjectGalleryManager initialImages={project?.projectImages ?? []} />
+
         <div className="sticky bottom-0 flex flex-wrap items-center justify-between gap-4 border border-line bg-white p-4">
           <p className="text-xs text-ink/55">
-            Published changes appear on the public site immediately.
+            Yayında seçtiğiniz değişiklikler kaydettiğinizde website'de görünür.
           </p>
-          <button
-            type="submit"
-            className="inline-flex min-h-11 items-center gap-2 bg-navy-deep px-5 text-sm font-semibold text-white hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
-          >
-            <Save className="size-4" />
-            Save project
-          </button>
+          <AdminSubmitButton>Projeyi kaydet</AdminSubmitButton>
         </div>
 
         <aside className="border border-line bg-white p-5 xl:fixed xl:right-8 xl:top-24 xl:w-80">
-          <FormField label="Publication state">
+          <FormField
+            label="Yayın durumu"
+            hint="Projenin website'de görünüp görünmeyeceğini belirler."
+          >
             <select
               name="state"
               defaultValue={project?.state ?? "draft"}
               className={inputClass}
             >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="archived">Archived</option>
+              <option value="draft">Taslak</option>
+              <option value="published">Yayında</option>
+              <option value="archived">Çöp kutusunda</option>
             </select>
           </FormField>
+
+          {/*
+            Kept apart from the publication state on purpose: a finished
+            project stays on the website, so "tamamlandı" must not be a way of
+            hiding it.
+          */}
+          <div className="mt-5">
+            <FormField
+              label="Proje durumu"
+              hint="İşin kendisi ne aşamada? Yayın durumundan bağımsızdır."
+            >
+              <select
+                name="lifecycle"
+                defaultValue={project?.lifecycle ?? "ongoing"}
+                className={inputClass}
+              >
+                <option value="ongoing">Devam ediyor</option>
+                <option value="completed">Tamamlandı</option>
+                <option value="inactive">Askıda</option>
+              </select>
+            </FormField>
+          </div>
+
+          <label className="admin-toggle-row mt-5">
+            <input
+              type="checkbox"
+              name="featured"
+              defaultChecked={project?.featured ?? false}
+            />
+            <span>
+              <strong>Anasayfada göster</strong>
+              <span>Seçili projeler anasayfadaki proje bölümünde öne çıkar.</span>
+            </span>
+          </label>
+
           <div className="mt-5">
             <p className="mb-2 text-sm font-semibold text-navy-ink">
-              Featured image
+              Kapak görseli
             </p>
             <ImageUpload
               initialUrl={project?.imageUrl}
               initialPublicId={project?.imagePublicId}
             />
+            <p className="mt-2 text-xs leading-relaxed text-ink/55">
+              Zorunlu değildir. Görsel eklenmezse proje kartı yalnızca metinle
+              gösterilir.
+            </p>
           </div>
         </aside>
       </form>
 
       {project && (
-        <form action={archiveProject} className="xl:col-start-2">
-          <input type="hidden" name="id" value={project.id} />
-          <button
-            type="submit"
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-[#a33b32]/30 bg-white px-4 text-sm font-semibold text-[#8f3029] hover:border-[#a33b32] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a33b32]"
-          >
-            <Archive className="size-4" />
-            Archive project
-          </button>
-        </form>
+        <div className="xl:col-start-2">
+          <TrashActionButton action={archiveProject} id={project.id} itemName={translation(project, "tr")?.title ?? project.slug} kind="trash" />
+        </div>
       )}
     </div>
   );

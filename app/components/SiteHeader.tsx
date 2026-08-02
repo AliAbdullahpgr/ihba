@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { LanguageToggle } from "@/app/components/LanguageToggle";
+import { SocialRow } from "@/app/components/SocialRow";
 
 interface NavLink {
   href: string;
@@ -236,6 +237,9 @@ export function SiteHeader() {
             >
               {t.nav.donate}
             </Link>
+            {/* The desktop header deliberately carries no social marks; on
+                mobile this menu is the only place they can live. */}
+            <SocialRow className="mb-4 justify-center" />
           </nav>
         </div>
       )}

@@ -1,7 +1,9 @@
-import { Archive, Save } from "lucide-react";
 import { archiveNews, saveNews } from "@/app/admin/actions";
 import { FormField, inputClass } from "@/app/admin/components/AdminUi";
 import { ImageUpload } from "@/app/admin/components/ImageUpload";
+import { RichTextEditor } from "@/app/admin/components/RichTextEditor";
+import { TrashActionButton } from "@/app/admin/components/TrashActionButton";
+import { AdminSubmitButton, UnsavedChangesGuard } from "@/app/admin/components/FormActions";
 
 type NewsTranslation = {
   locale: "en" | "tr";
@@ -25,10 +27,11 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
       <form action={saveNews} className="space-y-6">
         <input type="hidden" name="id" value={article?.id ?? ""} />
+        <UnsavedChangesGuard />
         <section className="border border-line bg-white p-5 sm:p-6">
           <FormField
-            label="Slug"
-            hint="Lowercase letters, numbers and hyphens."
+            label="Website adresi"
+            hint="Küçük harf, rakam ve tire kullanın."
           >
             <input
               name="slug"
@@ -51,14 +54,14 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
             >
               <div className="flex items-baseline justify-between border-b border-line pb-4">
                 <h2 className="text-base font-semibold text-navy-ink">
-                  {locale === "en" ? "English (optional)" : "Turkish"}
+                  {locale === "en" ? "English (isteğe bağlı)" : "Türkçe"}
                 </h2>
                 <span className="text-xs font-bold uppercase text-ink/45">
                   {locale}
                 </span>
               </div>
               <div className="mt-5 space-y-5">
-                <FormField label="Title">
+                <FormField label="Başlık">
                   <input
                     name={`title_${locale}`}
                     required={locale === "tr"}
@@ -66,7 +69,7 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
                     className={inputClass}
                   />
                 </FormField>
-                <FormField label="Excerpt">
+                <FormField label="Kısa özet">
                   <textarea
                     name={`excerpt_${locale}`}
                     required={locale === "tr"}
@@ -76,18 +79,22 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
                   />
                 </FormField>
                 <FormField
-                  label="Article body"
-                  hint="Separate paragraphs with a blank line. Start a section heading with ##."
+                  label="Haber metni"
+                  hint="Yazıyı doğrudan buraya yazın. Kalın yazı, başlık, liste ve bağlantı eklemek için üstteki düğmeleri kullanın."
                 >
-                  <textarea
+                  <RichTextEditor
                     name={`body_${locale}`}
+                    initialBlocks={item?.body ?? []}
                     required={locale === "tr"}
-                    rows={12}
-                    defaultValue={item?.body.join("\n\n")}
-                    className={inputClass}
+                    requiredMessage="Haber metni boş bırakılamaz."
+                    placeholder={
+                      locale === "tr"
+                        ? "Haberin metnini buraya yazın…"
+                        : "İngilizce metin (isteğe bağlı) — boş bırakılırsa Türkçe metin kullanılır."
+                    }
                   />
                 </FormField>
-                <FormField label="Image alt text">
+                <FormField label="Görsel alternatif metni">
                   <input
                     name={`imageAlt_${locale}`}
                     required={locale === "tr"}
@@ -101,30 +108,24 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
         })}
 
         <div className="sticky bottom-0 flex justify-end border border-line bg-white p-4">
-          <button
-            type="submit"
-            className="inline-flex min-h-11 items-center gap-2 bg-navy-deep px-5 text-sm font-semibold text-white hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
-          >
-            <Save className="size-4" />
-            Save article
-          </button>
+          <AdminSubmitButton>Haberi kaydet</AdminSubmitButton>
         </div>
 
         <aside className="space-y-5 border border-line bg-white p-5 xl:fixed xl:right-8 xl:top-24 xl:w-80">
-          <FormField label="Publication state">
+          <FormField label="Yayın durumu">
             <select
               name="state"
               defaultValue={article?.state ?? "draft"}
               className={inputClass}
             >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="archived">Archived</option>
+              <option value="draft">Taslak</option>
+              <option value="published">Yayında</option>
+              <option value="archived">Çöp kutusunda</option>
             </select>
           </FormField>
           <div>
             <p className="mb-2 text-sm font-semibold text-navy-ink">
-              Featured image
+              Kapak görseli
             </p>
             <ImageUpload
               initialUrl={article?.imageUrl}
@@ -135,16 +136,9 @@ export function NewsForm({ article }: { article: NewsRecord | null }) {
       </form>
 
       {article && (
-        <form action={archiveNews} className="xl:col-start-2">
-          <input type="hidden" name="id" value={article.id} />
-          <button
-            type="submit"
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-[#a33b32]/30 bg-white px-4 text-sm font-semibold text-[#8f3029] hover:border-[#a33b32] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a33b32]"
-          >
-            <Archive className="size-4" />
-            Archive article
-          </button>
-        </form>
+        <div className="xl:col-start-2">
+          <TrashActionButton action={archiveNews} id={article.id} itemName={article.newsTranslations.find((item) => item.locale === "tr")?.title ?? article.slug} kind="trash" />
+        </div>
       )}
     </div>
   );

@@ -5,8 +5,9 @@ export default function AdminAccountPage() {
   return (
     <>
       <AdminPageHeader
-        title="Account"
-        description="Change your administrator password and revoke other active sessions."
+        eyebrow="Sistem"
+        title="Hesap"
+        description="Yönetici parolanızı değiştirin ve açık olan diğer oturumları kapatın."
       />
       <AccountForm />
     </>

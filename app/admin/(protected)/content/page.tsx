@@ -1,18 +1,75 @@
-import { Languages } from "lucide-react";
-import { AdminPageHeader } from "@/app/admin/components/AdminUi";
+import {
+  ArrowRight,
+  Building2,
+  FileText,
+  Globe2,
+  HeartHandshake,
+  Landmark,
+  Languages,
+  Mail,
+  MessageSquareText,
+  Share2,
+  ShieldCheck,
+} from "lucide-react";
 import Link from "next/link";
+import { AdminCard, AdminPageHeader, StatusBadge } from "@/app/admin/components/AdminUi";
 
-const languages = [
+const sections = [
   {
-    code: "en",
-    name: "English (optional)",
-    description:
-      "Optional translation. Empty fields fall back to the Turkish content.",
+    key: "homepage",
+    title: "Anasayfa",
+    description: "Banner, etki istatistikleri, hakkımızda önizlemesi ve bağış çağrısı.",
+    href: "/admin/content/tr#hero",
+    icon: Globe2,
+    status: "published",
   },
   {
-    code: "tr",
-    name: "Turkish",
-    description: "Default public-language content and institutional copy.",
+    key: "about",
+    title: "Hakkımızda",
+    description: "Kurumun hikâyesi, yaklaşımı ve çalışma alanlarını anlatan metinler.",
+    href: "/admin/content/tr#aboutPage",
+    icon: Building2,
+    status: "published",
+  },
+  {
+    key: "contact",
+    title: "İletişim bilgileri",
+    description: "E-posta, telefon ve adres bilgileri footer ve iletişim sayfasında görünür.",
+    href: "/admin/contact",
+    icon: Mail,
+    status: "published",
+  },
+  {
+    key: "social",
+    title: "Sosyal medya hesapları",
+    description: "Instagram, Facebook, YouTube, X ve LinkedIn bağlantıları.",
+    href: "/admin/social",
+    icon: Share2,
+    status: "draft",
+  },
+  {
+    key: "donation",
+    title: "Bağış ve IBAN bilgileri",
+    description: "Bağış sayfasında görünen hesap ve yönlendirme metinleri.",
+    href: "/admin/donation",
+    icon: Landmark,
+    status: "draft",
+  },
+  {
+    key: "president",
+    title: "Başkan mesajı",
+    description: "Başkanın fotoğrafı, mesajı ve yayın önizlemesi.",
+    href: "/admin/president",
+    icon: MessageSquareText,
+    status: "published",
+  },
+  {
+    key: "legal",
+    title: "Yasal metinler",
+    description: "KVKK, gizlilik ve çerez politikası metinleri.",
+    href: "/admin/content/tr#legalPages",
+    icon: ShieldCheck,
+    status: "published",
   },
 ] as const;
 
@@ -20,32 +77,41 @@ export default function AdminContentPage() {
   return (
     <>
       <AdminPageHeader
-        title="Site content"
-        description="Edit the copy used across public pages. Projects, news and board members have their own structured editors."
+        eyebrow="Website içeriği"
+        title="Website içeriği"
+        description="Ziyaretçilerin website'de gördüğü bilgileri, nerede göründüğünü bilerek bölüm bölüm yönetin."
+        action={
+          <div className="admin-language-switcher" aria-label="Dil seçimi">
+            <Languages className="size-4" aria-hidden="true" />
+            <Link href="/admin/content/tr" className="admin-language-link is-active">Türkçe</Link>
+            <Link href="/admin/content/en" className="admin-language-link">English</Link>
+          </div>
+        }
       />
-      <div className="border border-line bg-white">
-        {languages.map((language) => (
-          <Link
-            key={language.code}
-            href={`/admin/content/${language.code}`}
-            className="group flex items-center gap-4 border-b border-line p-5 last:border-0 hover:bg-azure-mist/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-azure"
-          >
-            <span className="grid size-11 shrink-0 place-items-center bg-navy-deep text-white">
-              <Languages className="size-5" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-semibold text-navy-ink">
-                {language.name}
+
+      <AdminCard
+        eyebrow="Bölümler"
+        title="Neyi düzenlemek istiyorsunuz?"
+        description="Her kart, içeriğin website'de nerede göründüğünü ve mevcut yayın durumunu açıklar."
+      >
+        <div className="admin-content-card-grid">
+          {sections.map(({ key, title, description, href, icon: Icon, status }) => (
+            <Link href={href} className="admin-content-card" key={key}>
+              <span className="admin-content-card-icon"><Icon className="size-5" aria-hidden="true" /></span>
+              <span className="admin-content-card-copy">
+                <span className="admin-content-card-title">{title}</span>
+                <span className="admin-content-card-description">{description}</span>
+                <span className="admin-content-card-status"><StatusBadge state={status} /></span>
               </span>
-              <span className="mt-1 block text-sm text-ink/55">
-                {language.description}
-              </span>
-            </span>
-            <span className="text-sm font-semibold text-navy group-hover:text-azure-deep">
-              Edit
-            </span>
-          </Link>
-        ))}
+              <ArrowRight className="admin-content-card-arrow" aria-hidden="true" />
+            </Link>
+          ))}
+        </div>
+      </AdminCard>
+
+      <div className="admin-content-language-note">
+        <FileText className="size-4" aria-hidden="true" />
+        <p><strong>Türkçe içerik ana kaynaktır.</strong> İngilizce alanları boş bırakırsanız website otomatik olarak Türkçe metni kullanır.</p>
       </div>
     </>
   );

@@ -11,17 +11,34 @@ export default async function EditProjectPage({ params }: { params: Params }) {
   const { id } = await params;
   const project = await db.query.projects.findFirst({
     where: eq(projects.id, id),
-    with: { projectTranslations: true },
+    with: {
+      projectTranslations: true,
+      projectImages: { orderBy: (image, { asc }) => [asc(image.sortOrder)] },
+    },
   });
   if (!project) notFound();
 
   return (
     <>
       <AdminPageHeader
-        title="Edit project"
+        title="Projeyi düzenle"
         description={`/${project.slug}`}
+        backHref="/admin/projects"
       />
-      <ProjectForm project={project} />
+      <ProjectForm
+        project={{
+          ...project,
+          projectImages: project.projectImages.map((image) => ({
+            id: image.id,
+            imageUrl: image.imageUrl,
+            imagePublicId: image.imagePublicId ?? "",
+            captionTr: image.captionTr,
+            captionEn: image.captionEn,
+            altTr: image.altTr,
+            altEn: image.altEn,
+          })),
+        }}
+      />
     </>
   );
 }

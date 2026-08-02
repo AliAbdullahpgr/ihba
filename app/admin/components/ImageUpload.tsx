@@ -9,6 +9,15 @@ type ImageUploadProps = {
   cropAspectRatio?: number;
   cropLabel?: string;
   allowRemove?: boolean;
+  recommendedDimensions?: string;
+  maxSizeMb?: number;
+  onValueChange?: (value: { url: string; publicId: string }) => void;
+  /**
+   * Set false where several uploaders share one form — the hidden inputs are
+   * named for a single image, so a second set would collide with the first.
+   * Those callers collect the value through `onValueChange` instead.
+   */
+  emitHiddenFields?: boolean;
 };
 
 function loadImage(source: string) {
@@ -27,6 +36,10 @@ export function ImageUpload({
   cropAspectRatio = 16 / 9,
   cropLabel = "Crop image",
   allowRemove = true,
+  recommendedDimensions = "1600 × 900 px",
+  maxSizeMb = 8,
+  onValueChange,
+  emitHiddenFields = true,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef<string | null>(null);
@@ -38,6 +51,8 @@ export function ImageUpload({
   const [positionX, setPositionX] = useState(50);
   const [positionY, setPositionY] = useState(50);
   const [pending, setPending] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploaded, setUploaded] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -63,6 +78,7 @@ export function ImageUpload({
     setPositionX(50);
     setPositionY(50);
     setError("");
+    setUploaded(false);
   }
 
   async function sendUpload(file: File) {
@@ -78,14 +94,32 @@ export function ImageUpload({
     form.set("signature", signed.signature);
     form.set("folder", signed.folder);
 
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${signed.cloudName}/image/upload`,
-      { method: "POST", body: form }
-    );
-    if (!response.ok) throw new Error("Upload failed");
-    const result = await response.json();
+    setUploadProgress(0);
+    const result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
+      const request = new XMLHttpRequest();
+      request.open("POST", `https://api.cloudinary.com/v1_1/${signed.cloudName}/image/upload`);
+      request.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) setUploadProgress(Math.round((event.loaded / event.total) * 100));
+      });
+      request.addEventListener("load", () => {
+        if (request.status >= 200 && request.status < 300) {
+          try {
+            resolve(JSON.parse(request.responseText) as { secure_url: string; public_id: string });
+          } catch {
+            reject(new Error("Görsel yanıtı okunamadı."));
+          }
+        } else {
+          reject(new Error("Görsel yüklenemedi. Dosya boyutunu veya türünü kontrol edin."));
+        }
+      });
+      request.addEventListener("error", () => reject(new Error("Görsel yüklenirken bağlantı kesildi.")));
+      request.send(form);
+    });
     setUrl(result.secure_url);
     setPublicId(result.public_id);
+    onValueChange?.({ url: result.secure_url, publicId: result.public_id });
+    setUploadProgress(100);
+    setUploaded(true);
   }
 
   async function applyCrop() {
@@ -146,14 +180,28 @@ export function ImageUpload({
   }
 
   function chooseFile(file: File) {
+    const allowed = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+    if (!allowed.includes(file.type)) {
+      setError("JPG, PNG, WebP veya AVIF formatında bir görsel seçin.");
+      return;
+    }
+    if (file.size > maxSizeMb * 1024 * 1024) {
+      setError(`Görsel ${maxSizeMb} MB'dan küçük olmalıdır.`);
+      return;
+    }
+    setError("");
     const source = URL.createObjectURL(file);
     openCrop(source, file.name);
   }
 
   return (
     <div>
-      <input type="hidden" name="imageUrl" value={url} />
-      <input type="hidden" name="imagePublicId" value={publicId} />
+      {emitHiddenFields && (
+        <>
+          <input type="hidden" name="imageUrl" value={url} />
+          <input type="hidden" name="imagePublicId" value={publicId} />
+        </>
+      )}
       <input
         ref={inputRef}
         type="file"
@@ -172,7 +220,7 @@ export function ImageUpload({
             <div>
               <p className="text-sm font-semibold text-navy-ink">{cropLabel}</p>
               <p className="mt-1 text-xs text-ink/55">
-                Set the focal point, then apply the crop before saving.
+                Odak noktasını seçin, ardından kırpıp yükleyin.
               </p>
             </div>
             <button
@@ -201,7 +249,7 @@ export function ImageUpload({
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <label className="text-xs font-semibold text-navy-ink">
-              Zoom
+              Yakınlaştırma
               <input
                 type="range"
                 min="1"
@@ -213,7 +261,7 @@ export function ImageUpload({
               />
             </label>
             <label className="text-xs font-semibold text-navy-ink">
-              Horizontal focus
+              Yatay odak
               <input
                 type="range"
                 min="0"
@@ -224,7 +272,7 @@ export function ImageUpload({
               />
             </label>
             <label className="text-xs font-semibold text-navy-ink">
-              Vertical focus
+              Dikey odak
               <input
                 type="range"
                 min="0"
@@ -247,7 +295,7 @@ export function ImageUpload({
               ) : (
                 <Check className="size-4" aria-hidden="true" />
               )}
-              Apply crop and upload
+              Kırp ve yükle
             </button>
             <button
               type="button"
@@ -255,7 +303,7 @@ export function ImageUpload({
               disabled={pending}
               className="inline-flex min-h-10 items-center gap-2 border border-navy-ink/20 bg-white px-3 text-sm font-semibold text-navy-ink hover:border-navy-ink/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure disabled:opacity-60"
             >
-              Cancel
+              Vazgeç
             </button>
           </div>
         </div>
@@ -275,7 +323,7 @@ export function ImageUpload({
                 className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-navy hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
               >
                 <ImagePlus className="size-4" aria-hidden="true" />
-                Replace
+                Görseli değiştir
               </button>
               <button
                 type="button"
@@ -283,7 +331,7 @@ export function ImageUpload({
                 className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-navy hover:text-azure-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
               >
                 <Crop className="size-4" aria-hidden="true" />
-                Crop
+                Kırp
               </button>
             </div>
             {allowRemove ? (
@@ -293,9 +341,10 @@ export function ImageUpload({
                   closeCrop();
                   setUrl("");
                   setPublicId("");
+                  onValueChange?.({ url: "", publicId: "" });
                 }}
                 className="grid size-10 place-items-center text-ink/55 hover:text-[#a33b32] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a33b32]"
-                aria-label="Remove image from this item"
+                aria-label="Bu içerikteki görseli kaldır"
               >
                 <Trash2 className="size-4" aria-hidden="true" />
               </button>
@@ -315,8 +364,25 @@ export function ImageUpload({
           ) : (
             <ImagePlus className="size-5" aria-hidden="true" />
           )}
-          {pending ? "Uploading..." : "Upload image"}
+          {pending ? "Yükleniyor…" : "Görsel seçin"}
         </button>
+      )}
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-ink/55">
+        <span>Önerilen: {recommendedDimensions}</span>
+        <span>JPG, PNG, WebP veya AVIF · En fazla {maxSizeMb} MB</span>
+      </div>
+      {pending && uploadProgress > 0 && (
+        <div className="mt-2" role="status" aria-live="polite">
+          <div className="h-1.5 overflow-hidden bg-mist">
+            <div className="h-full bg-azure transition-[width] duration-150" style={{ width: `${uploadProgress}%` }} />
+          </div>
+          <p className="mt-1 text-xs text-ink/55">Görsel yükleniyor: %{uploadProgress}</p>
+        </div>
+      )}
+      {uploaded && !pending && (
+        <p className="mt-2 text-xs font-semibold text-[#24613a]" role="status">
+          Görsel yüklendi. Değişiklikleri kaydetmeyi unutmayın.
+        </p>
       )}
       {error && (
         <p role="alert" className="mt-2 text-sm font-semibold text-[#a33b32]">

@@ -3,6 +3,7 @@
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Figure } from "@/app/components/Lightbox";
 import { PageHeader } from "@/app/components/PageShell";
+import { RichText } from "@/app/components/RichText";
 import { ShareRow } from "@/app/components/ShareRow";
 
 export function NewsDetailPage({ slug }: { slug: string }) {
@@ -33,25 +34,7 @@ export function NewsDetailPage({ slug }: { slug: string }) {
             >
               {new Date(article.publishedAt).toLocaleDateString()}
             </time>
-            <div className="mt-6 space-y-5">
-              {article.body.map((paragraph) =>
-                paragraph.startsWith("## ") ? (
-                  <h2
-                    key={paragraph}
-                    className="border-t border-navy-ink/15 pt-8 font-display text-2xl font-medium leading-tight text-navy-ink"
-                  >
-                    {paragraph.slice(3)}
-                  </h2>
-                ) : (
-                  <p
-                    key={paragraph}
-                    className="text-base leading-relaxed text-ink/75"
-                  >
-                    {paragraph}
-                  </p>
-                )
-              )}
-            </div>
+            <RichText blocks={article.body} className="mt-6" />
             <div className="mt-12 border-t border-navy-ink/15 pt-6">
               <ShareRow title={article.title} />
             </div>

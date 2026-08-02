@@ -3,21 +3,27 @@ import "server-only";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import type { Copy } from "@/app/components/LanguageProvider";
-import { content } from "@/lib/content";
+import { content, defaultOrgSettings } from "@/lib/content";
 import { db } from "@/lib/db/client";
 import {
+  ORG_SETTINGS_ID,
+  bankAccounts,
   boardMembers,
   galleryItems,
   newsArticles,
   newsTranslations,
+  orgSettings,
+  projectImages,
   projects,
   projectTranslations,
   siteContent,
   siteMedia,
+  socialAccounts,
 } from "@/lib/db/schema";
 import { bundledGalleryItems, type PublicGalleryItem } from "@/lib/gallery";
 import { dict, type Lang } from "@/lib/i18n";
 import { mergeContentDefaults } from "@/lib/merge-content";
+import { stripHtml } from "@/lib/rich-text";
 import {
   bundledMedia,
   type SiteMedia,
@@ -54,9 +60,14 @@ function fallbackBlankStrings<T>(primary: T, fallback: unknown): T {
 }
 
 export function fallbackCopies(): Record<Lang, Copy> {
+  const base = {
+    media: structuredClone(bundledMedia),
+    org: { ...defaultOrgSettings },
+    bankAccounts: [],
+  };
   return {
-    en: { ...dict.en, ...content.en, media: structuredClone(bundledMedia) },
-    tr: { ...dict.tr, ...content.tr, media: structuredClone(bundledMedia) },
+    en: { ...dict.en, ...content.en, ...structuredClone(base) },
+    tr: { ...dict.tr, ...content.tr, ...structuredClone(base) },
   };
 }
 
@@ -64,8 +75,17 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
   const fallback = fallbackCopies();
 
   try {
-    const [documents, mediaRows, projectRows, boardRows, newsRows] =
-      await Promise.all([
+    const [
+      documents,
+      mediaRows,
+      projectRows,
+      boardRows,
+      newsRows,
+      orgRow,
+      bankRows,
+      socialRows,
+      projectImageRows,
+    ] = await Promise.all([
       db.select().from(siteContent),
       db.select().from(siteMedia),
       db
@@ -97,6 +117,18 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
         )
         .where(eq(newsArticles.state, "published"))
         .orderBy(desc(newsArticles.publishedAt)),
+      db.query.orgSettings.findFirst({ where: eq(orgSettings.id, ORG_SETTINGS_ID) }),
+      db
+        .select()
+        .from(bankAccounts)
+        .where(eq(bankAccounts.active, true))
+        .orderBy(asc(bankAccounts.sortOrder)),
+      db
+        .select()
+        .from(socialAccounts)
+        .where(eq(socialAccounts.active, true))
+        .orderBy(asc(socialAccounts.sortOrder)),
+      db.select().from(projectImages).orderBy(asc(projectImages.sortOrder)),
       ]);
 
     const copies = structuredClone(fallback);
@@ -137,6 +169,8 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
           title: translation.title,
           region: translation.region,
           status: translation.statusLabel,
+          lifecycle: project.lifecycle,
+          featured: project.featured,
           body: translation.body,
           facts: translation.facts,
           chips: translation.chips,
@@ -147,6 +181,15 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
                 publicId: project.imagePublicId ?? undefined,
               }
             : undefined,
+          gallery: projectImageRows
+            .filter((image) => image.projectId === project.id)
+            .map((image) => ({
+              src: image.imageUrl,
+              alt: (locale === "en" ? image.altEn || image.altTr : image.altTr) || "",
+              caption:
+                (locale === "en" ? image.captionEn || image.captionTr : image.captionTr) || "",
+              publicId: image.imagePublicId ?? undefined,
+            })),
         }));
 
       if (localizedProjects.length) {
@@ -157,7 +200,9 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
           badge: project.status,
           region: project.region,
           title: project.title,
-          summary: project.body[0] ?? "",
+          // Card summaries are plain strings, so the opening block is flattened
+          // out of the rich text it may now carry.
+          summary: stripHtml(project.body[0] ?? ""),
           chips: project.chips ?? [],
         }));
       }
@@ -200,6 +245,67 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
         }));
     }
 
+    /*
+      Organisation facts are language independent and are the single source of
+      truth once set, so they are written over both locale documents rather
+      than merged — an IBAN edited in one place must not linger in the other.
+      Blank fields are skipped so an unfilled setting keeps the bundled copy.
+    */
+    for (const locale of locales) {
+      const copy = copies[locale];
+
+      if (orgRow) {
+        if (orgRow.phone) copy.utility.phone = orgRow.phone;
+        if (orgRow.email) copy.utility.email = orgRow.email;
+        if (orgRow.address) {
+          copy.contactPage.address = orgRow.address;
+          copy.footer.addressLine = orgRow.address;
+        }
+        if (Array.isArray(copy.contactPage.rows)) {
+          copy.contactPage.rows = copy.contactPage.rows.map((row, index) =>
+            index === 0 && orgRow.phone
+              ? { ...row, value: orgRow.phone }
+              : index === 1 && orgRow.email
+                ? { ...row, value: orgRow.email }
+                : row
+          );
+        }
+      }
+
+      copy.org = {
+        phone: orgRow?.phone ?? copy.utility.phone,
+        whatsapp: orgRow?.whatsapp ?? "",
+        email: orgRow?.email ?? copy.utility.email,
+        address: orgRow?.address ?? "",
+        mapsUrl: orgRow?.mapsUrl ?? "",
+        workingHours: orgRow?.workingHours ?? "",
+        registryNumber: orgRow?.registryNumber ?? "",
+        taxNumber: orgRow?.taxNumber ?? "",
+        mersisNumber: orgRow?.mersisNumber ?? "",
+        establishedOn: orgRow?.establishedOn ?? "",
+        orgStatus: orgRow?.orgStatus ?? "",
+      };
+
+      copy.bankAccounts = bankRows.map((account) => ({
+        currency: account.currency,
+        bankName: account.bankName,
+        accountHolder: account.accountHolder,
+        iban: account.iban,
+      }));
+
+      // Only replace the bundled profiles once the admin has entered some;
+      // an empty table would otherwise silently strip the footer icons.
+      if (socialRows.length) {
+        copy.socialLinks = socialRows.map((account) => ({
+          key: account.platform,
+          label: account.label,
+          url: account.url,
+          active: account.active,
+          openInNewTab: account.openInNewTab,
+        }));
+      }
+    }
+
     copies.en = fallbackBlankStrings(copies.en, copies.tr);
     return copies;
   } catch (error) {
@@ -210,7 +316,7 @@ async function readSiteCopies(): Promise<Record<Lang, Copy>> {
 
 // Bump the key whenever the bundled copy/media shape gains fields. Reusing a
 // pre-change cached object would leave new routes with an older runtime shape.
-export const getSiteCopies = unstable_cache(readSiteCopies, ["site-copies-v4"], {
+export const getSiteCopies = unstable_cache(readSiteCopies, ["site-copies-v6"], {
   tags: ["site-content"],
   revalidate: 300,
 });

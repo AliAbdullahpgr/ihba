@@ -4,16 +4,18 @@
  */
 export function mergeContentDefaults<T>(defaults: T, saved: unknown): T {
   /*
-    Merge item by item rather than taking the saved array wholesale. The editor
-    can only overwrite strings at paths that already exist, so the bundled array
-    is always the authority on shape and length: this keeps every edited value
-    while letting newly bundled fields inside an item — and newly bundled items —
-    reach the site instead of being masked by an older saved array.
+    Merge item by item rather than taking the saved array wholesale. The
+    bundled array supplies defaults for known positions, while saved items
+    beyond that shape are preserved. The latter matters for repeatable content
+    such as homepage banners: adding a slide must not disappear on the next
+    public read simply because the original bundled copy had two examples.
   */
   if (Array.isArray(defaults)) {
     const savedItems = Array.isArray(saved) ? saved : [];
-    return defaults.map((item, index) =>
-      mergeContentDefaults(item, savedItems[index])
+    return Array.from({ length: Math.max(defaults.length, savedItems.length) }, (_, index) =>
+      index < defaults.length
+        ? mergeContentDefaults(defaults[index], savedItems[index])
+        : savedItems[index]
     ) as T;
   }
 

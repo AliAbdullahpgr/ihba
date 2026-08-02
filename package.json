@@ -13,11 +13,15 @@
     "gallery:media": "tsx --env-file=.env.local scripts/migrate-gallery-media.ts",
     "media:migrate": "tsx --env-file=.env.local scripts/migrate-media.ts",
     "news:batch": "tsx --env-file=.env.local scripts/publish-news-batch.ts",
-    "projects:expand": "tsx --env-file=.env.local scripts/expand-project-bodies.ts"
+    "projects:expand": "tsx --env-file=.env.local scripts/expand-project-bodies.ts",
+    "check:rich-text": "tsx scripts/check-rich-text.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",
     "@tailwindcss/postcss": "^4.0.0",
+    "@tiptap/extension-link": "^3.29.2",
+    "@tiptap/react": "^3.29.2",
+    "@tiptap/starter-kit": "^3.29.2",
     "better-auth": "^1.6.25",
     "cloudinary": "^2.10.0",
     "drizzle-orm": "^0.45.2",

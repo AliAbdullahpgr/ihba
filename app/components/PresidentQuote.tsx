@@ -2,22 +2,24 @@
 
 import Image from "next/image";
 import { useI18n } from "@/app/components/LanguageProvider";
+import { ArrowLink } from "@/app/components/primitives";
 
 /**
  * The president's message, standing on its own.
  *
- * It used to close the warm band as a bare pull-quote continuing on from "Who
- * we are?", with the portrait tucked in beside the name at byline size. On its
- * own white ground with the portrait given a full column, it reads as a section
- * a visitor arrives at rather than as the tail of the one above it.
+ * Portrait left, message right, same as before — but attribution and the
+ * link to the full message on /president now stack: name and role on their
+ * own line, then "Message from the President" underneath as its own row,
+ * rather than crowded onto one line together.
  */
 export function PresidentQuote() {
   const { t } = useI18n();
+  const hasPhoto = t.presidentPage.photoEnabled && t.media.presidentPortrait.url;
 
   return (
     <section
       aria-labelledby="president-title"
-      className="bg-white pt-20 pb-8 lg:pt-28 lg:pb-10"
+      className="bg-white py-20 lg:py-28"
     >
       <div className="container-site">
         {/* The section had no heading at all, so it was an unnamed region
@@ -25,19 +27,8 @@ export function PresidentQuote() {
         <h2 id="president-title" className="sr-only">
           {t.presidentPage.title}
         </h2>
-        {/*
-          Portrait left, message right. The image is square like everything else
-          on this page and sits at the top of its column, so its upper edge
-          lines up with the first line of the quote — the two columns start
-          together instead of one floating against the other.
-
-          No entrance animation. Every section on this page used to fade and
-          rise identically, which is the tell; a cascade across a list of items
-          is motion that describes the content, a single block sliding up is
-          motion applied because the section exists.
-        */}
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
-          {t.presidentPage.photoEnabled && t.media.presidentPortrait.url ? (
+          {hasPhoto ? (
             <div className="lg:col-span-4">
               <div className="relative aspect-square w-full max-w-sm">
                 <Image
@@ -51,19 +42,11 @@ export function PresidentQuote() {
             </div>
           ) : null}
 
-          <div
-            className={
-              t.presidentPage.photoEnabled && t.media.presidentPortrait.url
-                ? "lg:col-span-7 lg:col-start-6"
-                : "lg:col-span-8"
-            }
-          >
+          <div className={hasPhoto ? "lg:col-span-7 lg:col-start-6" : "lg:col-span-8"}>
             <blockquote className="display-xl text-balance text-xl text-navy-ink sm:text-2xl lg:text-[1.75rem]">
               “{t.presidentPage.lede}”
             </blockquote>
 
-            {/* Attribution on a hairline, the way a signature sits under a
-                letter rather than beside it. */}
             <div className="mt-8 border-t border-navy-ink/15 pt-5">
               <p className="text-sm font-bold text-navy-ink">
                 {t.presidentPage.name}
@@ -71,6 +54,9 @@ export function PresidentQuote() {
               <p className="mt-1 text-sm text-ink/70">
                 {t.presidentPage.role}
               </p>
+              <div className="mt-6">
+                <ArrowLink href="/president">{t.presidentPage.title}</ArrowLink>
+              </div>
             </div>
           </div>
         </div>

@@ -1,34 +1,35 @@
 "use client";
 
-import { Hero } from "@/app/components/Hero";
-import { FactsStrip } from "@/app/components/FactsStrip";
+import { HeroSlider } from "@/app/components/HeroSlider";
+import { IntroSection } from "@/app/components/IntroSection";
+import { LatestNews } from "@/app/components/LatestNews";
 import { Projects } from "@/app/components/Projects";
-import { BridgeModel } from "@/app/components/BridgeModel";
-import { FocusMosaic } from "@/app/components/FocusMosaic";
-import { About } from "@/app/components/About";
+import { AreasAccordion } from "@/app/components/AreasAccordion";
 import { PresidentQuote } from "@/app/components/PresidentQuote";
-import { VolunteerCta } from "@/app/components/VolunteerCta";
+import { CampaignCta } from "@/app/components/CampaignCta";
+import { MissionAccordion } from "@/app/components/MissionAccordion";
+import { FaqAccordion } from "@/app/components/FaqAccordion";
 
 export function Landing() {
-  return (
-    /*
-      Sequenced around the work rather than around the institution: what we are
-      building, then the wider remit, then who is doing it.
+  /*
+    Mixed structure: short summaries for projects, news and the campaign
+    (each opening detail pages), and expandable sections for the areas of
+    activity, the mission/vision/values, and the FAQ.
 
-      The page runs on white, one navy band, one warm band, white. The warm band
-      is contiguous (FocusMosaic → About) rather than alternating section by
-      section — every ground change is a seam, and seams
-      are what made this read as busier than it is. The marquee is gone.
-    */
+    Order follows the homepage spec: hero, intro, news, projects, areas,
+    president, campaign, mission/values, FAQ.
+  */
+  return (
     <>
-      <Hero />
-      <FactsStrip />
+      <HeroSlider />
+      <IntroSection />
+      <LatestNews />
       <Projects />
-      <BridgeModel />
-      <FocusMosaic />
-      <About />
+      <AreasAccordion />
       <PresidentQuote />
-      <VolunteerCta />
+      <CampaignCta />
+      <MissionAccordion />
+      <FaqAccordion />
     </>
   );
 }

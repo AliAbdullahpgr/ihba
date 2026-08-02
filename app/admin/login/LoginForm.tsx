@@ -23,7 +23,7 @@ export function LoginForm() {
     });
 
     if (result.error) {
-      setError("The email or password is incorrect.");
+      setError("E-posta adresi veya parola doğru değil.");
       setPending(false);
       return;
     }
@@ -36,7 +36,7 @@ export function LoginForm() {
     <form onSubmit={submit} className="mt-8 space-y-5">
       <label className="block">
         <span className="mb-2 block text-sm font-semibold text-navy-ink">
-          Email address
+          E-posta adresi
         </span>
         <input
           name="email"
@@ -49,7 +49,7 @@ export function LoginForm() {
 
       <label className="block">
         <span className="mb-2 block text-sm font-semibold text-navy-ink">
-          Password
+          Parola
         </span>
         <span className="relative block">
           <input
@@ -63,7 +63,7 @@ export function LoginForm() {
             type="button"
             onClick={() => setShowPassword((value) => !value)}
             className="absolute inset-y-0 right-0 grid w-11 place-items-center text-ink/55 hover:text-navy-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
-            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-label={showPassword ? "Parolayı gizle" : "Parolayı göster"}
           >
             {showPassword ? (
               <EyeOff className="size-4" />
@@ -90,7 +90,7 @@ export function LoginForm() {
         ) : (
           <LockKeyhole className="size-4" />
         )}
-        {pending ? "Signing in..." : "Sign in"}
+        {pending ? "Giriş yapılıyor…" : "Giriş yap"}
       </button>
     </form>
   );

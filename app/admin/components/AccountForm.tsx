@@ -18,7 +18,7 @@ export function AccountForm() {
     const form = new FormData(event.currentTarget);
     const newPassword = String(form.get("newPassword"));
     if (newPassword !== String(form.get("confirmPassword"))) {
-      setError("The new passwords do not match.");
+      setError("Yeni parola ve tekrarı eşleşmiyor.");
       setPending(false);
       return;
     }
@@ -29,12 +29,12 @@ export function AccountForm() {
       revokeOtherSessions: true,
     });
     if (result.error) {
-      setError(result.error.message || "The password could not be changed.");
+      setError(result.error.message || "Parola değiştirilemedi. Mevcut parolanızı kontrol edin.");
       setPending(false);
       return;
     }
     event.currentTarget.reset();
-    setMessage("Password changed. Other sessions have been signed out.");
+    setMessage("Parolanız değiştirildi. Diğer oturumlar kapatıldı.");
     setPending(false);
   }
 
@@ -43,7 +43,7 @@ export function AccountForm() {
       <div className="space-y-5">
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-navy-ink">
-            Current password
+            Mevcut parola
           </span>
           <input
             name="currentPassword"
@@ -55,7 +55,7 @@ export function AccountForm() {
         </label>
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-navy-ink">
-            New password
+            Yeni parola
           </span>
           <input
             name="newPassword"
@@ -66,12 +66,12 @@ export function AccountForm() {
             className={inputClass}
           />
           <span className="mt-1.5 block text-xs text-ink/55">
-            Use at least 12 characters and avoid reused passwords.
+            En az 12 karakter kullanın ve başka hesaplarda kullandığınız bir parolayı tekrar etmeyin.
           </span>
         </label>
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-navy-ink">
-            Confirm new password
+            Yeni parolayı tekrar yazın
           </span>
           <input
             name="confirmPassword"
@@ -107,7 +107,7 @@ export function AccountForm() {
           ) : (
             <Save className="size-4" />
           )}
-          {pending ? "Changing..." : "Change password"}
+          {pending ? "Değiştiriliyor…" : "Parolayı değiştir"}
         </button>
       </div>
     </form>

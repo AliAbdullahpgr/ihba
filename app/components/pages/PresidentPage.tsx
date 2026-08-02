@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { ArrowLink } from "@/app/components/primitives";
 import { PageHeader, PageSection } from "@/app/components/PageShell";
+import { RichText } from "@/app/components/RichText";
 
 export function PresidentPage() {
   const { t } = useI18n();
@@ -63,16 +64,7 @@ export function PresidentPage() {
               {presidentPage.lede}
             </p>
 
-            <div className="mt-8 space-y-5">
-              {presidentPage.message.map((paragraph) => (
-                <p
-                  key={paragraph}
-                  className="text-base leading-relaxed text-ink/75"
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+            <RichText blocks={presidentPage.message} className="mt-8" />
 
             <div className="mt-10 border-t border-navy-ink/15 pt-4">
               <p className="text-sm font-bold text-navy-ink">

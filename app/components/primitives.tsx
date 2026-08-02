@@ -232,7 +232,7 @@ export function Button({
 }: {
   href: string;
   children: React.ReactNode;
-  variant?: "solid" | "outline" | "onDark";
+  variant?: "solid" | "outline" | "onDark" | "gold";
   className?: string;
 }) {
   const variants = {
@@ -242,6 +242,8 @@ export function Button({
       "border border-navy-ink/25 text-navy-ink hover:border-navy-ink focus-visible:ring-navy",
     onDark:
       "border border-white/30 text-white hover:bg-white/10 focus-visible:ring-white",
+    gold:
+      "bg-gold text-navy-ink hover:bg-gold-soft focus-visible:ring-gold",
   } as const;
 
   return (

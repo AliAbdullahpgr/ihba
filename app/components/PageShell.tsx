@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useId } from "react";
 import { ArrowLeft } from "lucide-react";
+import { RichText } from "@/app/components/RichText";
 import type { Row } from "@/lib/content";
 
 /**
@@ -62,7 +63,14 @@ export function PageHeader({
   );
 }
 
-/** A band of body copy set to a readable measure. */
+/**
+ * A band of body copy set to a readable measure.
+ *
+ * The entries may be plain paragraphs (as they always were) or blocks of
+ * admin-authored rich text; `RichText` normalises both, so every caller —
+ * the legal pages, the donate and volunteer bands — gains formatting without
+ * needing to know which kind it holds.
+ */
 export function Prose({
   paragraphs,
   className = "",
@@ -70,15 +78,7 @@ export function Prose({
   paragraphs: string[];
   className?: string;
 }) {
-  return (
-    <div className={`max-w-2xl space-y-5 ${className}`}>
-      {paragraphs.map((paragraph) => (
-        <p key={paragraph} className="text-base leading-relaxed text-ink/75">
-          {paragraph}
-        </p>
-      ))}
-    </div>
-  );
+  return <RichText blocks={paragraphs} className={`max-w-2xl ${className}`} />;
 }
 
 /**

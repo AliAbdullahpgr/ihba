@@ -44,7 +44,15 @@ export interface ProjectDetail {
   slug: string;
   title: string;
   region: string;
+  /** Free-text label shown on the card, e.g. "Devam ediyor". */
   status: string;
+  /**
+   * Structured state of the work itself, independent of whether the project is
+   * published — a completed project stays on the site.
+   */
+  lifecycle?: "ongoing" | "completed" | "inactive";
+  /** Promoted onto the homepage. */
+  featured?: boolean;
   body: string[];
   facts: Row[];
   chips?: string[];
@@ -53,7 +61,55 @@ export interface ProjectDetail {
     alt: string;
     publicId?: string;
   };
+  /** Additional photographs, in admin-defined order. */
+  gallery?: Array<{
+    src: string;
+    alt: string;
+    caption?: string;
+    publicId?: string;
+  }>;
 }
+
+/** Organisation facts, shared by every locale. */
+export interface OrgPublicSettings {
+  phone: string;
+  whatsapp: string;
+  email: string;
+  address: string;
+  mapsUrl: string;
+  workingHours: string;
+  registryNumber: string;
+  taxNumber: string;
+  mersisNumber: string;
+  establishedOn: string;
+  orgStatus: string;
+}
+
+export interface PublicBankAccount {
+  currency: string;
+  bankName: string;
+  accountHolder: string;
+  iban: string;
+}
+
+/**
+ * Used before the settings row exists and whenever the database is
+ * unreachable, so a missing organisation record degrades to bundled copy
+ * rather than to a crash.
+ */
+export const defaultOrgSettings: OrgPublicSettings = {
+  phone: "",
+  whatsapp: "",
+  email: "",
+  address: "",
+  mapsUrl: "",
+  workingHours: "",
+  registryNumber: "",
+  taxNumber: "",
+  mersisNumber: "",
+  establishedOn: "",
+  orgStatus: "",
+};
 
 export interface NewsItem {
   slug: string;
@@ -80,6 +136,19 @@ export interface LegalPageContent extends PageIntro {
     heading: string;
     paragraphs: string[];
   }[];
+}
+
+/**
+ * One question/answer pair in the homepage FAQ accordion. Answers are plain
+ * paragraphs (the accordion renders them as prose).
+ */
+export interface FaqItem {
+  question: string;
+  answer: string[];
+}
+
+export interface FaqPageContent extends PageIntro {
+  items: FaqItem[];
 }
 
 /**
@@ -193,6 +262,9 @@ export interface Content {
   donatePage: PageIntro & {
     body: string[];
     accountsNote: string;
+    iban: string;
+    accountName: string;
+    bankName: string;
     usesLabel: string;
     uses: string[];
   };
@@ -210,11 +282,13 @@ export interface Content {
     address: string;
     formTitle: string;
   };
-  legalPages: {
+legalPages: {
     kvkk: LegalPageContent;
     privacy: LegalPageContent;
     cookies: LegalPageContent;
   };
+  /** Homepage "frequently asked questions" expandable section. */
+  faq: FaqPageContent;
 }
 
 export const content: Record<Lang, Content> = {
@@ -628,6 +702,9 @@ export const content: Record<Lang, Content> = {
       ],
       accountsNote:
         "Official bank accounts and donation methods will be published here shortly.",
+      iban: "",
+      accountName: "",
+      bankName: "",
       usesLabel: "What your donation supports",
       uses: [
         "Humanitarian assistance — food, shelter, health and essential needs",
@@ -790,7 +867,50 @@ export const content: Record<Lang, Content> = {
             ],
           },
         ],
-      },
+},
+    },
+    faq: {
+      title: "Frequently asked questions",
+      lede:
+        "Short answers to the questions we hear most often. If yours isn't here, please write to us.",
+      items: [
+        {
+          question: "How can I donate to IHBA?",
+          answer: [
+            "Official bank accounts and donation methods will be published on the website shortly. Until then, please contact us directly at info@insanlikkoprusu.org or +90 533 620 63 74 and we will arrange your contribution.",
+          ],
+        },
+        {
+          question: "What does my donation support?",
+          answer: [
+            "Donations fund IHBA's humanitarian assistance, education, scholarship and sustainable development programmes — including the Mazar-i-Sharif Education Centre and the Ramadan and Qurban seasonal programmes.",
+          ],
+        },
+        {
+          question: "Where does IHBA work?",
+          answer: [
+            "IHBA works across regions where humanitarian needs and reliable local partnerships are present, with a particular focus on Asia and Africa. Activities are designed around local conditions and needs.",
+          ],
+        },
+        {
+          question: "How can I volunteer?",
+          answer: [
+            "IHBA welcomes volunteers of every background. Depending on your skills and availability, you can contribute to field activities, education programmes, communications, events or seasonal humanitarian work. Fill in the volunteer application form and our team will be in touch.",
+          ],
+        },
+        {
+          question: "Is IHBA audited and transparent?",
+          answer: [
+            "Yes. IHBA's accounts and activities are subject to the oversight Turkish law provides for associations, including annual reporting and audit of its financial statements. Registry, tax and MERSIS details are published on this site so anyone can verify who we are before deciding to support us.",
+          ],
+        },
+        {
+          question: "How can my institution partner with IHBA?",
+          answer: [
+            "We work with institutions, universities and local organisations across countries. If you would like to discuss a partnership, please contact us and our team will follow up.",
+          ],
+        },
+      ],
     },
   },
 
@@ -1198,6 +1318,9 @@ export const content: Record<Lang, Content> = {
       ],
       accountsNote:
         "Resmî banka hesapları ve bağış seçenekleri kısa süre içinde burada yayınlanacaktır.",
+      iban: "",
+      accountName: "",
+      bankName: "",
       usesLabel: "Bağışınız neyi destekler",
       uses: [
         "İnsani yardım — gıda, barınma, sağlık ve temel ihtiyaçlar",
@@ -1361,7 +1484,50 @@ export const content: Record<Lang, Content> = {
             ],
           },
         ],
-      },
+},
+    },
+    faq: {
+      title: "Sıkça sorulan sorular",
+      lede:
+        "En sık duyduğumuz sorulara kısa yanıtlar. Sorunuz burada yoksa bize yazın.",
+      items: [
+        {
+          question: "IHBA'ya nasıl bağış yapabilirim?",
+          answer: [
+            "Resmî banka hesapları ve bağış seçenekleri kısa süre içinde web sitesinde yayınlanacaktır. Bu süreçte info@insanlikkoprusu.org adresinden veya +90 533 620 63 74 numaralı telefondan doğrudan bize ulaşabilirsiniz; katkınızı birlikte planlarız.",
+          ],
+        },
+        {
+          question: "Bağışım neyi destekler?",
+          answer: [
+            "Bağışlar; IHBA'nın insani yardım, eğitim, burs ve sürdürülebilir kalkınma programlarını — Mezar-ı Şerif Eğitim Merkezi ile Ramazan ve Kurban dönemi programları dahil — finanse eder.",
+          ],
+        },
+        {
+          question: "IHBA nerede çalışıyor?",
+          answer: [
+            "IHBA; insani ihtiyaçların bulunduğu ve güvenilir yerel ortaklıkların olduğu bölgelerde, özellikle Asya ve Afrika odaklı olarak çalışır. Faaliyetler yerel şartlara ve ihtiyaçlara göre planlanır.",
+          ],
+        },
+        {
+          question: "Nasıl gönüllü olabilirim?",
+          answer: [
+            "IHBA her geçmişten gönüllüye açıktır. Beceriniz ve uygunluğunuz doğrultusunda saha faaliyetleri, eğitim çalışmaları, iletişim, organizasyon veya dönemsel yardım çalışmalarına katkı sunabilirsiniz. Gönüllü başvuru formunu doldurun; ekibimiz sizinle iletişime geçecek.",
+          ],
+        },
+        {
+          question: "IHBA denetleniyor mu ve şeffaf mı?",
+          answer: [
+            "Evet. IHBA'nın hesapları ve faaliyetleri, dernekler için Türk hukukunun öngördüğü denetime tabidir; yıllık raporlama ve mali tablo denetimi dahildir. Kütük, vergi ve MERSİS bilgileri bu sitede yayınlanır; böylece desteklemeye karar vermeden önce kimliğimizi doğrulayabilirsiniz.",
+          ],
+        },
+        {
+          question: "Kurumumuz IHBA ile nasıl ortak olabilir?",
+          answer: [
+            "Farklı ülkelerdeki kurumlar, üniversiteler ve yerel kuruluşlarla birlikte çalışıyoruz. Bir ortaklık görüşmek istiyorsanız lütfen bize ulaşın; ekibimiz size geri dönecektir.",
+          ],
+        },
+      ],
     },
   },
 };

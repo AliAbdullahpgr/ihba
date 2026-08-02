@@ -4,22 +4,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useI18n } from "@/app/components/LanguageProvider";
-import { Mark } from "@/app/components/primitives";
+import { SocialRow } from "@/app/components/SocialRow";
 
 /**
- * Three columns, one destination each, nothing said twice.
- *
- * The footer carried four rows and eighteen links, and most of them were
- * repeats: a five-item "quick links" nav above three link columns that already
- * held projects, news and gallery; four separate links whose href was all
- * `/areas-of-work`; the three project detail pages listed individually; and the
- * contact email appearing three times in three different rows. Columns are now
- * top-level destinations only, the address block is the single place contact
- * details live, and the governance note sits on one line above the legal rule.
+ * Compact, the way most NGO footers are: logo and one-line remit, three
+ * link columns, contact address, social icons, one legal bar. No headline
+ * quote and no separate governance block — the transparency note is folded
+ * into a single small line so the essential info still ships without the
+ * extra vertical rows a marketing-style footer used to carry.
  */
 export function SiteFooter() {
   const { t } = useI18n();
-  const { headline } = t.hero;
 
   const columns = [
     {
@@ -51,38 +46,59 @@ export function SiteFooter() {
 
   return (
     <footer className="bg-paper-warm/60">
-      <div className="container-site pt-16">
-        {/* The page closes on the line it opened with. */}
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-3">
+      <div className="container-site pt-12">
+        <div className="grid gap-10 border-b border-navy-ink/15 pb-10 md:grid-cols-9">
+          {/* Logo, one-line remit, address and social — the block a visitor
+              actually looks for in a footer. */}
+          <div className="md:col-span-3">
             <Image
               src="/brand/logo-horizontal.png"
               alt="IHBA"
-              width={200}
-              height={56}
-              className="h-14 w-auto"
+              width={160}
+              height={45}
+              className="h-10 w-auto"
             />
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-navy-ink/70">
+              {t.utility.tagline}
+            </p>
+
+            <address className="mt-5 space-y-2 text-sm not-italic text-navy-ink/70">
+              <span className="flex items-start gap-2">
+                <MapPin
+                  className="mt-0.5 h-4 w-4 shrink-0 text-gold-ink"
+                  aria-hidden="true"
+                />
+                {t.footer.addressLine}
+              </span>
+              <span className="flex items-center gap-2">
+                <Phone className="h-4 w-4 shrink-0 text-gold-ink" aria-hidden="true" />
+                <a
+                  href={`tel:${t.utility.phone.replace(/\s+/g, "")}`}
+                  className="transition-colors hover:text-azure-deep"
+                >
+                  {t.utility.phone}
+                </a>
+              </span>
+              <span className="flex items-center gap-2">
+                <Mail className="h-4 w-4 shrink-0 text-gold-ink" aria-hidden="true" />
+                <a
+                  href={`mailto:${t.utility.email}`}
+                  className="transition-colors hover:text-azure-deep"
+                >
+                  {t.utility.email}
+                </a>
+              </span>
+            </address>
+
+            <SocialRow className="mt-5" />
           </div>
 
-          <p className="font-display text-lg font-medium leading-relaxed text-navy-ink lg:col-span-8 lg:col-start-5">
-            {headline.pre}
-            <Mark tone="azure">{headline.highlight}</Mark>
-            {headline.post}
-          </p>
-        </div>
-
-        <div className="mt-14 grid gap-10 border-t border-navy-ink/15 pt-12 md:grid-cols-3 md:gap-0">
-          {columns.map((column, index) => (
-            <div
-              key={column.header}
-              className={`md:px-10 ${
-                index === 0 ? "md:pl-0" : "md:border-l md:border-navy-ink/15"
-              }`}
-            >
-              <h2 className="font-display text-base font-medium text-navy-ink">
+          {columns.map((column) => (
+            <div key={column.header} className="md:col-span-2">
+              <h2 className="text-sm font-semibold text-navy-ink">
                 {column.header}
               </h2>
-              <ul className="mt-5 space-y-2.5 text-sm text-navy-ink/70">
+              <ul className="mt-4 space-y-2 text-sm text-navy-ink/70">
                 {column.links.map((link) => (
                   <li key={link.href}>
                     <Link
@@ -94,63 +110,13 @@ export function SiteFooter() {
                   </li>
                 ))}
               </ul>
-
-              {/* Contact details live here and only here. */}
-              {index === 2 && (
-                <address className="mt-8 space-y-2.5 text-sm not-italic text-navy-ink/70">
-                  <span className="flex items-start gap-2">
-                    <MapPin
-                      className="mt-0.5 h-4 w-4 shrink-0 text-gold-ink"
-                      aria-hidden="true"
-                    />
-                    {t.footer.addressLine}
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <Phone
-                      className="h-4 w-4 shrink-0 text-gold-ink"
-                      aria-hidden="true"
-                    />
-                    <a
-                      href={`tel:${t.utility.phone.replace(/\s+/g, "")}`}
-                      className="underline decoration-navy-ink/30 underline-offset-4 transition-colors hover:text-azure-deep"
-                    >
-                      {t.utility.phone}
-                    </a>
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <Mail
-                      className="h-4 w-4 shrink-0 text-gold-ink"
-                      aria-hidden="true"
-                    />
-                    <a
-                      href={`mailto:${t.utility.email}`}
-                      className="underline decoration-navy-ink/30 underline-offset-4 transition-colors hover:text-azure-deep"
-                    >
-                      {t.utility.email}
-                    </a>
-                  </span>
-                </address>
-              )}
             </div>
           ))}
         </div>
 
-        {/*
-          Governance, on one line. This was a three-column row whose middle
-          column was a second copy of the contact email.
-        */}
-        <div className="mt-12 grid gap-8 border-t border-navy-ink/15 pt-10 text-sm text-navy-ink/70 md:grid-cols-2 md:gap-16">
-          <div>
-            <p className="font-semibold text-navy-ink">
-              {t.footer.reportTitle}
-            </p>
-            <p className="mt-2 leading-relaxed">{t.footer.reportCopy}</p>
-          </div>
-          <p className="leading-relaxed">{t.footer.transparency}</p>
-        </div>
-
-        <div className="mt-10 flex flex-col gap-4 border-t border-navy-ink/15 py-6 text-xs text-navy-ink/70 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-3 py-6 text-xs text-navy-ink/70 lg:flex-row lg:items-center lg:justify-between">
           <p>{t.footer.copyright}</p>
+          <p className="max-w-xl leading-relaxed">{t.footer.transparency}</p>
           <nav aria-label={t.legalPages.privacy.title}>
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               <li>
@@ -176,7 +142,6 @@ export function SiteFooter() {
               </li>
             </ul>
           </nav>
-          <p>{t.utility.tagline}</p>
         </div>
       </div>
     </footer>

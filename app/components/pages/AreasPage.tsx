@@ -5,6 +5,7 @@ import { useI18n } from "@/app/components/LanguageProvider";
 import { Reveal } from "@/app/components/Reveal";
 import { ArrowLink, Tag } from "@/app/components/primitives";
 import { PageHeader, PageSection, Prose } from "@/app/components/PageShell";
+import { RichText } from "@/app/components/RichText";
 
 const tagTones = ["gold", "azure", "navy"] as const;
 
@@ -112,14 +113,7 @@ export function AreasPage() {
                     <div
                       className={`${image ? "lg:col-span-7" : "lg:col-span-12"} ${flip ? "lg:order-2" : ""}`}
                     >
-                      {item.body.map((paragraph) => (
-                        <p
-                          key={paragraph}
-                          className="text-base leading-relaxed text-ink/70"
-                        >
-                          {paragraph}
-                        </p>
-                      ))}
+                      <RichText blocks={item.body} />
 
                       <div className="mt-6">
                         <Tag tone={tagTones[index % tagTones.length]}>

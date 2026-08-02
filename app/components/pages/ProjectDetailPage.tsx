@@ -11,8 +11,10 @@ import {
 import { PageHeader, PageSection } from "@/app/components/PageShell";
 import { Figure } from "@/app/components/Lightbox";
 import { Reveal } from "@/app/components/Reveal";
+import { RichText } from "@/app/components/RichText";
 import { ShareRow } from "@/app/components/ShareRow";
 import { resolveProjectImage } from "@/app/components/pages/projectImages";
+import { stripHtml } from "@/lib/rich-text";
 
 export function ProjectDetailPage({ slug }: { slug: string }) {
   const { t } = useI18n();
@@ -27,7 +29,10 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
 
   const image = resolveProjectImage(project);
   const others = t.projectsPage.details.filter((item) => item.slug !== slug);
-  const [deck, ...body] = project.body;
+  const [lead, ...body] = project.body;
+  // The deck is set as a plain string in the page header, so any formatting the
+  // editor applied to the opening paragraph is flattened away here.
+  const deck = stripHtml(lead ?? "");
 
   return (
     <>
@@ -55,26 +60,22 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
             printing it underneath would make a screen reader read the same
             sentence twice. A caption belongs here once the content drafts carry
             translated ones.
+
+            A project may legitimately have no photograph, in which case the
+            figure is omitted rather than filled with a placeholder.
           */}
-          <Figure
-            images={[{ src: image.src, alt: image.alt }]}
-            imageClassName="aspect-[16/9] w-full"
-          />
+          {image && (
+            <Figure
+              images={[{ src: image.src, alt: image.alt }]}
+              imageClassName="aspect-[16/9] w-full"
+            />
+          )}
 
           <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-7">
               <Tag tone="gold">{project.status}</Tag>
 
-              <div className="mt-6 space-y-5">
-                {body.map((paragraph) => (
-                  <p
-                    key={paragraph}
-                    className="text-base leading-relaxed text-ink/75"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+              <RichText blocks={body} className="mt-6" />
 
               <div className="mt-12 border-t border-navy-ink/15 pt-6">
                 <ShareRow title={project.title} />
@@ -109,6 +110,31 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
               </CardLink>
             </aside>
           </div>
+
+          {/*
+            Additional photographs, in the order the admin arranged them. Only
+            rendered when the project actually has some, so a text-only project
+            ends cleanly after the facts rail.
+          */}
+          {project.gallery && project.gallery.length > 0 && (
+            <div className="mt-16 border-t border-navy-ink/15 pt-10">
+              <div className="grid gap-6 sm:grid-cols-2">
+                {project.gallery.map((photo) => (
+                  <figure key={photo.src}>
+                    <Figure
+                      images={[{ src: photo.src, alt: photo.alt }]}
+                      imageClassName="aspect-[4/3] w-full"
+                    />
+                    {photo.caption && (
+                      <figcaption className="mt-3 text-sm leading-relaxed text-ink/65">
+                        {photo.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -120,11 +146,13 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
             return (
               <Reveal key={other.slug} delay={index * 90}>
                 <CardLink href={`/projects/${other.slug}`}>
-                  <CardMedia
-                    src={otherImage.src}
-                    alt={otherImage.alt}
-                    ratio="aspect-square"
-                  />
+                  {otherImage && (
+                    <CardMedia
+                      src={otherImage.src}
+                      alt={otherImage.alt}
+                      ratio="aspect-square"
+                    />
+                  )}
                   {/* Status and region, matching the meta row on every other
                       project card on the site, rather than a lone eyebrow label. */}
                   <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">

@@ -2,12 +2,22 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { dict, type Lang } from "@/lib/i18n";
-import { content } from "@/lib/content";
+import {
+  content,
+  defaultOrgSettings,
+  type OrgPublicSettings,
+  type PublicBankAccount,
+} from "@/lib/content";
 import { bundledMedia, type SiteMedia } from "@/lib/media";
 
 /** Everything a page needs to read: homepage copy plus deeper page content. */
 export type Copy = (typeof dict)[Lang] &
-  (typeof content)[Lang] & { media: SiteMedia };
+  (typeof content)[Lang] & {
+    media: SiteMedia;
+    /** Language-independent organisation facts, layered on from the database. */
+    org: OrgPublicSettings;
+    bankAccounts: PublicBankAccount[];
+  };
 
 interface LanguageContextValue {
   lang: Lang;
@@ -52,6 +62,8 @@ export function LanguageProvider({
           ...dict[lang],
           ...content[lang],
           media: bundledMedia,
+          org: { ...defaultOrgSettings },
+          bankAccounts: [],
         },
     }),
     [initialCopies, lang]

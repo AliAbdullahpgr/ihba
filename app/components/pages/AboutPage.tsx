@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useI18n } from "@/app/components/LanguageProvider";
 import { Reveal } from "@/app/components/Reveal";
 import { ArrowLink } from "@/app/components/primitives";
+import { BridgeModel } from "@/app/components/BridgeModel";
 import { PrinciplesTabs } from "@/app/components/PrinciplesTabs";
 import {
   DataList,
@@ -49,6 +50,14 @@ export function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/*
+        "How we work", drawn as a bridge — the navy band that used to close the
+        homepage. It names the organisation, so it carries the device at full
+        strength; relocated here so the homepage stays lean and the About page
+        carries the institutional story in full.
+      */}
+      <BridgeModel />
 
       {/* Mission and vision, spanned by one deck line. The section's only
           warm band on the page — it does not alternate with white further

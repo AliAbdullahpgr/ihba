@@ -30,7 +30,11 @@ export function ProjectsIndexPage() {
               return (
                 <Reveal key={project.slug} delay={(index % 3) * 90}>
                   <CardLink href={`/projects/${project.slug}`}>
-                    <CardMedia src={image.src} alt={image.alt} ratio="aspect-square" />
+                    {/* A project published without a photograph shows a plain
+                        text card rather than a stock placeholder. */}
+                    {image && (
+                      <CardMedia src={image.src} alt={image.alt} ratio="aspect-square" />
+                    )}
 
                     {/*
                       Status and region, then the title. No station number and

@@ -7,6 +7,16 @@ export interface ProgramCard {
   title: string;
   blurb: string;
   categoryKey: CategoryKey;
+  /**
+   * The card's own photograph, uploaded from the homepage layout editor. The
+   * homepage used to take its three area images from a hardcoded list keyed by
+   * position, so choosing different areas kept showing the same pictures.
+   * Cards without an upload still fall back to those bundled photographs.
+   */
+  imageUrl?: string;
+  imagePublicId?: string;
+  /** Describes the photograph for screen readers and search engines. */
+  imageAlt?: string;
 }
 
 export interface FilterOption {
@@ -60,6 +70,69 @@ export interface TitleParts {
   post: string;
 }
 
+/**
+ * One frame of the homepage hero carousel. Every banner is an entry here,
+ * including the first — see `lib/hero-slides.ts` for the fallback that
+ * rebuilds it from the legacy `hero` block on documents saved before that.
+ * `imageKey` resolves against `t.media` so the asset stays swappable from the
+ * media admin without re-editing copy.
+ */
+export interface HeroSlide {
+  /** Stable key used by the admin editor and the recoverable trash flow. */
+  id?: string;
+  headline: TitleParts;
+  subcopy: string;
+  ctaPrimary: string;
+  ctaPrimaryHref: string;
+  ctaSecondary: string;
+  ctaSecondaryHref: string;
+  imageKey: string;
+  /** Optional per-slide upload, overriding the bundled media key. */
+  imageUrl?: string;
+  imagePublicId?: string;
+  /**
+   * Describes the photograph for screen readers and search engines. Uploaded
+   * images have no description until someone writes one, so this is edited
+   * alongside the copy rather than derived from the file.
+   */
+  alt?: string;
+  /** Hidden slides remain editable but are not rendered publicly. */
+  active?: boolean;
+}
+
+export type SocialProfileKey = "instagram" | "facebook" | "youtube" | "twitter" | "linkedin";
+
+export interface SocialProfile {
+  /**
+   * Chooses the icon. Widened from the original five-platform union so new
+   * platforms can be added from the admin as data rather than as a code
+   * change; anything unrecognised renders a generic link mark.
+   */
+  key: string;
+  /** Accessible name; falls back to the built-in name for known platforms. */
+  label?: string;
+  url: string;
+  active: boolean;
+  openInNewTab?: boolean;
+}
+
+export interface Campaign {
+  kicker: string;
+  title: TitleParts;
+  copy: string;
+  ctaPrimary: string;
+  ctaPrimaryHref: string;
+  ctaSecondary: string;
+  ctaSecondaryHref: string;
+  goalLabel: string;
+  goalValue: string;
+  /** Bundled media key, used when no image has been uploaded for the band. */
+  imageKey: string;
+  /** Overrides `imageKey` once someone uploads a photograph of their own. */
+  imageUrl?: string;
+  imagePublicId?: string;
+}
+
 export interface Dictionary {
   utility: {
     tagline: string;
@@ -73,6 +146,7 @@ export interface Dictionary {
     linkedin: string;
     youtube: string;
   };
+  socialLinks: SocialProfile[];
   hero: {
     /*
       The conviction is the headline; this is the sentence that used to introduce
@@ -93,6 +167,27 @@ export interface Dictionary {
       cta: string;
     };
   };
+  /** Additional hero carousel slides; slide 0 is built from `hero` at render. */
+  heroSlides: HeroSlide[];
+  /** Recoverable banner records kept out of the public carousel. */
+  heroSlidesTrash: Array<HeroSlide & { deletedAt: string }>;
+  /**
+   * Which items the curated homepage sections show, chosen in the homepage
+   * layout editor. An empty list means "decide automatically" — the newest
+   * news, the first projects, the first areas — so the homepage works before
+   * anyone curates it and keeps working when a chosen item is unpublished.
+   *
+   * Selections are the same in every language and the save action writes them
+   * to both documents, so a slug chosen in Turkish is not missing in English.
+   */
+  homepage: {
+    /** News article slugs. */
+    news: string[];
+    /** Project slugs. */
+    projects: string[];
+    /** Indices into `programs.cards`, which have no stable identifier. */
+    areas: number[];
+  };
   ticker: {
     items: string[];
   };
@@ -104,6 +199,7 @@ export interface Dictionary {
   about: {
     title: string;
     lede: string;
+    ledeExtra: string;
     missionLabel: string;
     missionText: string;
     visionLabel: string;
@@ -117,6 +213,7 @@ export interface Dictionary {
     filters: FilterOption[];
     cards: ProgramCard[];
     signposts: Signpost[];
+    viewAll: string;
   };
   projects: {
     title: string;
@@ -148,6 +245,19 @@ export interface Dictionary {
     subscribeLabel: string;
     success: string;
   };
+  /** Homepage "latest news" summary header. Empty state reuses `newsPage`. */
+  latestNews: {
+    title: string;
+    viewAll: string;
+  };
+  /** Featured donation appeal. Editable via the admin content editor. */
+  campaign: Campaign;
+  /** Homepage contact summary section, before the global footer. */
+  contactSection: {
+    title: string;
+    lede: string;
+    cta: string;
+  };
   footer: {
     addressLine: string;
     columns: FooterColumn[];
@@ -173,6 +283,13 @@ export const dict: Record<Lang, Dictionary> = {
       linkedin: "LinkedIn",
       youtube: "YouTube",
     },
+    socialLinks: [
+      { key: "instagram", url: "", active: false },
+      { key: "facebook", url: "", active: false },
+      { key: "youtube", url: "", active: false },
+      { key: "twitter", url: "", active: false },
+      { key: "linkedin", url: "", active: false },
+    ],
     hero: {
       standfirst: "At the heart of everything we do is one conviction",
       headline: {
@@ -193,6 +310,38 @@ export const dict: Record<Lang, Dictionary> = {
         cta: "Learn more",
       },
     },
+    heroSlides: [
+      {
+        headline: {
+          pre: "Where the need is, ",
+          highlight: "we are.",
+          post: "",
+        },
+        subcopy:
+          "From Ramadan iftar tables in Pakistan to education centres taking shape in Afghanistan, IHBA works where urgent need and long-term opportunity meet.",
+        ctaPrimary: "Our work",
+        ctaPrimaryHref: "/areas-of-work",
+        ctaSecondary: "Latest news",
+        ctaSecondaryHref: "/news",
+        imageKey: "heroSlide2",
+      },
+      {
+        headline: {
+          pre: "Build the bridge, ",
+          highlight: "be the pier.",
+          post: "",
+        },
+        subcopy:
+          "Volunteers, donors and partners make every IHBA programme possible. Whatever you bring — time, skills, or a gift — we make sure it reaches the other side.",
+        ctaPrimary: "Volunteer",
+        ctaPrimaryHref: "/volunteer",
+        ctaSecondary: "Donate",
+        ctaSecondaryHref: "/donate",
+        imageKey: "heroSlide3",
+      },
+    ],
+    heroSlidesTrash: [],
+    homepage: { news: [], projects: [], areas: [] },
     ticker: {
       items: [
         "HUMANITARIAN AID",
@@ -214,9 +363,11 @@ export const dict: Record<Lang, Dictionary> = {
       ],
     },
     about: {
-      title: "Who we are?",
+      title: "About IHBA",
       lede:
         "An international civil society organisation founded in Istanbul, working where urgent need and long-term opportunity meet.",
+      ledeExtra:
+        "Since 2025, we've grown from emergency relief into a wider mission spanning education, sustainable development and cross-border cooperation — always working through trusted local partners who understand the realities on the ground.",
       missionLabel: "Our Mission",
       missionText:
         "To help meet essential humanitarian needs in both ordinary and emergency situations; to improve the living conditions of children, young people, women, older persons, students and disadvantaged communities through education, social support and sustainable development programmes; and to develop lasting solutions that protect human dignity, rights and freedoms.",
@@ -297,6 +448,7 @@ export const dict: Record<Lang, Dictionary> = {
           cta: "See what's on",
         },
       ],
+      viewAll: "View all areas of work",
     },
     projects: {
       title: "We're building three bridges.",
@@ -380,6 +532,33 @@ export const dict: Record<Lang, Dictionary> = {
       subscribeLabel: "Subscribe",
       success: "Thank you — you've been added.",
     },
+    latestNews: {
+      title: "Latest news",
+      viewAll: "View all news",
+    },
+    campaign: {
+      kicker: "Current appeal",
+      title: {
+        pre: "Build a school. ",
+        highlight: "Build a future.",
+        post: "",
+      },
+      copy:
+        "The Mazar-i-Sharif Education Centre will give around 1,000 girls and boys a place to learn, eat and grow in safety. The land is bought; construction is next. Your support brings the campus one step closer.",
+      ctaPrimary: "Donate to this project",
+      ctaPrimaryHref: "/donate",
+      ctaSecondary: "Read the project",
+      ctaSecondaryHref: "/projects/mazar-i-sharif-education-centre",
+      goalLabel: "Target completion",
+      goalValue: "End of 2027",
+      imageKey: "campaignImage",
+    },
+    contactSection: {
+      title: "Get in touch",
+      lede:
+        "Questions about donations, partnerships, volunteering or media? We usually reply within a few working days.",
+      cta: "Contact us",
+    },
     footer: {
       addressLine:
         "Mecidiye Neighbourhood, Süngü Street, Tevhit Çarşısı No: 2/212, Sultanbeyli / Istanbul, Türkiye",
@@ -422,6 +601,13 @@ export const dict: Record<Lang, Dictionary> = {
       linkedin: "LinkedIn",
       youtube: "YouTube",
     },
+    socialLinks: [
+      { key: "instagram", url: "", active: false },
+      { key: "facebook", url: "", active: false },
+      { key: "youtube", url: "", active: false },
+      { key: "twitter", url: "", active: false },
+      { key: "linkedin", url: "", active: false },
+    ],
     hero: {
       standfirst: "Yaptığımız her şeyin merkezinde tek bir inanç var",
       headline: {
@@ -442,6 +628,38 @@ export const dict: Record<Lang, Dictionary> = {
         cta: "Daha fazlası",
       },
     },
+    heroSlides: [
+      {
+        headline: {
+          pre: "İhtiyaç neredeyse, ",
+          highlight: "biz oradayız.",
+          post: "",
+        },
+        subcopy:
+          "Pakistan'daki Ramazan iftar sofralarından Afganistan'da şekillenen eğitim merkezlerine kadar, IHBA acil ihtiyaç ile uzun vadeli fırsatın kesiştiği yerde çalışır.",
+        ctaPrimary: "Çalışmalarımız",
+        ctaPrimaryHref: "/areas-of-work",
+        ctaSecondary: "Haberler",
+        ctaSecondaryHref: "/news",
+        imageKey: "heroSlide2",
+      },
+      {
+        headline: {
+          pre: "Köprüyü kur, ",
+          highlight: "ayak ol.",
+          post: "",
+        },
+        subcopy:
+          "Gönüllüler, bağışçılar ve ortaklar IHBA'nın her programını mümkün kılıyor. Ne sunarsanız sunun — zaman, yetenek ya da bir bağış — karşı kıyıya ulaştırırız.",
+        ctaPrimary: "Gönüllü Olun",
+        ctaPrimaryHref: "/volunteer",
+        ctaSecondary: "Bağış Yapın",
+        ctaSecondaryHref: "/donate",
+        imageKey: "heroSlide3",
+      },
+    ],
+    heroSlidesTrash: [],
+    homepage: { news: [], projects: [], areas: [] },
     ticker: {
       items: [
         "İNSANİ YARDIM",
@@ -463,9 +681,11 @@ export const dict: Record<Lang, Dictionary> = {
       ],
     },
     about: {
-      title: "Biz kimiz?",
+      title: "IHBA Hakkında",
       lede:
         "İstanbul'da kurulan, acil ihtiyaç ile uzun vadeli fırsatın kesiştiği yerde çalışan uluslararası bir sivil toplum kuruluşu.",
+      ledeExtra:
+        "2025'ten bu yana acil yardımdan eğitim, sürdürülebilir kalkınma ve sınır ötesi iş birliğine uzanan daha geniş bir misyona doğru büyüdük — her zaman sahayı bilen güvenilir yerel ortaklarla çalışarak.",
       missionLabel: "Misyonumuz",
       missionText:
         "Olağan ve olağanüstü durumlarda temel insani ihtiyaçların karşılanmasına katkı sunmak; eğitim, sosyal destek ve sürdürülebilir kalkınma projeleriyle çocukların, gençlerin, kadınların, yaşlıların, öğrencilerin ve dezavantajlı grupların yaşam şartlarını iyileştirmek; insan onurunu, hak ve hürriyetleri koruyan kalıcı çözümler geliştirmek.",
@@ -546,6 +766,7 @@ export const dict: Record<Lang, Dictionary> = {
           cta: "Takvime bakın",
         },
       ],
+      viewAll: "Tüm faaliyet alanları",
     },
     projects: {
       title: "Üç köprü inşa ediyoruz.",
@@ -620,7 +841,7 @@ export const dict: Record<Lang, Dictionary> = {
       ctaSecondary: "Gönüllü Olun",
       note: "Bağış hesapları yakında yayınlanacaktır — bugün katkı sağlamak için bize ulaşın.",
     },
-    newsletter: {
+newsletter: {
       socialTitle:
         "Bizden daha fazlasını görmek ve okumak ister misiniz? Sosyal medya hesaplarımızda saha güncellemeleri, öğrenci hikâyeleri ve IHBA'daki günlük hayat var.",
       title: "Aylık proje ve çağrı derlememizle ilgileniyor musunuz? Bültenimize kaydolun.",
@@ -628,6 +849,33 @@ export const dict: Record<Lang, Dictionary> = {
       placeholder: "E-posta",
       subscribeLabel: "Abone ol",
       success: "Teşekkürler — listeye eklendiniz.",
+    },
+    latestNews: {
+      title: "Son haberler",
+      viewAll: "Tüm haberler",
+    },
+    campaign: {
+      kicker: "Güncel çağrı",
+      title: {
+        pre: "Bir okul kur. ",
+        highlight: "Bir gelecek inşa et.",
+        post: "",
+      },
+      copy:
+        "Mezar-ı Şerif Eğitim Merkezi, yaklaşık 1.000 kız ve erkek öğrenciye güvenle öğrenebileceği, yiyebileceği ve büyüyebileceği bir yer kazandıracak. Arsa satın alındı; sıra inşaatta. Desteğiniz yerleşkeyi bir adım daha yakına getirir.",
+      ctaPrimary: "Bu projeye bağış yapın",
+      ctaPrimaryHref: "/donate",
+      ctaSecondary: "Projeyi okuyun",
+      ctaSecondaryHref: "/projects/mazar-i-sharif-education-centre",
+      goalLabel: "Hedef tamamlanma",
+      goalValue: "2027 sonu",
+      imageKey: "campaignImage",
+    },
+    contactSection: {
+      title: "Bize ulaşın",
+      lede:
+        "Bağış, ortaklık, gönüllülük veya medya hakkında sorularınız mı var? Genellikle birkaç iş günü içinde yanıt veririz.",
+      cta: "İletişime geçin",
     },
     footer: {
       addressLine:

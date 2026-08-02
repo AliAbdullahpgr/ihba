@@ -10,6 +10,7 @@ import {
   Tag,
 } from "@/app/components/primitives";
 import { resolveProjectImage } from "@/app/components/pages/projectImages";
+import { pickSelected } from "@/lib/homepage-sections";
 
 const tagTones = {
   planning: "azure",
@@ -19,6 +20,22 @@ const tagTones = {
 
 export function Projects() {
   const { t } = useI18n();
+
+  /*
+    `projects.cards` is built alongside `projectsPage.details` and indexed in
+    step with it, so the two are paired before any filtering — selecting a
+    subset by index alone would show one project's photograph above another
+    project's title.
+  */
+  const paired = t.projectsPage.details.map((project, index) => ({
+    project,
+    card: t.projects.cards[index],
+  }));
+  const featured = pickSelected(
+    paired,
+    t.homepage.projects,
+    (item) => item.project.slug,
+  );
 
   return (
     <section id="projects" aria-labelledby="projects-title" className="bg-white pb-20 lg:pb-28">
@@ -39,19 +56,22 @@ export function Projects() {
 
         {/* Three spans — each opens its project page. */}
         <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
-          {t.projectsPage.details.map((project, index) => {
-            const card = t.projects.cards[index];
+          {featured.map(({ project, card }, index) => {
             const image = resolveProjectImage(project);
 
             return (
               <Reveal key={project.slug} delay={index * 90}>
                 <CardLink href={`/projects/${project.slug}`}>
-                  {/* Square, like every other image on the landing page. */}
-                  <CardMedia
-                    src={image.src}
-                    alt={image.alt}
-                    ratio="aspect-square"
-                  />
+                  {/* Square, like every other image on the landing page.
+                      Omitted entirely when a project has no photograph, so the
+                      card stays clean instead of showing a placeholder. */}
+                  {image && (
+                    <CardMedia
+                      src={image.src}
+                      alt={image.alt}
+                      ratio="aspect-square"
+                    />
+                  )}
 
                   {/*
                     Status and region, then the title. The station number and
@@ -60,13 +80,17 @@ export function Projects() {
                     page one click away.
                   */}
                   <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <Tag tone={tagTones[card.badgeKey]}>{card.badge}</Tag>
+                    <Tag tone={tagTones[card?.badgeKey ?? "active"]}>
+                      {card?.badge ?? project.status}
+                    </Tag>
                     <span className="text-xs font-semibold text-ink/70">
-                      {card.region}
+                      {card?.region ?? project.region}
                     </span>
                   </div>
 
-                  <CardTitle className="mt-3 text-lg">{card.title}</CardTitle>
+                  <CardTitle className="mt-3 text-lg">
+                    {card?.title ?? project.title}
+                  </CardTitle>
                 </CardLink>
               </Reveal>
             );

@@ -6,7 +6,6 @@ import { ArrowLink } from "@/app/components/primitives";
 import { ContactForm } from "@/app/components/ContactForm";
 import { DataList, PageHeader, PageSection } from "@/app/components/PageShell";
 import { SocialRow } from "@/app/components/SocialRow";
-import { socialLinks } from "@/lib/content";
 
 export function ContactPage() {
   const { t } = useI18n();
@@ -79,7 +78,7 @@ export function ContactPage() {
               </div>
             </dl>
 
-            {socialLinks.length > 0 && (
+            {t.socialLinks.some((profile) => profile.active && profile.url) && (
               <div className="mt-10 border-t border-navy-ink/15 pt-5">
                 <SocialRow />
               </div>

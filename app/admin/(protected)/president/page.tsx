@@ -42,8 +42,9 @@ export default async function AdminPresidentPage({
   return (
     <>
       <AdminPageHeader
-        title="President&apos;s message"
-        description="One place to update the president&apos;s name, title, message, photograph and alternative text."
+        eyebrow="Website içeriği"
+        title="Başkan mesajı"
+        description="Başkanın adını, görevini, mesajını, fotoğrafını ve alternatif metnini tek yerden güncelleyin."
       />
       <PresidentForm
         copies={{ tr, en }}

@@ -10,6 +10,7 @@ import {
   PageSection,
   Prose,
 } from "@/app/components/PageShell";
+import { formatIban } from "@/lib/org-settings";
 
 export function DonatePage() {
   const { t } = useI18n();
@@ -29,10 +30,39 @@ export function DonatePage() {
               Bank details are not published yet, so the page states that plainly
               and gives the direct route instead of a dead form.
             */}
+            {/*
+              One block per currency, in the order set in the admin. Falls back
+              to the explanatory note while no account has been published.
+            */}
             <div className="mt-10 border-t border-navy-ink/15 pt-5">
-              <p className="text-sm leading-relaxed text-ink/70">
-                {t.donatePage.accountsNote}
-              </p>
+              {t.bankAccounts.length > 0 ? (
+                <div className="space-y-4">
+                  {t.bankAccounts.map((account) => (
+                    <div
+                      key={`${account.currency}-${account.iban}`}
+                      className="border border-navy-ink/15 bg-paper-warm/40 p-5"
+                    >
+                      <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold-ink">
+                        Banka bilgileri · {account.currency}
+                      </p>
+                      {account.bankName && (
+                        <p className="mt-3 text-sm font-semibold text-navy-ink">{account.bankName}</p>
+                      )}
+                      {account.accountHolder && (
+                        <p className="mt-1 text-sm text-ink/70">Hesap adı: {account.accountHolder}</p>
+                      )}
+                      <p className="mt-4 break-all font-mono text-base font-semibold text-navy-ink">
+                        {formatIban(account.iban)}
+                      </p>
+                    </div>
+                  ))}
+                  <p className="text-xs leading-relaxed text-ink/65">
+                    Bağış yapmadan önce IBAN bilgisini lütfen dikkatle kontrol edin.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm leading-relaxed text-ink/70">{t.donatePage.accountsNote}</p>
+              )}
             </div>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
