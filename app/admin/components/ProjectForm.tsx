@@ -1,8 +1,14 @@
 import { archiveProject, saveProject } from "@/app/admin/actions";
+import { FormField, inputClass } from "@/app/admin/components/AdminUi";
 import {
-  FormField,
-  inputClass,
-} from "@/app/admin/components/AdminUi";
+  DocControls,
+  DocFields,
+  DocMain,
+  DocRow,
+  DocSection,
+  DocSidebar,
+  DocView,
+} from "@/app/admin/components/DocView";
 import { ImageUpload } from "@/app/admin/components/ImageUpload";
 import {
   ProjectGalleryManager,
@@ -42,181 +48,176 @@ function translation(project: ProjectRecord | null, locale: "en" | "tr") {
 }
 
 export function ProjectForm({ project }: { project: ProjectRecord | null }) {
+  const stateLabels: Record<string, string> = {
+    draft: "Taslak",
+    published: "Yayında",
+    archived: "Çöp kutusunda",
+  };
+
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
-      <form action={saveProject} className="space-y-6">
+    <DocView>
+      <form action={saveProject}>
         <input type="hidden" name="id" value={project?.id ?? ""} />
         <UnsavedChangesGuard />
 
-        <section className="border border-line bg-white p-5 sm:p-6">
-          <h2 className="text-base font-semibold text-navy-ink">
-            Proje bilgileri
-          </h2>
-          <div className="mt-5 grid gap-5 sm:grid-cols-2">
-            <FormField
-              label="Website adresi"
-              hint="Küçük harf, rakam ve tire kullanın. Değiştirirseniz projenin website adresi de değişir."
-            >
-              <input
-                name="slug"
-                required
-                pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                defaultValue={project?.slug}
-                className={inputClass}
-              />
-            </FormField>
-            <FormField label="Website sırası">
-              <input
-                name="sortOrder"
-                type="number"
-                min="0"
-                required
-                defaultValue={project?.sortOrder ?? 0}
-                className={inputClass}
-              />
-            </FormField>
-          </div>
-        </section>
+        <DocControls
+          meta={
+            project
+              ? [
+                  { label: "Durum", value: stateLabels[project.state] ?? project.state },
+                  { label: "Website adresi", value: `/projects/${project.slug}` },
+                ]
+              : [{ label: "Durum", value: "Yeni proje" }]
+          }
+        >
+          <AdminSubmitButton>Kaydet</AdminSubmitButton>
+        </DocControls>
 
-        {(["en", "tr"] as const).map((locale) => {
-          const item = translation(project, locale);
-          const language =
-            locale === "en" ? "English (isteğe bağlı)" : "Türkçe";
-          return (
-            <section
-              key={locale}
-              className="border border-line bg-white p-5 sm:p-6"
-            >
-              <div className="flex items-baseline justify-between border-b border-line pb-4">
-                <h2 className="text-base font-semibold text-navy-ink">
-                  {language}
-                </h2>
-                <span className="text-xs font-bold uppercase text-ink/45">
-                  {locale}
-                </span>
-              </div>
-              <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                <FormField label="Başlık">
-                  <input
-                    name={`title_${locale}`}
-                    required={locale === "tr"}
-                    defaultValue={item?.title}
-                    className={inputClass}
-                  />
-                </FormField>
-                <FormField label="Bölge">
-                  <input
-                    name={`region_${locale}`}
-                    required={locale === "tr"}
-                    defaultValue={item?.region}
-                    className={inputClass}
-                  />
-                </FormField>
-                <FormField label="Website durum etiketi">
-                  <input
-                    name={`statusLabel_${locale}`}
-                    required={locale === "tr"}
-                    defaultValue={item?.statusLabel}
-                    className={inputClass}
-                  />
-                </FormField>
-                <FormField label="Görsel alternatif metni">
-                  <input
-                    name={`imageAlt_${locale}`}
-                    required={locale === "tr"}
-                    defaultValue={item?.imageAlt}
-                    className={inputClass}
-                  />
-                </FormField>
-              </div>
-              <div className="mt-5 space-y-5">
-                <FormField label="Kısa özet">
-                  <textarea
-                    name={`summary_${locale}`}
-                    required={locale === "tr"}
-                    rows={3}
-                    defaultValue={item?.summary}
-                    className={inputClass}
-                  />
-                </FormField>
+        <DocFields>
+          <DocMain>
+            <DocSection title="Proje bilgileri">
+              <DocRow>
                 <FormField
-                  label="Proje açıklaması"
-                  hint="İlk paragraf proje sayfasının girişinde öne çıkar. Biçimlendirme için üstteki düğmeleri kullanın."
+                  label="Website adresi"
+                  hint="Küçük harf, rakam ve tire kullanın. Değiştirirseniz projenin website adresi de değişir."
                 >
-                  <RichTextEditor
-                    name={`body_${locale}`}
-                    initialBlocks={item?.body ?? []}
-                    required={locale === "tr"}
-                    requiredMessage="Proje açıklaması boş bırakılamaz."
-                    placeholder={
-                      locale === "tr"
-                        ? "Projeyi buraya anlatın…"
-                        : "İngilizce açıklama (isteğe bağlı) — boş bırakılırsa Türkçe metin kullanılır."
-                    }
+                  <input
+                    name="slug"
+                    required
+                    pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                    defaultValue={project?.slug}
+                    className={inputClass}
                   />
                 </FormField>
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <FormField
-                    label="Etki bilgileri"
-                    hint="Her satıra bir bilgi yazın: Etiket | Değer"
-                  >
+                <FormField label="Website sırası">
+                  <input
+                    name="sortOrder"
+                    type="number"
+                    min="0"
+                    required
+                    defaultValue={project?.sortOrder ?? 0}
+                    className={inputClass}
+                  />
+                </FormField>
+              </DocRow>
+            </DocSection>
+
+            {(["en", "tr"] as const).map((locale) => {
+              const item = translation(project, locale);
+              const language = locale === "en" ? "English (isteğe bağlı)" : "Türkçe";
+              return (
+                <DocSection key={locale} title={language} badge={locale}>
+                  <DocRow>
+                    <FormField label="Başlık">
+                      <input
+                        name={`title_${locale}`}
+                        required={locale === "tr"}
+                        defaultValue={item?.title}
+                        className={inputClass}
+                      />
+                    </FormField>
+                    <FormField label="Bölge">
+                      <input
+                        name={`region_${locale}`}
+                        required={locale === "tr"}
+                        defaultValue={item?.region}
+                        className={inputClass}
+                      />
+                    </FormField>
+                  </DocRow>
+                  <DocRow>
+                    <FormField label="Website durum etiketi">
+                      <input
+                        name={`statusLabel_${locale}`}
+                        required={locale === "tr"}
+                        defaultValue={item?.statusLabel}
+                        className={inputClass}
+                      />
+                    </FormField>
+                    <FormField label="Görsel alternatif metni">
+                      <input
+                        name={`imageAlt_${locale}`}
+                        required={locale === "tr"}
+                        defaultValue={item?.imageAlt}
+                        className={inputClass}
+                      />
+                    </FormField>
+                  </DocRow>
+
+                  <FormField label="Kısa özet">
                     <textarea
-                      name={`facts_${locale}`}
-                      rows={5}
-                      defaultValue={item?.facts
-                        .map((fact) => `${fact.label} | ${fact.value}`)
-                        .join("\n")}
+                      name={`summary_${locale}`}
+                      required={locale === "tr"}
+                      rows={3}
+                      defaultValue={item?.summary}
                       className={inputClass}
                     />
                   </FormField>
+
                   <FormField
-                    label="Etiketler"
-                    hint="Etiketleri virgülle ayırın."
+                    label="Proje açıklaması"
+                    hint="İlk paragraf proje sayfasının girişinde öne çıkar. Biçimlendirme için üstteki düğmeleri kullanın."
                   >
-                    <textarea
-                      name={`chips_${locale}`}
-                      rows={5}
-                      defaultValue={item?.chips.join(", ")}
-                      className={inputClass}
+                    <RichTextEditor
+                      name={`body_${locale}`}
+                      initialBlocks={item?.body ?? []}
+                      required={locale === "tr"}
+                      requiredMessage="Proje açıklaması boş bırakılamaz."
+                      placeholder={
+                        locale === "tr"
+                          ? "Projeyi buraya anlatın…"
+                          : "İngilizce açıklama (isteğe bağlı) — boş bırakılırsa Türkçe metin kullanılır."
+                      }
                     />
                   </FormField>
-                </div>
-              </div>
-            </section>
-          );
-        })}
 
-        <ProjectGalleryManager initialImages={project?.projectImages ?? []} />
+                  <DocRow>
+                    <FormField
+                      label="Etki bilgileri"
+                      hint="Her satıra bir bilgi yazın: Etiket | Değer"
+                    >
+                      <textarea
+                        name={`facts_${locale}`}
+                        rows={5}
+                        defaultValue={item?.facts
+                          .map((fact) => `${fact.label} | ${fact.value}`)
+                          .join("\n")}
+                        className={inputClass}
+                      />
+                    </FormField>
+                    <FormField label="Etiketler" hint="Etiketleri virgülle ayırın.">
+                      <textarea
+                        name={`chips_${locale}`}
+                        rows={5}
+                        defaultValue={item?.chips.join(", ")}
+                        className={inputClass}
+                      />
+                    </FormField>
+                  </DocRow>
+                </DocSection>
+              );
+            })}
 
-        <div className="sticky bottom-0 flex flex-wrap items-center justify-between gap-4 border border-line bg-white p-4">
-          <p className="text-xs text-ink/55">
-            Yayında seçtiğiniz değişiklikler kaydettiğinizde website'de görünür.
-          </p>
-          <AdminSubmitButton>Projeyi kaydet</AdminSubmitButton>
-        </div>
+            <ProjectGalleryManager initialImages={project?.projectImages ?? []} />
+          </DocMain>
 
-        <aside className="border border-line bg-white p-5 xl:fixed xl:right-8 xl:top-24 xl:w-80">
-          <FormField
-            label="Yayın durumu"
-            hint="Projenin website'de görünüp görünmeyeceğini belirler."
-          >
-            <select
-              name="state"
-              defaultValue={project?.state ?? "draft"}
-              className={inputClass}
+          <DocSidebar>
+            <FormField
+              label="Yayın durumu"
+              hint="Projenin website'de görünüp görünmeyeceğini belirler."
             >
-              <option value="draft">Taslak</option>
-              <option value="published">Yayında</option>
-              <option value="archived">Çöp kutusunda</option>
-            </select>
-          </FormField>
+              <select name="state" defaultValue={project?.state ?? "draft"} className={inputClass}>
+                <option value="draft">Taslak</option>
+                <option value="published">Yayında</option>
+                <option value="archived">Çöp kutusunda</option>
+              </select>
+            </FormField>
 
-          {/*
-            Kept apart from the publication state on purpose: a finished
-            project stays on the website, so "tamamlandı" must not be a way of
-            hiding it.
-          */}
-          <div className="mt-5">
+            {/*
+              Kept apart from the publication state on purpose: a finished
+              project stays on the website, so "tamamlandı" must not be a way of
+              hiding it.
+            */}
             <FormField
               label="Proje durumu"
               hint="İşin kendisi ne aşamada? Yayın durumundan bağımsızdır."
@@ -231,41 +232,38 @@ export function ProjectForm({ project }: { project: ProjectRecord | null }) {
                 <option value="inactive">Askıda</option>
               </select>
             </FormField>
-          </div>
 
-          <label className="admin-toggle-row mt-5">
-            <input
-              type="checkbox"
-              name="featured"
-              defaultChecked={project?.featured ?? false}
-            />
-            <span>
-              <strong>Anasayfada göster</strong>
-              <span>Seçili projeler anasayfadaki proje bölümünde öne çıkar.</span>
-            </span>
-          </label>
+            <label className="admin-toggle-row">
+              <input type="checkbox" name="featured" defaultChecked={project?.featured ?? false} />
+              <span>
+                <strong>Anasayfada göster</strong>
+                <span>Seçili projeler anasayfadaki proje bölümünde öne çıkar.</span>
+              </span>
+            </label>
 
-          <div className="mt-5">
-            <p className="mb-2 text-sm font-semibold text-navy-ink">
-              Kapak görseli
-            </p>
-            <ImageUpload
-              initialUrl={project?.imageUrl}
-              initialPublicId={project?.imagePublicId}
-            />
-            <p className="mt-2 text-xs leading-relaxed text-ink/55">
-              Zorunlu değildir. Görsel eklenmezse proje kartı yalnızca metinle
-              gösterilir.
-            </p>
-          </div>
-        </aside>
+            <FormField
+              label="Kapak görseli"
+              hint="Zorunlu değildir. Görsel eklenmezse proje kartı yalnızca metinle gösterilir."
+            >
+              <ImageUpload
+                initialUrl={project?.imageUrl}
+                initialPublicId={project?.imagePublicId}
+              />
+            </FormField>
+
+            {project && (
+              <div className="pl-doc__danger">
+                <TrashActionButton
+                  action={archiveProject}
+                  id={project.id}
+                  itemName={translation(project, "tr")?.title ?? project.slug}
+                  kind="trash"
+                />
+              </div>
+            )}
+          </DocSidebar>
+        </DocFields>
       </form>
-
-      {project && (
-        <div className="xl:col-start-2">
-          <TrashActionButton action={archiveProject} id={project.id} itemName={translation(project, "tr")?.title ?? project.slug} kind="trash" />
-        </div>
-      )}
-    </div>
+    </DocView>
   );
 }

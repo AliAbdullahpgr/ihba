@@ -16,8 +16,16 @@ export function AdminSubmitButton({
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending || disabled} className={className}>
-      {pending ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Save className="size-4" aria-hidden="true" />}
-      {pending ? "Kaydediliyor…" : children}
+      {/*
+        Both children stay wrapped in elements. A bare text node next to a
+        swapped element is what Chrome's auto-translate (and password-manager
+        extensions) rewrite, which leaves React inserting before a node that is
+        no longer its child — the "Failed to execute 'insertBefore'" crash.
+      */}
+      <span className="grid size-4 place-items-center" aria-hidden="true">
+        {pending ? <LoaderCircle className="size-4 animate-spin" /> : <Save className="size-4" />}
+      </span>
+      <span>{pending ? "Kaydediliyor…" : children}</span>
     </button>
   );
 }

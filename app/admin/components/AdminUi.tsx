@@ -5,11 +5,10 @@ import {
   ChevronRight,
   Inbox,
   LoaderCircle,
-  RotateCcw,
-  Search,
 } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { ListControls } from "@/app/admin/components/ListControls";
 
 export type AdminStatus =
   | "draft"
@@ -300,15 +299,7 @@ export function FieldHelpText({ children }: { children: ReactNode }) {
   return <p className="admin-field-hint">{children}</p>;
 }
 
-export function AdminListToolbar({
-  search = "",
-  searchPlaceholder = "İçerikte ara…",
-  status = "all",
-  statusOptions = [],
-  sort = "updated",
-  sortOptions = [],
-  action,
-}: {
+export function AdminListToolbar(props: {
   search?: string;
   searchPlaceholder?: string;
   status?: string;
@@ -317,55 +308,5 @@ export function AdminListToolbar({
   sortOptions?: Array<{ value: string; label: string }>;
   action?: ReactNode;
 }) {
-  return (
-    <form method="get" className="admin-list-toolbar">
-      <label className="admin-search-field">
-        <Search className="size-4" aria-hidden="true" />
-        <span className="sr-only">{searchPlaceholder}</span>
-        <input
-          className="admin-input"
-          type="search"
-          name="q"
-          defaultValue={search}
-          placeholder={searchPlaceholder}
-        />
-      </label>
-      {statusOptions.length > 0 && (
-        <label className="admin-filter-field">
-          <span className="sr-only">Yayın durumu</span>
-          <select className="admin-input" name="state" defaultValue={status}>
-            {statusOptions.map((option) => (
-              <option value={option.value} key={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-      )}
-      {sortOptions.length > 0 && (
-        <label className="admin-filter-field">
-          <span className="sr-only">Sıralama</span>
-          <select className="admin-input" name="sort" defaultValue={sort}>
-            {sortOptions.map((option) => (
-              <option value={option.value} key={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-      )}
-      <div className="admin-list-toolbar-actions">
-        <AdminButton type="submit" variant="secondary">
-          Filtrele
-        </AdminButton>
-        {(search || status !== "all" || sort !== "updated") && (
-          <Link href="." className="admin-reset-link">
-            <RotateCcw className="size-3.5" aria-hidden="true" />
-            Temizle
-          </Link>
-        )}
-        {action}
-      </div>
-    </form>
-  );
+  return <ListControls {...props} />;
 }
